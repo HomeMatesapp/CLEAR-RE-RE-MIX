@@ -1,0 +1,1 @@
+ALTER TABLE public.progress_tracking ADD CONSTRAINT progress_tracking_user_role_unique UNIQUE (user_id, role_slug);

@@ -1,0 +1,252 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Cream + forest green base — easy toggle: bump bg lightness or drop saturation
+       toward off-white if page reads too autumnal once red/amber ratings appear. */
+    --background: 44 38% 98%;        /* warm cream — try `40 14% 98%` for cooler off-white */
+    --foreground: 30 12% 15%;        /* warm near-black */
+
+    --card: 0 0% 100%;
+    --card-foreground: 30 12% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 30 12% 15%;
+
+    --primary: 149 45% 33%;          /* forest green */
+    --primary-foreground: 44 38% 98%;
+
+    --secondary: 40 20% 94%;
+    --secondary-foreground: 30 12% 15%;
+
+    --muted: 40 20% 95%;
+    --muted-foreground: 30 8% 40%;
+
+    --accent: 149 30% 92%;
+    --accent-foreground: 149 45% 25%;
+
+    --destructive: 0 65% 45%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 40 15% 88%;
+    --input: 40 15% 88%;
+    --ring: 149 45% 33%;
+
+    --radius: 0.75rem;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --success: 149 45% 33%;
+    --success-foreground: 0 0% 100%;
+
+    /* Editorial v2 tokens */
+    --honest: 0 73% 53%;          /* #E24B4A — uncomfortable truth left border */
+    --honest-foreground: 0 0% 100%;
+    --reality: 45 100% 92%;       /* #FFF3CD — reality check warm background */
+    --reality-foreground: 30 12% 15%;
+    --navy: 209 56% 24%;          /* #1A3C5E — primary editorial accent */
+
+    /* Coral — secondary accent for action/celebration moments only */
+    --accent-coral: 14 78% 58%;
+    --accent-coral-foreground: 44 38% 98%;
+    --accent-coral-soft: 14 70% 94%;
+    --accent-coral-deep: 14 65% 30%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 245 58% 51%;
+  }
+
+  .dark {
+    --background: 225 25% 8%;
+    --foreground: 220 15% 92%;
+
+    --card: 225 20% 12%;
+    --card-foreground: 220 15% 92%;
+
+    --popover: 225 20% 12%;
+    --popover-foreground: 220 15% 92%;
+
+    --primary: 149 45% 45%;
+    --primary-foreground: 44 38% 98%;
+
+    --secondary: 225 15% 18%;
+    --secondary-foreground: 220 15% 92%;
+
+    --muted: 225 15% 18%;
+    --muted-foreground: 220 10% 60%;
+
+    --accent: 149 30% 28%;
+    --accent-foreground: 44 38% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 225 15% 20%;
+    --input: 225 15% 20%;
+    --ring: 149 45% 45%;
+
+    --sidebar-background: 225 25% 8%;
+    --sidebar-foreground: 220 15% 92%;
+    --sidebar-primary: 149 45% 45%;
+    --sidebar-primary-foreground: 44 38% 98%;
+    --sidebar-accent: 225 15% 18%;
+    --sidebar-accent-foreground: 220 15% 92%;
+    --sidebar-border: 225 15% 20%;
+    --sidebar-ring: 149 45% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+/* ===== PRINT STYLESHEET FOR ROADMAP PDF ===== */
+@media print {
+  /* Hide interactive elements */
+  nav, .no-print, button:not(.print-keep) {
+    display: none !important;
+  }
+
+  body {
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    color: #2B2823;
+    background: white;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    line-height: 1.6;
+  }
+
+  /* Headings render in Fraunces for editorial PDF feel */
+  h1, h2, h3, h4, .font-display {
+    font-family: 'Fraunces', Georgia, serif;
+  }
+
+  /* Generous margins */
+  @page {
+    margin: 20mm;
+    size: A4;
+  }
+
+  @page :first {
+    margin: 0;
+  }
+
+  /* Cover page */
+  .cover-page {
+    page-break-after: always;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Page breaks before major sections */
+  .pdf-page-break {
+    page-break-before: always;
+  }
+
+  /* Prevent orphans */
+  .pdf-section {
+    page-break-inside: avoid;
+  }
+
+  .pdf-section > * {
+    page-break-inside: avoid;
+  }
+
+  /* Card styles for print */
+  .bg-card {
+    background: white !important;
+    border: 1px solid #e5e5e5 !important;
+  }
+
+  /* Book cards */
+  .book-card {
+    background: white !important;
+    border-left: 4px solid hsl(149 45% 33%) !important;
+  }
+
+  /* Verdict badges */
+  .verdict-badge {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Quoted boxes */
+  .quoted-box {
+    background: #f5f5f5 !important;
+    border-left: 4px solid hsl(149 45% 33%) !important;
+  }
+
+  /* Force all backgrounds to print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Honest note boxes (amber) */
+  .honest-note-box {
+    background: #fff8e1 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Funding box (green) */
+  .funding-box {
+    background: #e8f5e9 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Print checkboxes as empty squares */
+  .print-checkbox {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid #666;
+    border-radius: 2px;
+    margin-right: 8px;
+  }
+
+  /* Page numbers — handled by browser */
+
+  /* Footer on every page */
+  .pdf-footer {
+    display: block !important;
+    position: fixed;
+    bottom: 10mm;
+    left: 20mm;
+    right: 20mm;
+    font-size: 9px;
+    color: #999;
+  }
+
+  /* Header logo on every page after cover */
+  .pdf-page-header {
+    display: block !important;
+    position: fixed;
+    top: 10mm;
+    right: 20mm;
+    font-size: 10px;
+    color: #999;
+  }
+
+  /* Back page */
+  .pdf-section:last-of-type {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

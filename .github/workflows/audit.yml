@@ -1,0 +1,105 @@
+# This is the real data-contamination guard.
+# Runs weekly against the live database, independent of deploys.
+# If it opens an issue, the audit found a problem — read the issue.
+#
+# Exit codes from scripts/audit-families.ts:
+#   0 = clean (or only informational in-prose findings)
+#   1 = contamination findings that gate (culture-cluster, family-forbidden residue, wrong-sector-in-attribution)
+#   2 = setup error (missing env, query failed, row-count below EXPECTED_MIN_ROLES — i.e. auth/RLS/data problem)
+#   3 = drift between AUDIT-RULES JSON and the deployed _is_contaminated_field function
+#
+# On any non-zero exit, a GitHub Issue is opened with the captured log so the
+# failure is visible. A weekly check whose failures nobody sees protects nothing.
+
+name: audit-weekly
+
+on:
+  schedule:
+    # Mondays 06:00 UTC.
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+    inputs:
+      force_fail:
+        description: "Force a failure (for testing the issue-creation path). Leave blank for a real run."
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - run: bun install --frozen-lockfile
+
+      - name: Run family contamination audit
+        id: audit
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+          FORCE_FAIL: ${{ github.event.inputs.force_fail }}
+        run: |
+          set +e
+          if [ -n "$FORCE_FAIL" ]; then
+            echo "FORCE_FAIL set — simulating a failure to exercise the issue-creation path." | tee audit.log
+            echo "exit_code=99" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          bun run audit:families 2>&1 | tee audit.log
+          ec=${PIPESTATUS[0]}
+          echo "exit_code=$ec" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Open issue on failure
+        if: steps.audit.outputs.exit_code != '0'
+        uses: actions/github-script@v8
+        env:
+          AUDIT_EXIT: ${{ steps.audit.outputs.exit_code }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        with:
+          script: |
+            const fs = require('fs');
+            const ec = process.env.AUDIT_EXIT;
+            const runUrl = process.env.RUN_URL;
+            const log = fs.existsSync('audit.log') ? fs.readFileSync('audit.log', 'utf8') : '(no log captured)';
+            const trimmed = log.length > 30000 ? log.slice(-30000) : log;
+            const reasons = {
+              '1': 'contamination findings that gate the build',
+              '2': 'setup error — auth/RLS/data problem (e.g. row-count below the safety floor)',
+              '3': 'drift between AUDIT-RULES JSON and the deployed _is_contaminated_field function',
+            };
+            const reason = reasons[ec] || `unexpected exit code ${ec}`;
+            const today = new Date().toISOString().slice(0, 10);
+            const title = `[audit] weekly contamination audit failed (${today}, exit ${ec})`;
+            const body = [
+              `**Weekly audit failed.** Reason: ${reason}.`,
+              ``,
+              `Run: ${runUrl}`,
+              ``,
+              `<details><summary>Captured log</summary>`,
+              ``,
+              '```',
+              trimmed,
+              '```',
+              ``,
+              `</details>`,
+              ``,
+              `_Opened automatically by .github/workflows/audit.yml._`,
+            ].join('\n');
+            const { data: issue } = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body,
+              labels: ['audit', 'data-contamination'],
+            });
+            core.notice(`Opened issue #${issue.number}: ${issue.html_url}`);
+            core.setFailed(`Audit failed with exit ${ec} — issue #${issue.number} opened.`);

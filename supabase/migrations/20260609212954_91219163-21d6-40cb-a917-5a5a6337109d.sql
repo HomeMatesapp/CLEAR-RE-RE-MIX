@@ -1,0 +1,1 @@
+ALTER TABLE public.providers ADD COLUMN IF NOT EXISTS lead_capture_enabled boolean NOT NULL DEFAULT false;

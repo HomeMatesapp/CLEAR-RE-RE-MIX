@@ -1,0 +1,1 @@
+ALTER TABLE public.saved_pathways ADD COLUMN last_viewed_at timestamp with time zone DEFAULT now();

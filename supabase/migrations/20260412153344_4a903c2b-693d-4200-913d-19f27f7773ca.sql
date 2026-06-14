@@ -1,0 +1,1 @@
+ALTER TABLE public.job_market_cache ADD COLUMN IF NOT EXISTS listings_sample jsonb DEFAULT NULL;

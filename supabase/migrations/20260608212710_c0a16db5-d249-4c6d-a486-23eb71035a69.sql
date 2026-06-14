@@ -1,0 +1,1 @@
+UPDATE public.roles SET short_description = 'AI Engineering is one of the highest-paid technology careers in the UK, but it is rarely an entry-level role. Most people enter through Computer Science, Mathematics, Software Engineering or Data Science and spend years building technical depth before specialising.' WHERE role_slug = 'ai-engineer';

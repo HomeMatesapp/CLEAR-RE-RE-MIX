@@ -1,0 +1,2 @@
+ALTER TABLE public.providers RENAME COLUMN employment_rate TO publishes_note;
+COMMENT ON COLUMN public.providers.publishes_note IS 'Free-text prose describing what the provider publishes about outcomes (or, in some rows, a general provider/sector note). NOT a numeric rate. Render verbatim — do not append "% employed" or similar unit labels.';
