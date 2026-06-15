@@ -218,7 +218,7 @@ export const RealityCheckRoute = ({ role }: { role: RoleContext }) => {
 
       {!result && (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-2.5">
             <Field label="1. Starting point">
               <ChipGroup
                 options={STARTING_POINTS}
