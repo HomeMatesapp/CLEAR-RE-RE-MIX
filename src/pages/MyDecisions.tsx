@@ -187,6 +187,20 @@ const MyDecisions = () => {
   const profileFilledCount = PROFILE_FIELDS.filter((k) => (profile[k] ?? "").trim()).length;
   const profileIncomplete = profileFilledCount < PROFILE_FIELDS.length;
 
+  const toggleCircumstance = (key: SupportCircumstanceKey) => {
+    setProfile((p) => {
+      const has = p.support_circumstances.includes(key);
+      return {
+        ...p,
+        support_circumstances: has
+          ? p.support_circumstances.filter((k) => k !== key)
+          : [...p.support_circumstances, key],
+      };
+    });
+  };
+
+
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Helmet>
