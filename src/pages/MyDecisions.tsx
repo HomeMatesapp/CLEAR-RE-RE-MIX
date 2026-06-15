@@ -364,6 +364,33 @@ const MyDecisions = () => {
                 <ProfileField label="Commute / relocation flexibility" value={profile.commute_flexibility ?? ""}
                   onChange={(v) => setProfile((p) => ({ ...p, commute_flexibility: v }))} placeholder="30 min, can relocate…" />
 
+                <div className="sm:col-span-2 pt-2 border-t border-border mt-2">
+                  <p className="text-sm font-medium text-foreground mt-3">Support circumstances (optional)</p>
+                  <p className="text-xs text-muted-foreground mt-1 mb-3 max-w-2xl">
+                    Only answer what you're comfortable with. Clear Routes uses this to surface grants,
+                    bursaries, access schemes, and support organisations you may otherwise miss.
+                    These are not shared with analytics.
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {SUPPORT_CIRCUMSTANCE_KEYS.map((key) => {
+                      const checked = profile.support_circumstances.includes(key);
+                      return (
+                        <label
+                          key={key}
+                          className="flex items-start gap-2 text-sm text-foreground cursor-pointer"
+                        >
+                          <Checkbox
+                            checked={checked}
+                            onCheckedChange={() => toggleCircumstance(key)}
+                            className="mt-0.5"
+                          />
+                          <span>{SUPPORT_CIRCUMSTANCE_LABELS[key]}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 <div className="sm:col-span-2 pt-2">
                   <Button onClick={saveProfile} disabled={savingProfile}>
                     {savingProfile ? "Saving…" : "Save profile"}
