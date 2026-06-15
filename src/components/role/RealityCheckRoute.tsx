@@ -107,7 +107,6 @@ export const RealityCheckRoute = ({ role }: { role: RoleContext }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<RealityCheckResult | null>(null);
-  const [notesOpen, setNotesOpen] = useState(false);
   const [initialProfile, setInitialProfile] = useState<DecisionProfileFields | null>(null);
   const [prefilled, setPrefilled] = useState(false);
 
