@@ -47,6 +47,9 @@ type Role = {
   competition_level: string | null;
   ai_impact_level: string | null;
   ai_impact_note: string | null;
+  remote_friendly: string | null;
+  degree_required: string | null;
+  most_common_route: string | null;
 };
 
 type Provider = {
