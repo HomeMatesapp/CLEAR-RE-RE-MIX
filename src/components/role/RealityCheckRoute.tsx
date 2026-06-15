@@ -137,6 +137,7 @@ export const RealityCheckRoute = ({
   const [result, setResult] = useState<RealityCheckResult | null>(null);
   const [initialProfile, setInitialProfile] = useState<DecisionProfileFields | null>(null);
   const [prefilled, setPrefilled] = useState(false);
+  const resultRef = useRef<HTMLDivElement | null>(null);
 
   // Prefill from the user's saved Decision Profile when logged in.
   useEffect(() => {
@@ -168,6 +169,13 @@ export const RealityCheckRoute = ({
       cancelled = true;
     };
   }, [user?.id]);
+
+  // Smooth-scroll into the result area once a result lands.
+  useEffect(() => {
+    if (result && resultRef.current) {
+      resultRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [result]);
 
   // Required fields: starting point, income need, budget, area.
   const missing: string[] = [];
@@ -214,29 +222,52 @@ export const RealityCheckRoute = ({
     onResult?.(false);
   };
 
+  const chips = answerChips(answers);
+
   return (
     <section
       aria-label="Reality-check this route"
       className="relative rounded-xl border border-gray-800 bg-gradient-to-br from-gray-900 to-gray-800 p-3 sm:p-4 mb-6 text-white shadow-sm"
     >
-      <div className="flex items-center gap-2 mb-1">
-        <Sparkles className="h-3.5 w-3.5 text-amber-300" />
-        <p className="text-[11px] font-semibold uppercase tracking-wider text-amber-300">
-          Reality-check this route
-        </p>
-      </div>
-      <h2 className="text-base font-medium mb-0.5">
-        Is {role.role_name} realistic for you?
-      </h2>
-      <p className="text-[11px] text-gray-400 mb-2.5 leading-snug">
-        Four quick facts about your situation. We'll show the route with the best odds — plus a backup, and one to avoid.
-      </p>
+      {!result && (
+        <>
+          <div className="flex items-center gap-2 mb-1">
+            <Sparkles className="h-3.5 w-3.5 text-amber-300" />
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-amber-300">
+              Reality-check this route
+            </p>
+          </div>
+          <h2 className="text-base font-medium mb-0.5">
+            Is {role.role_name} realistic for you?
+          </h2>
+          <p className="text-[11px] text-gray-400 mb-2.5 leading-snug">
+            Four quick facts about your situation. We'll show the route with the best odds — plus a backup, and one to avoid.
+          </p>
+        </>
+      )}
+
+      {result && (
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-gray-700 bg-gray-800/60 px-3 py-2">
+          <p className="text-[11px] text-gray-300 leading-snug">
+            <span className="font-semibold uppercase tracking-wider text-gray-500 mr-1.5">Checked for:</span>
+            {chips.join(" · ")}
+          </p>
+          <button
+            type="button"
+            onClick={reset}
+            className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-200 hover:text-white underline underline-offset-2"
+          >
+            <Pencil className="h-3 w-3" /> Edit answers
+          </button>
+        </div>
+      )}
 
       {!result && prefilled && (
         <div className="mb-2.5 flex items-center justify-between gap-3 rounded-lg border border-amber-300/20 bg-amber-300/5 px-2.5 py-1.5">
           <p className="text-[11px] text-amber-100">
             Using your saved Decision Profile.
           </p>
+
           <Link
             to="/my-decisions#decision-profile"
             className="text-[11px] text-amber-200 underline underline-offset-2 hover:text-white inline-flex items-center gap-1"
