@@ -717,6 +717,32 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
+const summaryLabelTone: Record<string, string> = {
+  emerald: "text-emerald-300",
+  sky:     "text-sky-300",
+  rose:    "text-rose-300",
+  amber:   "text-amber-300",
+};
+
+function SummaryRow({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: React.ReactNode;
+  tone: "emerald" | "sky" | "rose" | "amber";
+}) {
+  return (
+    <div className="flex flex-col">
+      <dt className={`text-[10px] font-semibold uppercase tracking-wider ${summaryLabelTone[tone]}`}>
+        {label}
+      </dt>
+      <dd className="text-sm text-gray-100 leading-snug mt-0.5">{value}</dd>
+    </div>
+  );
+}
+
 // ── Decision Profile sync prompt ──────────────────────────────────────────────
 
 function ProfileSyncPrompt({
