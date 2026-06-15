@@ -210,13 +210,18 @@ export const RealityCheckRoute = ({
     }
   }, [result]);
 
-  // Required fields: starting point, income need, budget, area.
+  // Required fields. Relevant background is required when the starting point
+  // implies the user has prior study or work to describe.
+  const backgroundRequired = !!answers.startingPoint && BACKGROUND_REQUIRED_FOR.includes(answers.startingPoint);
+  const backgroundMissing = backgroundRequired && answers.relevantBackground.trim().length < 3;
   const missing: string[] = [];
   if (!answers.startingPoint) missing.push("starting point");
+  if (backgroundMissing)      missing.push("relevant background");
   if (!answers.incomeNeed)    missing.push("earning need");
   if (!answers.budget)        missing.push("budget");
   if (!answers.area.trim())   missing.push("area");
   const canSubmit = missing.length === 0;
+
 
   const submit = async () => {
     if (!canSubmit || loading) return;
