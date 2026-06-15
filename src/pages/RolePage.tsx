@@ -389,8 +389,8 @@ const RolePage = () => {
       employersArr.length >= 5;
     const topEmployers = employersArr
       .flatMap((e) => e.split(/[,;]| — /))
-      .map((e) => e.trim())
-      .filter((e) => e && !/every sector|every industry|all sectors|all industries|data analysis is/i.test(e))
+      .map((e) => e.replace(/\s*\(.*?\)\s*/g, " ").replace(/\s+/g, " ").trim())
+      .filter((e) => e && !/^(every sector|every industry|all sectors|all industries|data analysis is.*|not an industry\.?)$/i.test(e))
       .slice(0, 2);
 
     if (strongDemand && topEmployers.length) {
