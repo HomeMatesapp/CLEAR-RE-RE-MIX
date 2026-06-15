@@ -343,6 +343,34 @@ const RolePage = () => {
         .filter(Boolean)
     : [];
 
+  // Derive grounded "What people like" bullets from existing role data.
+  // No invented claims — each bullet maps to a real field.
+  const positives: { label: string; text: string }[] = [];
+  if (role.short_description) {
+    const firstSentence = role.short_description.split(/(?<=[.!?])\s/)[0];
+    const short = firstSentence.length > 110 ? firstSentence.slice(0, 110).replace(/\s+\S*$/, "") + "…" : firstSentence;
+    positives.push({ label: "The work", text: short });
+  }
+  if (role.demand && /high|strong|growing|good/i.test(role.demand)) {
+    const employers = role.key_employers?.slice(0, 2).join(" and ");
+    positives.push({
+      label: "Stability",
+      text: employers
+        ? `Demand is ${role.demand.toLowerCase()} — employers like ${employers} hire consistently.`
+        : `Demand is ${role.demand.toLowerCase()}, so hiring is consistent.`,
+    });
+  }
+  if (role.salary_entry && (role.salary_senior || role.salary_experienced)) {
+    const top = role.salary_senior ?? role.salary_experienced!;
+    if (top > role.salary_entry) {
+      positives.push({
+        label: "Progression",
+        text: `Pay typically grows from ${fmtK(role.salary_entry)} to ${fmtK(top)}${role.salary_senior ? "+" : ""} with experience.`,
+      });
+    }
+  }
+  const positivesShown = positives.slice(0, 3);
+
 
 
   return (
