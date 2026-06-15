@@ -416,7 +416,7 @@ const RolePage = () => {
             <Divider />
 
             {/* Pathway cards */}
-            <SectionLabel>Where are you starting from?</SectionLabel>
+            <SectionLabel>Routes by starting point</SectionLabel>
             <div className="grid grid-cols-2 gap-2 mb-4 sm:grid-cols-4">
               {pathwayMeta.map((p) => {
                 const has = !!pathwayContent[p.key];
@@ -534,39 +534,7 @@ const RolePage = () => {
           </>
         )}
 
-        {!isPersonalised && !personalisationDismissed && (
-          <>
-            <Divider />
-            <div className="border border-gray-200 rounded-xl p-5 mb-6 bg-white">
-              <p className="text-sm font-medium text-gray-900 mb-1">Your situation changes the route</p>
-              <p className="text-sm text-gray-500 mb-4">
-                A software engineer takes a different path than a school leaver. A care
-                leaver or someone returning after a break may be eligible for funded
-                support most people never find.
-              </p>
-              <div className="flex gap-3">
-                <Link
-                  to={`/personalise?from=${role.role_slug}`}
-                  onClick={() => trackEvent("personalisation_prompt_clicked", { role: role.role_name })}
-                  className="text-sm font-medium px-4 py-2 bg-gray-900 text-white rounded-lg"
-                >
-                  Personalise my route
-                </Link>
-                <button
-                  type="button"
-                  onClick={() => {
-                    sessionStorage.setItem("cr_personalisation_dismissed", "1");
-                    setPersonalisationDismissed(true);
-                    trackEvent("personalisation_prompt_skipped", { role: role.role_name });
-                  }}
-                  className="text-sm text-gray-400 px-4 py-2"
-                >
-                  Skip
-                </button>
-              </div>
-            </div>
-          </>
-        )}
+        {/* Old personalisation CTA removed — Reality-check module is now the primary personalisation funnel. */}
 
         {Object.keys(grouped).length > 0 && (
           <>
