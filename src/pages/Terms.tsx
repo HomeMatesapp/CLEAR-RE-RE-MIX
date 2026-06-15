@@ -30,9 +30,10 @@ const Terms = () => {
             <section>
               <h2 className="font-display text-xl font-bold text-foreground mb-3">1. About Clear Routes</h2>
               <p>
-                Clear Routes is a free UK career information platform. It lets you search a curated library of UK roles and view honest,
-                hand-written information about each one — including pathways in, realistic salaries, competition signals, AI exposure, and
-                relevant training providers and apprenticeships. By using this website you agree to these terms.
+                Clear Routes is a free UK product that helps people reality-check a career route before committing time or
+                money. It includes Reality-check (an AI-assisted route judgement based on your situation), My Career Decisions
+                (a workspace for saved route checks), a Decision Profile (your saved constraints), curated role pages, and
+                support / funding matching where relevant. By using this website you agree to these terms.
               </p>
             </section>
 
