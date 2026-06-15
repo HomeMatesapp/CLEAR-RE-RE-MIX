@@ -386,6 +386,9 @@ const RolePage = () => {
           )}
         </div>
 
+        {/* Reality-check this route — interactive AI module (remix experiment) */}
+        <RealityCheckRoute role={role} />
+
         {/* Personalisation banner */}
         {isPersonalised && personalisationBanner(profile, role.role_name) && (
           <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 mb-6">
