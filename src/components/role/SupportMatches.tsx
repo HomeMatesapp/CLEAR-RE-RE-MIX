@@ -79,6 +79,7 @@ export const SupportMatches = ({
   roleName,
   circumstances,
   max = 3,
+  variant = "light",
 }: SupportMatchesProps) => {
   const { user } = useAuth();
   const [opps, setOpps] = useState<Opportunity[]>([]);
