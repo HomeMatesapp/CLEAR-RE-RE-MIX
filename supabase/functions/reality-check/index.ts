@@ -17,6 +17,13 @@ type Answers = {
   area: string;
   commuteFlex: string | null;
   notes: string;
+  // Optional qualifications & study readiness layer (may be absent on
+  // older saved decisions; treat missing as "(not given)").
+  relevantBackground?: string;
+  englishMaths?: string | null;
+  scienceSubjects?: string | null;
+  qualificationLevel?: string | null;
+  englishComfort?: string | null;
 };
 
 type RoleCtx = {
