@@ -36,8 +36,9 @@ const Login = () => {
       if (error) throw error;
       trackEvent("login_completed", { has_redirect: !!redirectPath });
       navigate(buildRedirect());
-    } catch (err: any) {
-      toast({ title: err.message || "Login failed", variant: "destructive" });
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Login failed";
+      toast({ title: message, variant: "destructive" });
     } finally {
       setLoading(false);
     }

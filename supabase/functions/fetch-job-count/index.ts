@@ -79,7 +79,7 @@ Deno.serve(async (req) => {
     const reedUrl = `https://www.reed.co.uk/api/1.0/search?keywords=${encodeURIComponent(role)}${locationParam}&resultsToTake=15`;
 
     let jobCount: number | null = null;
-    let listingsSample: any[] | null = null;
+    let listingsSample: { title: string; description: string }[] | null = null;
 
     try {
       const reedRes = await fetch(reedUrl, {
@@ -87,12 +87,15 @@ Deno.serve(async (req) => {
       });
 
       if (reedRes.ok) {
-        const reedData = await reedRes.json();
+        const reedData = await reedRes.json() as {
+          totalResults?: number;
+          results?: { jobTitle?: string; jobDescription?: string }[];
+        };
         jobCount = reedData.totalResults ?? null;
 
         // Extract top 15 listing summaries
         if (reedData.results && Array.isArray(reedData.results)) {
-          listingsSample = reedData.results.slice(0, 15).map((r: any) => ({
+          listingsSample = reedData.results.slice(0, 15).map((r) => ({
             title: r.jobTitle || "",
             description: (r.jobDescription || "").slice(0, 500),
           }));
