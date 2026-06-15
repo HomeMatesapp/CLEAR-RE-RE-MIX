@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Session } from "@supabase/supabase-js";
 import { identifyUser, resetUser } from "@/lib/posthog";
+import { flushPendingDecision } from "@/lib/saved-decisions";
 
 interface AuthContextType {
   user: User | null;
