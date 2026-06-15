@@ -94,17 +94,15 @@ export const RealityCheckRoute = ({ role }: { role: RoleContext }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<RealityCheckResult | null>(null);
+  const [notesOpen, setNotesOpen] = useState(false);
 
-  // Require at least 3 structured answers before we'll judge anything.
-  const filledCount = [
-    answers.startingPoint,
-    answers.incomeNeed,
-    answers.weeklyHours,
-    answers.budget,
-    answers.commuteFlex,
-    answers.area.trim() ? "area" : null,
-  ].filter(Boolean).length;
-  const canSubmit = filledCount >= 3;
+  // Required fields: starting point, income need, budget, area.
+  const missing: string[] = [];
+  if (!answers.startingPoint) missing.push("starting point");
+  if (!answers.incomeNeed)    missing.push("earning need");
+  if (!answers.budget)        missing.push("budget");
+  if (!answers.area.trim())   missing.push("area");
+  const canSubmit = missing.length === 0;
 
   const submit = async () => {
     if (!canSubmit || loading) return;
@@ -154,13 +152,13 @@ export const RealityCheckRoute = ({ role }: { role: RoleContext }) => {
       <h2 className="text-lg sm:text-xl font-medium mb-1">
         What's the most realistic route into {role.role_name} for you?
       </h2>
-      <p className="text-sm text-gray-300 mb-5">
-        Answer a few quick questions about your situation. Clear Routes will judge the best route, a backup, and — crucially — the route to avoid.
+      <p className="text-sm text-gray-300 mb-4">
+        Answer a few quick questions. We'll show the route with the best odds, a backup, and the option to be careful with.
       </p>
 
       {!result && (
         <>
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3">
             <Field label="1. Starting point">
               <ChipGroup
                 options={STARTING_POINTS}
@@ -197,19 +195,7 @@ export const RealityCheckRoute = ({ role }: { role: RoleContext }) => {
               />
             </Field>
 
-            <Field label="5. Area (town, city, or outward postcode)">
-              <input
-                type="text"
-                value={answers.area}
-                onChange={(e) => setAnswers((a) => ({ ...a, area: e.target.value }))}
-                placeholder="e.g. Leeds, SE15, M14"
-                disabled={loading}
-                className="w-full rounded-lg bg-gray-700/60 border border-gray-600 px-3 py-2 text-sm text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-300/60"
-              />
-              <p className="text-[11px] text-gray-400 mt-1">No full postcode — just the area.</p>
-            </Field>
-
-            <Field label="6. Commute / relocation flexibility">
+            <Field label="5. Commute / relocation flexibility">
               <ChipGroup
                 options={COMMUTE_FLEX}
                 value={answers.commuteFlex}
@@ -218,21 +204,44 @@ export const RealityCheckRoute = ({ role }: { role: RoleContext }) => {
               />
             </Field>
 
-            <Field label="Anything else we should know? (optional)">
-              <textarea
-                value={answers.notes}
-                onChange={(e) => setAnswers((a) => ({ ...a, notes: e.target.value }))}
-                placeholder="Caring responsibilities, health, prior attempts, specific employers in mind…"
+            <Field label="6. Area (town, city, or outward postcode)">
+              <input
+                type="text"
+                value={answers.area}
+                onChange={(e) => setAnswers((a) => ({ ...a, area: e.target.value }))}
+                placeholder="e.g. Leeds, SE15, M14"
                 disabled={loading}
-                rows={2}
-                className="w-full rounded-lg bg-gray-700/60 border border-gray-600 px-3 py-2 text-sm text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-300/60 resize-none"
+                className="w-full rounded-lg bg-gray-700/60 border border-gray-600 px-3 py-1.5 text-sm text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-300/60"
               />
             </Field>
           </div>
 
+          <div className="mt-3">
+            {!notesOpen ? (
+              <button
+                type="button"
+                onClick={() => setNotesOpen(true)}
+                className="text-xs text-gray-400 hover:text-gray-200 underline underline-offset-2"
+              >
+                + Add anything else we should know (optional)
+              </button>
+            ) : (
+              <Field label="Anything else we should know? (optional)">
+                <textarea
+                  value={answers.notes}
+                  onChange={(e) => setAnswers((a) => ({ ...a, notes: e.target.value }))}
+                  placeholder="Caring responsibilities, health, prior attempts, specific employers in mind…"
+                  disabled={loading}
+                  rows={2}
+                  className="w-full rounded-lg bg-gray-700/60 border border-gray-600 px-3 py-2 text-sm text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-300/60 resize-none"
+                />
+              </Field>
+            )}
+          </div>
+
           {error && <p className="mt-3 text-xs text-rose-300">{error}</p>}
 
-          <div className="mt-5 flex items-center gap-3">
+          <div className="mt-4 flex flex-wrap items-center gap-3">
             <button
               type="button"
               onClick={submit}
@@ -240,10 +249,12 @@ export const RealityCheckRoute = ({ role }: { role: RoleContext }) => {
               className="inline-flex items-center gap-2 text-sm font-medium bg-amber-300 text-gray-900 px-4 py-2 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed hover:bg-amber-200 transition-colors"
             >
               {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-              {loading ? "Judging your route…" : "Judge my route"}
+              {loading ? "Finding your realistic route…" : "Show my realistic route"}
             </button>
             <p className="text-xs text-gray-400">
-              {canSubmit ? "Takes ~10s. No sign-up." : "Answer a few more to get a verdict."}
+              {canSubmit
+                ? "Takes ~10s. No sign-up."
+                : "Required: starting point, earning need, budget, and area."}
             </p>
           </div>
         </>
