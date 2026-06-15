@@ -446,7 +446,7 @@ export const RealityCheckRoute = ({
             <p className="text-[11px] text-gray-500">
               {canSubmit
                 ? "Takes ~10s. No sign-up."
-                : "Fill all 4 fields above."}
+                : `Add: ${missing.join(", ")}.`}
             </p>
           </div>
 
