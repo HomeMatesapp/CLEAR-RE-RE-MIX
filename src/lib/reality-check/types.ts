@@ -110,6 +110,8 @@ export interface RealityCheckResult {
 // Subset of role context the engine needs. Keep narrow — the edge function
 // receives only what's needed to judge the route.
 export interface RoleContext {
+  id?: string;
+  role_slug?: string;
   role_name: string;
   short_description?: string | null;
   reality_check?: string | null;
