@@ -569,6 +569,15 @@ function ResultView({
         </Card>
       )}
 
+      {role.role_slug && (
+        <SupportMatches
+          roleSlug={role.role_slug}
+          roleName={role.role_name}
+          variant="dark"
+          max={3}
+        />
+      )}
+
       <SavePrompt role={role} answers={answers} result={result} />
 
       <ProfileSyncPrompt
