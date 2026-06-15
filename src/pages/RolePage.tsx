@@ -175,6 +175,7 @@ const RolePage = () => {
   const { profile, isPersonalised } = usePersonalisation();
   const { user } = useAuth();
   const [personalisationApplied, setPersonalisationApplied] = useState(false);
+  const [hasRealityCheckResult, setHasRealityCheckResult] = useState(false);
   const [personalisationDismissed, setPersonalisationDismissed] = useState(() => {
     if (typeof sessionStorage === "undefined") return false;
     return sessionStorage.getItem("cr_personalisation_dismissed") === "1";
