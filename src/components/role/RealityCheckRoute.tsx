@@ -561,6 +561,12 @@ function ResultView({
 
       <SavePrompt role={role} answers={answers} result={result} />
 
+      <ProfileSyncPrompt
+        answers={answers}
+        initialProfile={initialProfile}
+        onProfileSaved={onProfileSaved}
+      />
+
       <button
         type="button"
         onClick={onReset}
