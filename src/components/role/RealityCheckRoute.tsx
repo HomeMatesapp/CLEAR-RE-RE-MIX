@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/posthog";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { saveDecision, stashPendingDecision } from "@/lib/saved-decisions";
-import { Loader2, Sparkles, AlertOctagon, MapPin, Compass, LifeBuoy, ListChecks, BookmarkPlus, Check, UserCog } from "lucide-react";
+import { Loader2, Sparkles, AlertOctagon, MapPin, Compass, LifeBuoy, ListChecks, BookmarkPlus, Check, UserCog, Pencil, Gavel } from "lucide-react";
 import { SupportMatches } from "@/components/role/SupportMatches";
 import {
   BUDGETS,
@@ -17,6 +17,27 @@ import {
   type RealityCheckResult,
   type RoleContext,
 } from "@/lib/reality-check/types";
+
+const labelFor = <T extends string>(
+  options: { value: T; label: string }[],
+  v: T | null,
+): string | null => (v ? options.find((o) => o.value === v)?.label ?? null : null);
+
+const answerChips = (a: RealityCheckAnswers): string[] => {
+  const chips: string[] = [];
+  const sp = labelFor(STARTING_POINTS, a.startingPoint);
+  if (sp) chips.push(sp);
+  const inc = labelFor(INCOME_NEEDS, a.incomeNeed);
+  if (inc) chips.push(inc);
+  const b = labelFor(BUDGETS, a.budget);
+  if (b) chips.push(`${b} budget`);
+  if (a.area.trim()) chips.push(a.area.trim());
+  const cf = labelFor(COMMUTE_FLEX, a.commuteFlex);
+  if (cf) chips.push(cf);
+  const wh = labelFor(WEEKLY_HOURS, a.weeklyHours);
+  if (wh) chips.push(wh);
+  return chips;
+};
 import {
   answersToProfile,
   emptyProfileFields,
