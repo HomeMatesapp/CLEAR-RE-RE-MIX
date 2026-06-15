@@ -165,6 +165,8 @@ Each must be something the person could do this week. No "research the role", no
 
 NO FLUFF: no "embarking on a journey", no "exciting career", no "passion", no "you've got this". Plain English only.
 
+NEVER echo raw enum values, internal codes, or snake_case identifiers (e.g. "full_time_study", "career_changer", "500_2000", "20_plus") in any user-facing string. The user input is provided to you as human-readable labels — use those labels (or natural English paraphrases of them) in your prose. If you find yourself writing an underscore inside a quoted constraint, rewrite it.
+
 Output STRICT JSON matching this exact shape — no markdown, no commentary:
 {
   "overallVerdict": "Realistic" | "Realistic but hard" | "Long shot" | "Probably not for you",
