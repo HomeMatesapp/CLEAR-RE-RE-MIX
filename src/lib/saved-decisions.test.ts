@@ -40,6 +40,11 @@ const answers: RealityCheckAnswers = {
   area: "Manchester",
   commuteFlex: "60_min",
   notes: "",
+  relevantBackground: "psychology degree, healthcare assistant",
+  englishMaths: "both",
+  scienceSubjects: "yes",
+  qualificationLevel: "undergrad",
+  englishComfort: "yes",
 };
 
 const result = {
