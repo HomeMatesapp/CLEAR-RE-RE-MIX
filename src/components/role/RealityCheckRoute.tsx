@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/posthog";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { saveDecision, stashPendingDecision } from "@/lib/saved-decisions";
-import { Loader2, Sparkles, AlertOctagon, MapPin, Compass, LifeBuoy, ListChecks, BookmarkPlus, Check } from "lucide-react";
+import { Loader2, Sparkles, AlertOctagon, MapPin, Compass, LifeBuoy, ListChecks, BookmarkPlus, Check, UserCog } from "lucide-react";
 import {
   BUDGETS,
   COMMUTE_FLEX,
@@ -16,6 +16,14 @@ import {
   type RealityCheckResult,
   type RoleContext,
 } from "@/lib/reality-check/types";
+import {
+  answersToProfile,
+  emptyProfileFields,
+  hasAnyProfileField,
+  profileToAnswers,
+  profilesDiffer,
+  type DecisionProfileFields,
+} from "@/lib/reality-check/profile-mapping";
 
 const verdictTone = (v: string): string => {
   const s = v.toLowerCase();
