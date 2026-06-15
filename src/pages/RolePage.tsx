@@ -252,6 +252,9 @@ const RolePage = () => {
     };
     load();
     return () => { cancelled = true; };
+    // `user` is intentionally omitted: we re-key role_views by (user_id, role_slug)
+    // and don't want auth state changes to trigger a full role re-fetch.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
 
   useEffect(() => {
