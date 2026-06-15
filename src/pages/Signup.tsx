@@ -45,15 +45,19 @@ const Signup = () => {
 
     setLoading(true);
     try {
+      const redirectTo = `${window.location.origin}${buildRedirect()}`;
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
-        options: { emailRedirectTo: window.location.origin },
+        options: { emailRedirectTo: redirectTo },
       });
 
       if (error) throw error;
 
-      if (data.user) {
+      // Only write to user_profiles if we already have a session.
+      // With email confirmation required, there's no session yet and the insert
+      // would fail with 401.
+      if (data.user && data.session) {
         await supabase.from("user_profiles").insert({
           user_id: data.user.id,
           first_name: firstName.trim() || null,
@@ -68,7 +72,7 @@ const Signup = () => {
       } else {
         toast({
           title: "Check your email",
-          description: "We've sent you a confirmation link. Once you confirm, log in to finish saving.",
+          description: "We've sent you a confirmation link. Open it and you'll be returned here to finish saving.",
         });
       }
     } catch (err: any) {
