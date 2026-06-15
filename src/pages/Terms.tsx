@@ -30,9 +30,10 @@ const Terms = () => {
             <section>
               <h2 className="font-display text-xl font-bold text-foreground mb-3">1. About Clear Routes</h2>
               <p>
-                Clear Routes is a free UK career information platform. It lets you search a curated library of UK roles and view honest,
-                hand-written information about each one — including pathways in, realistic salaries, competition signals, AI exposure, and
-                relevant training providers and apprenticeships. By using this website you agree to these terms.
+                Clear Routes is a free UK product that helps people reality-check a career route before committing time or
+                money. It includes Reality-check (an AI-assisted route judgement based on your situation), My Career Decisions
+                (a workspace for saved route checks), a Decision Profile (your saved constraints), curated role pages, and
+                support / funding matching where relevant. By using this website you agree to these terms.
               </p>
             </section>
 
@@ -45,24 +46,33 @@ const Terms = () => {
             </section>
 
             <section>
-              <h2 className="font-display text-xl font-bold text-foreground mb-3">3. Accounts and personalisation</h2>
+              <h2 className="font-display text-xl font-bold text-foreground mb-3">3. Accounts, decisions and your Decision Profile</h2>
               <p>
-                You can use the site without an account. If you create an account to save your personalisation answers, you are responsible
-                for keeping your login credentials secure and for providing accurate information. You can ask us to delete your account at
-                any time by emailing hello@clearroutes.co.uk.
+                You can use the site without an account. If you create an account, we use it to store your saved career
+                decisions (saved route checks) and your Decision Profile (the constraints you enter, such as available
+                hours, training budget, qualifications and location). You are responsible for keeping your login
+                credentials secure and for the accuracy of the information you enter. You can ask us to delete your
+                account at any time by emailing hello@clearroutes.co.uk.
               </p>
             </section>
 
             <section>
               <h2 className="font-display text-xl font-bold text-foreground mb-3">4. What we provide — and what we don't</h2>
               <p>
-                Clear Routes provides curated UK careers information for general guidance. It is <strong>not</strong> regulated careers
-                advice, <strong>not</strong> financial advice, and <strong>not</strong> legal advice. You remain responsible for your own
-                career, training and financial decisions.
+                Clear Routes provides curated UK careers information and AI-assisted route judgements for general guidance.
+                It is <strong>not</strong> regulated careers advice, <strong>not</strong> financial advice, and{" "}
+                <strong>not</strong> legal advice. Reality-check outputs are judgements, not predictions, and we do not
+                guarantee any career, salary, training, funding or employment outcome.
               </p>
               <p>
-                For regulated guidance please speak to the National Careers Service, a qualified careers adviser, an FCA-regulated financial
-                adviser, or a solicitor as appropriate.
+                Where we surface funded support programmes based on your Decision Profile, we are showing programmes that
+                <em> may</em> be relevant. We do not decide eligibility — the named programme does. Always verify
+                eligibility, availability and current funding directly with the named programme or provider before
+                committing time or money.
+              </p>
+              <p>
+                For regulated guidance please speak to the National Careers Service, a qualified careers adviser, an
+                FCA-regulated financial adviser, or a solicitor as appropriate.
               </p>
             </section>
 
@@ -91,11 +101,17 @@ const Terms = () => {
             </section>
 
             <section>
-              <h2 className="font-display text-xl font-bold text-foreground mb-3">6. No AI-generated pathways</h2>
+              <h2 className="font-display text-xl font-bold text-foreground mb-3">6. How we use AI</h2>
               <p>
-                All pathway content on Clear Routes is hand-written from a single source spreadsheet and reviewed before publication. We do
-                not use large language models to generate pathway recommendations, provider lists, salary figures or competition signals.
-                Where AI is used internally (e.g. for editorial drafting support) the output is reviewed by a human before publication.
+                Role page content — pathways, salary ranges, competition signals, provider lists and AI-impact ratings —
+                is hand-curated and reviewed before publication. We do not use large language models to invent providers,
+                salaries, eligibility or competition data.
+              </p>
+              <p>
+                The Reality-check feature is AI-assisted. It combines the answers you give about your situation with our
+                editorial data on the role to produce a route judgement (best route in, backup route, route to avoid,
+                local realism, first move). The judgement is generated for you and is not a guaranteed outcome. Treat it
+                as a structured second opinion, not as regulated advice.
               </p>
             </section>
 

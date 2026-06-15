@@ -40,26 +40,32 @@ const Privacy = () => {
 
             <section>
               <h2 className="font-display text-xl font-bold text-foreground mb-3">2. What we collect</h2>
-              <p>You can use the entire site — search, role pages, provider pages, support listings — without giving us any personal data.</p>
-              <p>If you choose to use the optional <strong>personalisation</strong> flow we collect the answers you give, which may include:</p>
+              <p>You can browse role pages, run a Reality-check and view support listings without giving us any personal data.</p>
+              <p>If you choose to fill in your <strong>Decision Profile</strong> or save a <strong>career decision</strong> (a saved route check) we collect:</p>
               <ul className="list-disc pl-6 space-y-1">
-                <li>Age range, highest qualification, current employment status, industry you currently work in</li>
-                <li>Optional self-identified circumstances (e.g. care leaver, disability, veteran, refugee, criminal record, parent or carer) that unlock relevant funded support</li>
-                <li>An optional account email if you create an account to save your answers</li>
+                <li>The answers you give in the Reality-check (e.g. available hours, training budget, location, qualifications, current situation)</li>
+                <li>Optional self-identified circumstances (e.g. care leaver, disability, veteran, refugee, criminal record, parent or carer) used to surface relevant support and funding</li>
+                <li>The roles you've reality-checked and the route judgements you've saved as career decisions</li>
+                <li>An optional account email if you create an account to save your decisions</li>
               </ul>
               <p>We also collect basic analytics (see section 4) and standard server logs for security and abuse prevention.</p>
-              <p>We do <strong>not</strong> collect payment information. Clear Routes is free and has no checkout.</p>
+              <p>We do <strong>not</strong> collect payment information. Clear Routes has no checkout.</p>
             </section>
 
             <section>
               <h2 className="font-display text-xl font-bold text-foreground mb-3">3. How we use your data</h2>
               <ul className="list-disc pl-6 space-y-1">
-                <li>To personalise role pages — for example to highlight funded routes you may be eligible for</li>
-                <li>To save your personalisation answers across sessions if you create an account</li>
-                <li>To understand which roles, providers and pages people use, so we can improve the product</li>
+                <li>To generate your Reality-check route judgement for a specific role, using your Decision Profile answers as input</li>
+                <li>To save your career decisions so you can revisit and compare them</li>
+                <li>To surface UK support and funding programmes that may be relevant to your situation</li>
+                <li>To understand which roles, routes and pages people use, so we can improve the product</li>
                 <li>To keep the service secure and prevent abuse</li>
               </ul>
-              <p>We do not sell your data, we do not use it for advertising, and we do not share it with training providers.</p>
+              <p>
+                The Reality-check is AI-assisted: your answers are sent to a third-party large language model provider to
+                generate the judgement. We do not use your answers for advertising and we do not share them with training
+                providers.
+              </p>
             </section>
 
             <section>

@@ -8,13 +8,14 @@ const Footer = () => {
           <div className="col-span-2 md:col-span-1">
             <div className="font-display text-base font-semibold text-foreground mb-2">Clear Routes</div>
             <p className="text-muted-foreground">
-              The honest picture on UK careers. Editorially independent.
+              Reality-check a career route before you commit time or money.
             </p>
           </div>
           <div>
             <h4 className="font-display font-semibold text-foreground mb-3">Explore</h4>
             <ul className="space-y-2">
-              <li><Link to="/" className="text-muted-foreground hover:text-foreground">Search roles</Link></li>
+              <li><Link to="/" className="text-muted-foreground hover:text-foreground">Reality-check a career</Link></li>
+              <li><Link to="/my-decisions" className="text-muted-foreground hover:text-foreground">My career decisions</Link></li>
               <li><Link to="/support" className="text-muted-foreground hover:text-foreground">Support & funding</Link></li>
               <li><Link to="/how-it-works" className="text-muted-foreground hover:text-foreground">How this works</Link></li>
               <li><Link to="/sources" className="text-muted-foreground hover:text-foreground">Sources & methodology</Link></li>

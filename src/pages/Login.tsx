@@ -54,7 +54,7 @@ const Login = () => {
           </div>
           <CardTitle className="text-2xl">Welcome back</CardTitle>
           <p className="text-sm text-muted-foreground mt-1">
-            Log in to access your saved pathways
+            Log in to access your saved career decisions
           </p>
         </CardHeader>
         <CardContent>

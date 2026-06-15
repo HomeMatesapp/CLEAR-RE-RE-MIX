@@ -207,10 +207,10 @@ const Personalise = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Helmet>
-        <title>Personalise your route | Clear Routes</title>
+        <title>Your Decision Profile | Clear Routes</title>
         <meta
           name="description"
-          content="Optional questions to personalise routes, funding and support based on your situation."
+          content="Save the constraints used by your Reality-checks — so future route checks reuse your situation, funding and support context."
         />
       </Helmet>
       <Navbar />
@@ -247,14 +247,15 @@ const Personalise = () => {
         {step.kind === "intro" && (
           <div className="text-center py-8">
             <h1 className="font-display text-3xl sm:text-4xl font-medium text-foreground">
-              Get advice based on your situation.
+              Build your Decision Profile.
             </h1>
             <p className="mt-4 text-muted-foreground text-lg max-w-lg mx-auto">
-              We'll show routes, funding and support that may be relevant to where you're starting from.
+              A few short questions so every Reality-check reuses your situation — your hours, qualifications, and any
+              support you might be relevant for.
             </p>
             <div className="mt-10 flex flex-col gap-3 max-w-sm mx-auto">
               <Button size="lg" onClick={advance}>
-                Start personalising
+                Start
               </Button>
               <Button variant="ghost" onClick={skipAll}>
                 Skip for now
@@ -356,24 +357,24 @@ const Personalise = () => {
               <Check className="h-7 w-7" />
             </div>
             <h1 className="font-display text-3xl sm:text-4xl font-medium text-foreground">
-              Your profile is ready.
+              Your Decision Profile is saved.
             </h1>
             <p className="mt-4 text-muted-foreground text-lg max-w-lg mx-auto">
-              We'll now personalise routes, timelines, support organisations and provider recommendations
-              where relevant.
+              Future Reality-checks will reuse this, and we'll surface support and funding that may be relevant where it
+              fits the role.
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
               {from ? (
                 <Button asChild size="lg">
-                  <Link to={`/role/${from}`}>View personalised role page</Link>
+                  <Link to={`/role/${from}`}>Reality-check this role</Link>
                 </Button>
               ) : (
                 <Button asChild size="lg">
-                  <Link to="/">View personalised role pages</Link>
+                  <Link to="/">Reality-check a career</Link>
                 </Button>
               )}
               <Button asChild variant="outline" size="lg">
-                <Link to="/">Continue browsing</Link>
+                <Link to="/my-decisions">View saved decisions</Link>
               </Button>
             </div>
           </div>
