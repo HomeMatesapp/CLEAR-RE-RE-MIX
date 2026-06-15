@@ -10,7 +10,11 @@ import { SupportMatches } from "@/components/role/SupportMatches";
 import {
   BUDGETS,
   COMMUTE_FLEX,
+  ENGLISH_COMFORT,
+  ENGLISH_MATHS,
   INCOME_NEEDS,
+  QUALIFICATION_LEVELS,
+  SCIENCE_SUBJECTS,
   STARTING_POINTS,
   WEEKLY_HOURS,
   type RealityCheckAnswers,
@@ -27,6 +31,11 @@ const answerChips = (a: RealityCheckAnswers): string[] => {
   const chips: string[] = [];
   const sp = labelFor(STARTING_POINTS, a.startingPoint);
   if (sp) chips.push(sp);
+  if (a.relevantBackground.trim()) chips.push(a.relevantBackground.trim());
+  const ql = labelFor(QUALIFICATION_LEVELS, a.qualificationLevel);
+  if (ql) chips.push(ql);
+  const em = labelFor(ENGLISH_MATHS, a.englishMaths);
+  if (em) chips.push(`English/maths: ${em}`);
   const inc = labelFor(INCOME_NEEDS, a.incomeNeed);
   if (inc) chips.push(inc);
   const b = labelFor(BUDGETS, a.budget);
@@ -76,7 +85,19 @@ const emptyAnswers: RealityCheckAnswers = {
   area: "",
   commuteFlex: null,
   notes: "",
+  relevantBackground: "",
+  englishMaths: null,
+  scienceSubjects: null,
+  qualificationLevel: null,
+  englishComfort: null,
 };
+
+// Starting points where Relevant background is required (vs optional).
+const BACKGROUND_REQUIRED_FOR: Array<RealityCheckAnswers["startingPoint"]> = [
+  "graduate",
+  "career_changer",
+  "adjacent",
+];
 
 // Small reusable chip selector (kept inline — it's only used here)
 function ChipGroup<T extends string>({
