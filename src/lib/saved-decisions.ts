@@ -79,14 +79,37 @@ export const saveDecision = async (
   return data;
 };
 
+// In-flight guard to prevent duplicate saves if flush is invoked twice
+// concurrently (e.g. by both an auth effect and a route effect on login).
+let inFlight: Promise<boolean> | null = null;
+
 export const flushPendingDecision = async (userId: string): Promise<boolean> => {
+  if (inFlight) return inFlight;
   const pending = readPendingDecision();
   if (!pending) return false;
-  try {
-    await saveDecision(userId, pending.role, pending.answers, pending.result);
+  // Basic shape validation — malformed payloads (e.g. corrupted localStorage)
+  // should be discarded silently rather than thrown into the save path.
+  if (!pending.role || !pending.role.role_name || !pending.answers || !pending.result) {
     clearPendingDecision();
-    return true;
-  } catch {
     return false;
   }
+  // Clear immediately so a second synchronous call after the first one
+  // resolves finds nothing to save.
+  clearPendingDecision();
+  inFlight = (async () => {
+    try {
+      await saveDecision(userId, pending.role, pending.answers, pending.result);
+      return true;
+    } catch {
+      return false;
+    } finally {
+      inFlight = null;
+    }
+  })();
+  return inFlight;
+};
+
+// Test-only helper to reset module-level state between tests.
+export const __resetFlushGuard = () => {
+  inFlight = null;
 };
