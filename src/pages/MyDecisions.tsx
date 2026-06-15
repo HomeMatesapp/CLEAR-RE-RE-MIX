@@ -21,6 +21,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { flushPendingDecision } from "@/lib/saved-decisions";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  SUPPORT_CIRCUMSTANCE_KEYS,
+  SUPPORT_CIRCUMSTANCE_LABELS,
+  type SupportCircumstanceKey,
+} from "@/components/role/SupportMatches";
 
 interface SavedDecisionRow {
   id: string;
