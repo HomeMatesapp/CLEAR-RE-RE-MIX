@@ -12,6 +12,7 @@ import { usePersonalisation, recommendedPathway, personalisationBanner } from "@
 import { useAuth } from "@/hooks/useAuth";
 import { ratingPillClass } from "@/lib/ratingTone";
 import { RealityCheckRoute } from "@/components/role/RealityCheckRoute";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 
 // ── TYPES ─────────────────────────────────────────────────────────────────────
 
