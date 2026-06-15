@@ -135,11 +135,23 @@ function ChipGroup<T extends string>({
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({
+  label,
+  helper,
+  error,
+  children,
+}: {
+  label: string;
+  helper?: string;
+  error?: string | null;
+  children: React.ReactNode;
+}) {
   return (
     <div>
-      <label className="block text-xs font-medium text-gray-300 mb-1.5">{label}</label>
+      <label className="block text-xs font-medium text-gray-300 mb-1">{label}</label>
+      {helper && <p className="text-[10px] text-gray-500 mb-1.5 leading-snug">{helper}</p>}
       {children}
+      {error && <p className="text-[10px] text-rose-300 mt-1">{error}</p>}
     </div>
   );
 }
