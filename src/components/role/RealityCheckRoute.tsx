@@ -198,6 +198,20 @@ export const RealityCheckRoute = ({ role }: { role: RoleContext }) => {
         Answer a few quick questions. We'll show the route with the best odds, a backup, and the option to be careful with.
       </p>
 
+      {!result && prefilled && (
+        <div className="mb-3 flex items-center justify-between gap-3 rounded-lg border border-amber-300/30 bg-amber-300/5 px-3 py-2">
+          <p className="text-xs text-amber-100">
+            Using your saved Decision Profile.
+          </p>
+          <Link
+            to="/my-decisions#decision-profile"
+            className="text-xs text-amber-200 underline underline-offset-2 hover:text-white inline-flex items-center gap-1"
+          >
+            <UserCog className="h-3 w-3" /> Edit
+          </Link>
+        </div>
+      )}
+
       {!result && (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3">
