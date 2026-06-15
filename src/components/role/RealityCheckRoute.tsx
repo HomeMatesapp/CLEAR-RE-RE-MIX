@@ -367,7 +367,7 @@ function SavePrompt({
 
 // ── Result rendering ──────────────────────────────────────────────────────────
 
-function ResultView({ result, onReset }: { result: RealityCheckResult; onReset: () => void }) {
+function ResultView({ result, answers, role, onReset }: { result: RealityCheckResult; answers: RealityCheckAnswers; role: RoleContext; onReset: () => void }) {
   return (
     <div className="space-y-4">
       {/* Verdict */}
