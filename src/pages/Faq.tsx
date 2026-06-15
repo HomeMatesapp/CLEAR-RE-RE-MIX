@@ -142,7 +142,7 @@ const Faq = () => {
         <title>FAQ — Clear Routes | Honest UK career information</title>
         <meta
           name="description"
-          content="Frequently asked questions about Clear Routes — how role pages work, where the data comes from, how we choose providers, and why everything is free."
+          content="Frequently asked questions about Clear Routes — how Reality-check works, saved career decisions, the Decision Profile, support matching, and where our data comes from."
         />
         <link rel="canonical" href="https://clearroutes.co.uk/faq" />
         <script type="application/ld+json">{JSON.stringify(faqJsonLd)}</script>
