@@ -61,6 +61,8 @@ interface SupportMatchesProps {
   /** Pre-supplied circumstances (e.g. from Reality-check input). Otherwise pulled from profile. */
   circumstances?: SupportCircumstanceKey[];
   max?: number;
+  /** "light" = standalone card on page. "dark" = nested inside Reality-check result. */
+  variant?: "light" | "dark";
 }
 
 const formatDate = (iso: string | null): string | null => {
