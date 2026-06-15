@@ -275,6 +275,11 @@ ${roleFacts}
 
 What this person told us about themselves:
 - Starting point: ${labels.startingPoint}
+- Relevant background (what they studied or worked in): ${answers.relevantBackground?.trim() || "(not given)"}
+- Highest qualification level: ${labels.qualificationLevel}
+- English & maths basics: ${labels.englishMaths}
+- Science / role-related subjects: ${labels.scienceSubjects}
+- Comfort studying/working in English: ${labels.englishComfort}
 - Need to earn while training: ${labels.incomeNeed}
 - Weekly time available: ${labels.weeklyHours}
 - Budget: ${labels.budget}
