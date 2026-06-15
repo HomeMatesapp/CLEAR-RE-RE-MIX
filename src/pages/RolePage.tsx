@@ -433,36 +433,55 @@ const RolePage = () => {
           </div>
         )}
 
-        {/* Before you commit — compact 3-bullet warning card */}
-        {(role.reality_check || role.uncomfortable_truth || successRoutes.length > 0) && (
-          <div className="rounded-lg border border-gray-200 bg-white p-3 mb-6">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-2">
-              Before you commit
-            </p>
-            <ul className="space-y-1.5 text-sm text-gray-700">
-              {role.reality_check && (
-                <li className="flex gap-2 items-start leading-snug">
-                  <span className="text-gray-400 flex-shrink-0 mt-0.5">·</span>
-                  <span><span className="font-medium text-gray-900">Reality:</span> {role.reality_check.split(/(?<=[.!?])\s/)[0]}</span>
-                </li>
-              )}
-              {(role.uncomfortable_truth || role.career_regret_risk) && (
-                <li className="flex gap-2 items-start leading-snug">
-                  <span className="text-gray-400 flex-shrink-0 mt-0.5">·</span>
-                  <span><span className="font-medium text-gray-900">Biggest risk:</span> {(role.uncomfortable_truth || role.career_regret_risk)!.split(/(?<=[.!?])\s/)[0]}</span>
-                </li>
-              )}
-              {successRoutes.length > 0 && (
-                <li className="flex gap-2 items-start leading-snug">
-                  <span className="text-gray-400 flex-shrink-0 mt-0.5">·</span>
-                  <span><span className="font-medium text-gray-900">Usually works:</span> {(() => {
-                    const first = successRoutes[0].replace(/^\s*[-•]\s*/, "").trim();
-                    const short = first.split(/(?<=[.!?])\s/)[0];
-                    return short.length > 90 ? short.slice(0, 90).replace(/\s+\S*$/, "") + "…" : short;
-                  })()}</span>
-                </li>
-              )}
-            </ul>
+        {/* Balance pair: honest warnings + grounded positives */}
+        {((role.reality_check || role.uncomfortable_truth || successRoutes.length > 0) || positivesShown.length > 0) && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
+            {(role.reality_check || role.uncomfortable_truth || successRoutes.length > 0) && (
+              <div className="rounded-lg border border-gray-200 bg-white p-3">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-2">
+                  Before you commit
+                </p>
+                <ul className="space-y-1.5 text-sm text-gray-700">
+                  {role.reality_check && (
+                    <li className="flex gap-2 items-start leading-snug">
+                      <span className="text-gray-400 flex-shrink-0 mt-0.5">·</span>
+                      <span><span className="font-medium text-gray-900">Reality:</span> {role.reality_check.split(/(?<=[.!?])\s/)[0]}</span>
+                    </li>
+                  )}
+                  {(role.uncomfortable_truth || role.career_regret_risk) && (
+                    <li className="flex gap-2 items-start leading-snug">
+                      <span className="text-gray-400 flex-shrink-0 mt-0.5">·</span>
+                      <span><span className="font-medium text-gray-900">Biggest risk:</span> {(role.uncomfortable_truth || role.career_regret_risk)!.split(/(?<=[.!?])\s/)[0]}</span>
+                    </li>
+                  )}
+                  {successRoutes.length > 0 && (
+                    <li className="flex gap-2 items-start leading-snug">
+                      <span className="text-gray-400 flex-shrink-0 mt-0.5">·</span>
+                      <span><span className="font-medium text-gray-900">Usually works:</span> {(() => {
+                        const first = successRoutes[0].replace(/^\s*[-•]\s*/, "").trim();
+                        const short = first.split(/(?<=[.!?])\s/)[0];
+                        return short.length > 90 ? short.slice(0, 90).replace(/\s+\S*$/, "") + "…" : short;
+                      })()}</span>
+                    </li>
+                  )}
+                </ul>
+              </div>
+            )}
+            {positivesShown.length > 0 && (
+              <div className="rounded-lg border border-gray-200 bg-white p-3">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-2">
+                  What people like about this job
+                </p>
+                <ul className="space-y-1.5 text-sm text-gray-700">
+                  {positivesShown.map((p) => (
+                    <li key={p.label} className="flex gap-2 items-start leading-snug">
+                      <span className="text-gray-400 flex-shrink-0 mt-0.5">·</span>
+                      <span><span className="font-medium text-gray-900">{p.label}:</span> {p.text}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         )}
 
