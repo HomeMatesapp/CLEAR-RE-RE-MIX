@@ -64,7 +64,8 @@ const emptyProfile: DecisionProfileRow = {
   support_circumstances: [],
 };
 
-const PROFILE_FIELDS: (keyof DecisionProfileRow)[] = [
+type TextProfileField = Exclude<keyof DecisionProfileRow, "support_circumstances">;
+const PROFILE_FIELDS: TextProfileField[] = [
   "area",
   "starting_point",
   "highest_qualification",
