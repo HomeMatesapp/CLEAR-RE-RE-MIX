@@ -236,7 +236,7 @@ const MyDecisions = () => {
             )}
 
             {/* Section 3: Decision profile */}
-            <section className="mb-12">
+            <section id="decision-profile" className="mb-12 scroll-mt-24">
               <h2 className="font-display text-xl font-medium text-foreground mb-2">Decision profile</h2>
               <p className="text-sm text-muted-foreground mb-4">
                 Set your constraints once so you don't have to re-enter them every time.
