@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/posthog";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { saveDecision, stashPendingDecision } from "@/lib/saved-decisions";
-import { Loader2, Sparkles, AlertOctagon, MapPin, Compass, LifeBuoy, ListChecks, BookmarkPlus, Check } from "lucide-react";
+import { Loader2, Sparkles, AlertOctagon, MapPin, Compass, LifeBuoy, ListChecks, BookmarkPlus, Check, UserCog } from "lucide-react";
 import {
   BUDGETS,
   COMMUTE_FLEX,
@@ -16,6 +16,14 @@ import {
   type RealityCheckResult,
   type RoleContext,
 } from "@/lib/reality-check/types";
+import {
+  answersToProfile,
+  emptyProfileFields,
+  hasAnyProfileField,
+  profileToAnswers,
+  profilesDiffer,
+  type DecisionProfileFields,
+} from "@/lib/reality-check/profile-mapping";
 
 const verdictTone = (v: string): string => {
   const s = v.toLowerCase();
@@ -94,11 +102,41 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 export const RealityCheckRoute = ({ role }: { role: RoleContext }) => {
+  const { user } = useAuth();
   const [answers, setAnswers] = useState<RealityCheckAnswers>(emptyAnswers);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<RealityCheckResult | null>(null);
   const [notesOpen, setNotesOpen] = useState(false);
+  const [initialProfile, setInitialProfile] = useState<DecisionProfileFields | null>(null);
+  const [prefilled, setPrefilled] = useState(false);
+
+  // Prefill from the user's saved Decision Profile when logged in.
+  useEffect(() => {
+    if (!user) {
+      setInitialProfile(null);
+      setPrefilled(false);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("decision_profiles")
+        .select("area, starting_point, need_to_earn, weekly_hours, budget_band, commute_flexibility")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (cancelled) return;
+      if (data && hasAnyProfileField(data as DecisionProfileFields)) {
+        const p = data as DecisionProfileFields;
+        setInitialProfile(p);
+        setAnswers((a) => profileToAnswers(p, a));
+        setPrefilled(true);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.id]);
 
   // Required fields: starting point, income need, budget, area.
   const missing: string[] = [];
@@ -159,6 +197,20 @@ export const RealityCheckRoute = ({ role }: { role: RoleContext }) => {
       <p className="text-sm text-gray-300 mb-4">
         Answer a few quick questions. We'll show the route with the best odds, a backup, and the option to be careful with.
       </p>
+
+      {!result && prefilled && (
+        <div className="mb-3 flex items-center justify-between gap-3 rounded-lg border border-amber-300/30 bg-amber-300/5 px-3 py-2">
+          <p className="text-xs text-amber-100">
+            Using your saved Decision Profile.
+          </p>
+          <Link
+            to="/my-decisions#decision-profile"
+            className="text-xs text-amber-200 underline underline-offset-2 hover:text-white inline-flex items-center gap-1"
+          >
+            <UserCog className="h-3 w-3" /> Edit
+          </Link>
+        </div>
+      )}
 
       {!result && (
         <>
@@ -265,7 +317,14 @@ export const RealityCheckRoute = ({ role }: { role: RoleContext }) => {
       )}
 
       {result && (
-        <ResultView result={result} answers={answers} role={role} onReset={reset} />
+        <ResultView
+          result={result}
+          answers={answers}
+          role={role}
+          onReset={reset}
+          initialProfile={initialProfile}
+          onProfileSaved={(p) => setInitialProfile(p)}
+        />
       )}
     </section>
   );
@@ -367,7 +426,21 @@ function SavePrompt({
 
 // ── Result rendering ──────────────────────────────────────────────────────────
 
-function ResultView({ result, answers, role, onReset }: { result: RealityCheckResult; answers: RealityCheckAnswers; role: RoleContext; onReset: () => void }) {
+function ResultView({
+  result,
+  answers,
+  role,
+  onReset,
+  initialProfile,
+  onProfileSaved,
+}: {
+  result: RealityCheckResult;
+  answers: RealityCheckAnswers;
+  role: RoleContext;
+  onReset: () => void;
+  initialProfile: DecisionProfileFields | null;
+  onProfileSaved: (p: DecisionProfileFields) => void;
+}) {
   return (
     <div className="space-y-4">
       {/* Verdict */}
@@ -488,6 +561,12 @@ function ResultView({ result, answers, role, onReset }: { result: RealityCheckRe
 
       <SavePrompt role={role} answers={answers} result={result} />
 
+      <ProfileSyncPrompt
+        answers={answers}
+        initialProfile={initialProfile}
+        onProfileSaved={onProfileSaved}
+      />
+
       <button
         type="button"
         onClick={onReset}
@@ -539,6 +618,89 @@ function Stat({ label, value }: { label: string; value: string }) {
     <div className="rounded-lg bg-gray-800/60 border border-gray-600 p-2">
       <p className="text-[10px] uppercase tracking-wider text-gray-400">{label}</p>
       <p className="text-xs font-medium text-white leading-tight mt-0.5">{value}</p>
+    </div>
+  );
+}
+
+// ── Decision Profile sync prompt ──────────────────────────────────────────────
+
+function ProfileSyncPrompt({
+  answers,
+  initialProfile,
+  onProfileSaved,
+}: {
+  answers: RealityCheckAnswers;
+  initialProfile: DecisionProfileFields | null;
+  onProfileSaved: (p: DecisionProfileFields) => void;
+}) {
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [saving, setSaving] = useState(false);
+  const [done, setDone] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+
+  if (!user || done || dismissed) return null;
+
+  const current = answersToProfile(answers);
+  if (!hasAnyProfileField(current)) return null;
+
+  const isNew = !initialProfile;
+  const isUpdate = !!initialProfile && profilesDiffer(initialProfile, current);
+  if (!isNew && !isUpdate) return null;
+
+  const heading = isNew
+    ? "Save these answers to your Decision Profile?"
+    : "Update your Decision Profile with these answers?";
+
+  const onConfirm = async () => {
+    if (saving) return;
+    setSaving(true);
+    const payload = { user_id: user.id, ...current };
+    const { error } = await supabase
+      .from("decision_profiles")
+      .upsert(payload as never, { onConflict: "user_id" });
+    setSaving(false);
+    if (error) {
+      toast({ title: "Couldn't save profile", description: error.message, variant: "destructive" });
+      return;
+    }
+    onProfileSaved(current);
+    setDone(true);
+    toast({
+      title: isNew ? "Decision Profile saved" : "Decision Profile updated",
+      description: "Clear Routes will use these constraints next time.",
+    });
+  };
+
+  return (
+    <div className="rounded-xl border border-sky-400/30 bg-sky-400/5 p-4">
+      <div className="flex items-start gap-2 mb-2">
+        <UserCog className="h-4 w-4 text-sky-300 mt-0.5 flex-shrink-0" />
+        <div>
+          <p className="text-sm font-semibold text-white">{heading}</p>
+          <p className="text-xs text-gray-300 mt-1 leading-relaxed">
+            Your Decision Profile helps Clear Routes judge routes from your real situation.
+          </p>
+        </div>
+      </div>
+      <div className="mt-2 flex items-center gap-3">
+        <button
+          type="button"
+          onClick={onConfirm}
+          disabled={saving}
+          className="inline-flex items-center gap-2 text-sm font-medium bg-sky-300 text-gray-900 px-3 py-1.5 rounded-lg hover:bg-sky-200 transition-colors disabled:opacity-50"
+        >
+          {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
+          {saving ? "Saving…" : isNew ? "Save profile" : "Update profile"}
+        </button>
+        <button
+          type="button"
+          onClick={() => setDismissed(true)}
+          className="text-xs text-gray-400 hover:text-gray-200 underline underline-offset-2"
+        >
+          Not now
+        </button>
+      </div>
     </div>
   );
 }
