@@ -95,10 +95,10 @@ const Profile = () => {
           ) : views.length === 0 ? (
             <div className="rounded-2xl border border-border bg-muted/40 p-6 text-center">
               <p className="text-sm text-muted-foreground">
-                You haven't visited any role pages yet.
+                You haven't reality-checked any roles yet.
               </p>
               <Button asChild className="mt-4">
-                <Link to="/">Search a career</Link>
+                <Link to="/">Reality-check a career</Link>
               </Button>
             </div>
           ) : (
