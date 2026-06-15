@@ -132,6 +132,7 @@ export type Database = {
           id: string
           need_to_earn: string | null
           starting_point: string | null
+          support_circumstances: Json
           updated_at: string
           user_id: string
           weekly_hours: string | null
@@ -145,6 +146,7 @@ export type Database = {
           id?: string
           need_to_earn?: string | null
           starting_point?: string | null
+          support_circumstances?: Json
           updated_at?: string
           user_id: string
           weekly_hours?: string | null
@@ -158,6 +160,7 @@ export type Database = {
           id?: string
           need_to_earn?: string | null
           starting_point?: string | null
+          support_circumstances?: Json
           updated_at?: string
           user_id?: string
           weekly_hours?: string | null
@@ -597,6 +600,66 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      support_opportunities: {
+        Row: {
+          amount_or_value: string | null
+          created_at: string
+          criteria: string[]
+          description: string | null
+          eligibility_summary: string | null
+          id: string
+          last_checked_at: string | null
+          location_scope: string | null
+          name: string
+          organisation_name: string | null
+          review_status: string
+          role_slugs: string[]
+          sectors: string[]
+          source_url: string | null
+          type: string
+          updated_at: string
+          who_it_helps: string | null
+        }
+        Insert: {
+          amount_or_value?: string | null
+          created_at?: string
+          criteria?: string[]
+          description?: string | null
+          eligibility_summary?: string | null
+          id?: string
+          last_checked_at?: string | null
+          location_scope?: string | null
+          name: string
+          organisation_name?: string | null
+          review_status?: string
+          role_slugs?: string[]
+          sectors?: string[]
+          source_url?: string | null
+          type: string
+          updated_at?: string
+          who_it_helps?: string | null
+        }
+        Update: {
+          amount_or_value?: string | null
+          created_at?: string
+          criteria?: string[]
+          description?: string | null
+          eligibility_summary?: string | null
+          id?: string
+          last_checked_at?: string | null
+          location_scope?: string | null
+          name?: string
+          organisation_name?: string | null
+          review_status?: string
+          role_slugs?: string[]
+          sectors?: string[]
+          source_url?: string | null
+          type?: string
+          updated_at?: string
+          who_it_helps?: string | null
+        }
+        Relationships: []
       }
       support_organisations: {
         Row: {
