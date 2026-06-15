@@ -427,7 +427,7 @@ const RolePage = () => {
               {successRoutes.length > 0 && (
                 <li className="flex gap-2">
                   <span className="text-gray-400 flex-shrink-0">·</span>
-                  <span><span className="font-medium text-gray-900">What usually works:</span> {successRoutes[0]}</span>
+                  <span><span className="font-medium text-gray-900">What usually works:</span> {successRoutes[0].split(/(?<=[.!?])\s/)[0]}</span>
                 </li>
               )}
             </ul>

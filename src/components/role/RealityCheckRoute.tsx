@@ -237,16 +237,7 @@ export const RealityCheckRoute = ({ role }: { role: RoleContext }) => {
               />
             </Field>
 
-            <Field label="3. Weekly time available">
-              <ChipGroup
-                options={WEEKLY_HOURS}
-                value={answers.weeklyHours}
-                onChange={(v) => setAnswers((a) => ({ ...a, weeklyHours: v }))}
-                disabled={loading}
-              />
-            </Field>
-
-            <Field label="4. Budget">
+            <Field label="3. Budget">
               <ChipGroup
                 options={BUDGETS}
                 value={answers.budget}
@@ -255,16 +246,7 @@ export const RealityCheckRoute = ({ role }: { role: RoleContext }) => {
               />
             </Field>
 
-            <Field label="5. Commute / relocation flexibility">
-              <ChipGroup
-                options={COMMUTE_FLEX}
-                value={answers.commuteFlex}
-                onChange={(v) => setAnswers((a) => ({ ...a, commuteFlex: v }))}
-                disabled={loading}
-              />
-            </Field>
-
-            <Field label="6. Area (town, city, or outward postcode)">
+            <Field label="4. Area (town, city, or outward postcode)">
               <input
                 type="text"
                 value={answers.area}
@@ -283,21 +265,42 @@ export const RealityCheckRoute = ({ role }: { role: RoleContext }) => {
                 onClick={() => setNotesOpen(true)}
                 className="text-xs text-gray-400 hover:text-gray-200 underline underline-offset-2"
               >
-                + Add anything else we should know (optional)
+                + Refine further (time, commute, notes)
               </button>
             ) : (
-              <Field label="Anything else we should know? (optional)">
-                <textarea
-                  value={answers.notes}
-                  onChange={(e) => setAnswers((a) => ({ ...a, notes: e.target.value }))}
-                  placeholder="Caring responsibilities, health, prior attempts, specific employers in mind…"
-                  disabled={loading}
-                  rows={2}
-                  className="w-full rounded-lg bg-gray-700/60 border border-gray-600 px-3 py-2 text-sm text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-300/60 resize-none"
-                />
-              </Field>
+              <div className="space-y-2.5 rounded-lg border border-gray-700 bg-gray-800/40 p-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-2.5">
+                  <Field label="Weekly time available">
+                    <ChipGroup
+                      options={WEEKLY_HOURS}
+                      value={answers.weeklyHours}
+                      onChange={(v) => setAnswers((a) => ({ ...a, weeklyHours: v }))}
+                      disabled={loading}
+                    />
+                  </Field>
+                  <Field label="Commute / relocation flexibility">
+                    <ChipGroup
+                      options={COMMUTE_FLEX}
+                      value={answers.commuteFlex}
+                      onChange={(v) => setAnswers((a) => ({ ...a, commuteFlex: v }))}
+                      disabled={loading}
+                    />
+                  </Field>
+                </div>
+                <Field label="Anything else we should know? (optional)">
+                  <textarea
+                    value={answers.notes}
+                    onChange={(e) => setAnswers((a) => ({ ...a, notes: e.target.value }))}
+                    placeholder="Caring responsibilities, health, prior attempts, specific employers in mind…"
+                    disabled={loading}
+                    rows={2}
+                    className="w-full rounded-lg bg-gray-700/60 border border-gray-600 px-3 py-2 text-sm text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-300/60 resize-none"
+                  />
+                </Field>
+              </div>
             )}
           </div>
+
 
           {error && <p className="mt-3 text-xs text-rose-300">{error}</p>}
 
