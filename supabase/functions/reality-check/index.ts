@@ -49,6 +49,52 @@ const startingToPathway: Record<string, string> = {
   no_background:  "no_background",
 };
 
+// Human-readable labels for the answer enums. Kept in sync with the option
+// labels in src/lib/reality-check/types.ts so the LLM never sees raw codes
+// like "full_time_study" or "500_2000" — those have leaked into prose output
+// in the past ("Your 'full_time_study' constraint…").
+const STARTING_POINT_LABELS: Record<string, string> = {
+  school_leaver:    "school leaver",
+  graduate:         "graduate",
+  career_changer:   "career changer",
+  adjacent:         "adjacent or related experience",
+  no_background:    "no background",
+};
+const INCOME_NEED_LABELS: Record<string, string> = {
+  need_income:      "needs income while training",
+  full_time_study:  "can study full-time",
+  part_time_ok:     "part-time income is okay",
+};
+const WEEKLY_HOURS_LABELS: Record<string, string> = {
+  "0_5":     "0–5 hours per week",
+  "5_10":    "5–10 hours per week",
+  "10_20":   "10–20 hours per week",
+  "20_plus": "20+ hours per week",
+};
+const BUDGET_LABELS: Record<string, string> = {
+  zero:         "£0 budget",
+  under_500:    "under £500 budget",
+  "500_2000":   "£500–£2,000 budget",
+  "2000_plus":  "£2,000+ budget",
+};
+const COMMUTE_FLEX_LABELS: Record<string, string> = {
+  "30_min":     "can commute up to 30 minutes",
+  "60_min":     "can commute up to 60 minutes",
+  can_relocate: "can relocate",
+  remote_only:  "remote or online only",
+};
+
+const labelFor = (map: Record<string, string>, v: string | null): string =>
+  v ? (map[v] ?? "(not given)") : "(not given)";
+
+export const answersToLabels = (a: Answers) => ({
+  startingPoint: labelFor(STARTING_POINT_LABELS, a.startingPoint),
+  incomeNeed:    labelFor(INCOME_NEED_LABELS,    a.incomeNeed),
+  weeklyHours:   labelFor(WEEKLY_HOURS_LABELS,   a.weeklyHours),
+  budget:        labelFor(BUDGET_LABELS,         a.budget),
+  commuteFlex:   labelFor(COMMUTE_FLEX_LABELS,   a.commuteFlex),
+});
+
 const fallbackResult = {
   overallVerdict: "Realistic but hard",
   bestRoute: {
