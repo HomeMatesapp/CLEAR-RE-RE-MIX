@@ -486,6 +486,8 @@ function ResultView({ result, answers, role, onReset }: { result: RealityCheckRe
         </Card>
       )}
 
+      <SavePrompt role={role} answers={answers} result={result} />
+
       <button
         type="button"
         onClick={onReset}
