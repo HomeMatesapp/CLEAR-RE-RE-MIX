@@ -130,14 +130,22 @@ const MyDecisions = () => {
         supabase
           .from("decision_profiles")
           .select(
-            "area, starting_point, highest_qualification, need_to_earn, weekly_hours, budget_band, commute_flexibility",
+            "area, starting_point, highest_qualification, need_to_earn, weekly_hours, budget_band, commute_flexibility, support_circumstances",
           )
           .eq("user_id", user.id)
           .maybeSingle(),
       ]);
 
       setDecisions((dRows as SavedDecisionRow[] | null) ?? []);
-      if (pRow) setProfile({ ...emptyProfile, ...(pRow as DecisionProfileRow) });
+      if (pRow) {
+        const raw = (pRow.support_circumstances ?? []) as unknown;
+        const circs = Array.isArray(raw)
+          ? (raw as string[]).filter((k): k is SupportCircumstanceKey =>
+              (SUPPORT_CIRCUMSTANCE_KEYS as readonly string[]).includes(k),
+            )
+          : [];
+        setProfile({ ...emptyProfile, ...(pRow as Partial<DecisionProfileRow>), support_circumstances: circs });
+      }
       setLoading(false);
     })();
   }, [user, authLoading, navigate, toast]);
