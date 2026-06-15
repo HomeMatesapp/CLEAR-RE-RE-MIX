@@ -21,6 +21,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { flushPendingDecision } from "@/lib/saved-decisions";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  SUPPORT_CIRCUMSTANCE_KEYS,
+  SUPPORT_CIRCUMSTANCE_LABELS,
+  type SupportCircumstanceKey,
+} from "@/components/role/SupportMatches";
 
 interface SavedDecisionRow {
   id: string;
@@ -44,6 +50,7 @@ interface DecisionProfileRow {
   weekly_hours: string | null;
   budget_band: string | null;
   commute_flexibility: string | null;
+  support_circumstances: SupportCircumstanceKey[];
 }
 
 const emptyProfile: DecisionProfileRow = {
@@ -54,9 +61,11 @@ const emptyProfile: DecisionProfileRow = {
   weekly_hours: "",
   budget_band: "",
   commute_flexibility: "",
+  support_circumstances: [],
 };
 
-const PROFILE_FIELDS: (keyof DecisionProfileRow)[] = [
+type TextProfileField = Exclude<keyof DecisionProfileRow, "support_circumstances">;
+const PROFILE_FIELDS: TextProfileField[] = [
   "area",
   "starting_point",
   "highest_qualification",
@@ -122,14 +131,22 @@ const MyDecisions = () => {
         supabase
           .from("decision_profiles")
           .select(
-            "area, starting_point, highest_qualification, need_to_earn, weekly_hours, budget_band, commute_flexibility",
+            "area, starting_point, highest_qualification, need_to_earn, weekly_hours, budget_band, commute_flexibility, support_circumstances",
           )
           .eq("user_id", user.id)
           .maybeSingle(),
       ]);
 
       setDecisions((dRows as SavedDecisionRow[] | null) ?? []);
-      if (pRow) setProfile({ ...emptyProfile, ...(pRow as DecisionProfileRow) });
+      if (pRow) {
+        const raw = (pRow.support_circumstances ?? []) as unknown;
+        const circs = Array.isArray(raw)
+          ? (raw as string[]).filter((k): k is SupportCircumstanceKey =>
+              (SUPPORT_CIRCUMSTANCE_KEYS as readonly string[]).includes(k),
+            )
+          : [];
+        setProfile({ ...emptyProfile, ...(pRow as Partial<DecisionProfileRow>), support_circumstances: circs });
+      }
       setLoading(false);
     })();
   }, [user, authLoading, navigate, toast]);
@@ -169,6 +186,20 @@ const MyDecisions = () => {
 
   const profileFilledCount = PROFILE_FIELDS.filter((k) => (profile[k] ?? "").trim()).length;
   const profileIncomplete = profileFilledCount < PROFILE_FIELDS.length;
+
+  const toggleCircumstance = (key: SupportCircumstanceKey) => {
+    setProfile((p) => {
+      const has = p.support_circumstances.includes(key);
+      return {
+        ...p,
+        support_circumstances: has
+          ? p.support_circumstances.filter((k) => k !== key)
+          : [...p.support_circumstances, key],
+      };
+    });
+  };
+
+
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -346,6 +377,33 @@ const MyDecisions = () => {
                   onChange={(v) => setProfile((p) => ({ ...p, budget_band: v }))} placeholder="£0, under £500…" />
                 <ProfileField label="Commute / relocation flexibility" value={profile.commute_flexibility ?? ""}
                   onChange={(v) => setProfile((p) => ({ ...p, commute_flexibility: v }))} placeholder="30 min, can relocate…" />
+
+                <div className="sm:col-span-2 pt-2 border-t border-border mt-2">
+                  <p className="text-sm font-medium text-foreground mt-3">Support circumstances (optional)</p>
+                  <p className="text-xs text-muted-foreground mt-1 mb-3 max-w-2xl">
+                    Only answer what you're comfortable with. Clear Routes uses this to surface grants,
+                    bursaries, access schemes, and support organisations you may otherwise miss.
+                    These are not shared with analytics.
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {SUPPORT_CIRCUMSTANCE_KEYS.map((key) => {
+                      const checked = profile.support_circumstances.includes(key);
+                      return (
+                        <label
+                          key={key}
+                          className="flex items-start gap-2 text-sm text-foreground cursor-pointer"
+                        >
+                          <Checkbox
+                            checked={checked}
+                            onCheckedChange={() => toggleCircumstance(key)}
+                            className="mt-0.5"
+                          />
+                          <span>{SUPPORT_CIRCUMSTANCE_LABELS[key]}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
 
                 <div className="sm:col-span-2 pt-2">
                   <Button onClick={saveProfile} disabled={savingProfile}>
