@@ -101,7 +101,13 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-export const RealityCheckRoute = ({ role }: { role: RoleContext }) => {
+export const RealityCheckRoute = ({
+  role,
+  onResult,
+}: {
+  role: RoleContext;
+  onResult?: (hasResult: boolean) => void;
+}) => {
   const { user } = useAuth();
   const [answers, setAnswers] = useState<RealityCheckAnswers>(emptyAnswers);
   const [loading, setLoading] = useState(false);
@@ -154,6 +160,7 @@ export const RealityCheckRoute = ({ role }: { role: RoleContext }) => {
     setLoading(true);
     setError(null);
     setResult(null);
+    onResult?.(false);
     trackEvent("reality_check_submitted", {
       role: role.role_name,
       starting_point: answers.startingPoint,
@@ -170,6 +177,7 @@ export const RealityCheckRoute = ({ role }: { role: RoleContext }) => {
       if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
       const r = (data as { result: RealityCheckResult }).result;
       setResult(r);
+      onResult?.(true);
       trackEvent("reality_check_result", { role: role.role_name, verdict: r?.overallVerdict });
     } catch (e) {
       setError((e as Error).message || "Something went wrong. Try again.");
@@ -181,6 +189,7 @@ export const RealityCheckRoute = ({ role }: { role: RoleContext }) => {
   const reset = () => {
     setResult(null);
     setError(null);
+    onResult?.(false);
   };
 
   return (
