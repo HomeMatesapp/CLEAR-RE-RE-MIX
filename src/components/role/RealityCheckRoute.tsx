@@ -1,7 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/posthog";
-import { Loader2, Sparkles, AlertOctagon, MapPin, Compass, LifeBuoy, ListChecks } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
+import { saveDecision, stashPendingDecision } from "@/lib/saved-decisions";
+import { Loader2, Sparkles, AlertOctagon, MapPin, Compass, LifeBuoy, ListChecks, BookmarkPlus, Check } from "lucide-react";
 import {
   BUDGETS,
   COMMUTE_FLEX,
@@ -261,15 +265,109 @@ export const RealityCheckRoute = ({ role }: { role: RoleContext }) => {
       )}
 
       {result && (
-        <ResultView result={result} onReset={reset} />
+        <ResultView result={result} answers={answers} role={role} onReset={reset} />
       )}
     </section>
   );
 };
 
+// ── Save prompt ───────────────────────────────────────────────────────────────
+
+function SavePrompt({
+  role,
+  answers,
+  result,
+}: {
+  role: RoleContext;
+  answers: RealityCheckAnswers;
+  result: RealityCheckResult;
+}) {
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const onSave = async () => {
+    if (saving || saved) return;
+    trackEvent("save_decision_clicked", { role: role.role_name, logged_in: !!user });
+
+    if (!user) {
+      stashPendingDecision(role, answers, result);
+      navigate(`/signup?redirect=/my-decisions&reason=save`);
+      return;
+    }
+
+    setSaving(true);
+    try {
+      await saveDecision(user.id, role, answers, result);
+      setSaved(true);
+      trackEvent("decision_saved", { role: role.role_name });
+      toast({
+        title: "Saved to My Career Decisions",
+        description: "You can come back and compare routes any time.",
+      });
+    } catch (e) {
+      toast({
+        title: "Couldn't save",
+        description: (e as Error).message ?? "Try again in a moment.",
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (saved) {
+    return (
+      <div className="rounded-xl border border-emerald-400/40 bg-emerald-500/10 p-4 flex items-start gap-3">
+        <Check className="h-4 w-4 text-emerald-300 mt-0.5 flex-shrink-0" />
+        <div className="flex-1">
+          <p className="text-sm font-medium text-white">Saved to My Career Decisions</p>
+          <button
+            type="button"
+            onClick={() => navigate("/my-decisions")}
+            className="text-xs text-emerald-200 underline underline-offset-2 hover:text-white mt-1"
+          >
+            View My Career Decisions
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-xl border border-amber-300/40 bg-amber-300/5 p-4">
+      <div className="flex items-start gap-2 mb-2">
+        <BookmarkPlus className="h-4 w-4 text-amber-300 mt-0.5" />
+        <div>
+          <p className="text-sm font-semibold text-white">Save this decision</p>
+          <p className="text-xs text-gray-300 mt-1 leading-relaxed">
+            Keep this route check, compare it with other careers, and come back when you're ready.
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        onClick={onSave}
+        disabled={saving}
+        className="mt-2 inline-flex items-center gap-2 text-sm font-medium bg-amber-300 text-gray-900 px-4 py-2 rounded-lg hover:bg-amber-200 transition-colors disabled:opacity-50"
+      >
+        {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <BookmarkPlus className="h-4 w-4" />}
+        {saving ? "Saving…" : "Save to My Career Decisions"}
+      </button>
+      {!user && (
+        <p className="text-[11px] text-gray-400 mt-2">
+          We'll ask you to create a free account so you can return to it.
+        </p>
+      )}
+    </div>
+  );
+}
+
 // ── Result rendering ──────────────────────────────────────────────────────────
 
-function ResultView({ result, onReset }: { result: RealityCheckResult; onReset: () => void }) {
+function ResultView({ result, answers, role, onReset }: { result: RealityCheckResult; answers: RealityCheckAnswers; role: RoleContext; onReset: () => void }) {
   return (
     <div className="space-y-4">
       {/* Verdict */}
@@ -387,6 +485,8 @@ function ResultView({ result, onReset }: { result: RealityCheckResult; onReset: 
           </ol>
         </Card>
       )}
+
+      <SavePrompt role={role} answers={answers} result={result} />
 
       <button
         type="button"
