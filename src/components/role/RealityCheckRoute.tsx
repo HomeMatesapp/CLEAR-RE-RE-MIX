@@ -621,3 +621,86 @@ function Stat({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
+
+// ── Decision Profile sync prompt ──────────────────────────────────────────────
+
+function ProfileSyncPrompt({
+  answers,
+  initialProfile,
+  onProfileSaved,
+}: {
+  answers: RealityCheckAnswers;
+  initialProfile: DecisionProfileFields | null;
+  onProfileSaved: (p: DecisionProfileFields) => void;
+}) {
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [saving, setSaving] = useState(false);
+  const [done, setDone] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+
+  if (!user || done || dismissed) return null;
+
+  const current = answersToProfile(answers);
+  if (!hasAnyProfileField(current)) return null;
+
+  const isNew = !initialProfile;
+  const isUpdate = !!initialProfile && profilesDiffer(initialProfile, current);
+  if (!isNew && !isUpdate) return null;
+
+  const heading = isNew
+    ? "Save these answers to your Decision Profile?"
+    : "Update your Decision Profile with these answers?";
+
+  const onConfirm = async () => {
+    if (saving) return;
+    setSaving(true);
+    const payload = { user_id: user.id, ...current };
+    const { error } = await supabase
+      .from("decision_profiles")
+      .upsert(payload as never, { onConflict: "user_id" });
+    setSaving(false);
+    if (error) {
+      toast({ title: "Couldn't save profile", description: error.message, variant: "destructive" });
+      return;
+    }
+    onProfileSaved(current);
+    setDone(true);
+    toast({
+      title: isNew ? "Decision Profile saved" : "Decision Profile updated",
+      description: "Clear Routes will use these constraints next time.",
+    });
+  };
+
+  return (
+    <div className="rounded-xl border border-sky-400/30 bg-sky-400/5 p-4">
+      <div className="flex items-start gap-2 mb-2">
+        <UserCog className="h-4 w-4 text-sky-300 mt-0.5 flex-shrink-0" />
+        <div>
+          <p className="text-sm font-semibold text-white">{heading}</p>
+          <p className="text-xs text-gray-300 mt-1 leading-relaxed">
+            Your Decision Profile helps Clear Routes judge routes from your real situation.
+          </p>
+        </div>
+      </div>
+      <div className="mt-2 flex items-center gap-3">
+        <button
+          type="button"
+          onClick={onConfirm}
+          disabled={saving}
+          className="inline-flex items-center gap-2 text-sm font-medium bg-sky-300 text-gray-900 px-3 py-1.5 rounded-lg hover:bg-sky-200 transition-colors disabled:opacity-50"
+        >
+          {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
+          {saving ? "Saving…" : isNew ? "Save profile" : "Update profile"}
+        </button>
+        <button
+          type="button"
+          onClick={() => setDismissed(true)}
+          className="text-xs text-gray-400 hover:text-gray-200 underline underline-offset-2"
+        >
+          Not now
+        </button>
+      </div>
+    </div>
+  );
+}
