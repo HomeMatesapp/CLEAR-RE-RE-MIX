@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { saveDecision, stashPendingDecision } from "@/lib/saved-decisions";
 import { Loader2, Sparkles, AlertOctagon, MapPin, Compass, LifeBuoy, ListChecks, BookmarkPlus, Check, UserCog } from "lucide-react";
+import { SupportMatches } from "@/components/role/SupportMatches";
 import {
   BUDGETS,
   COMMUTE_FLEX,
