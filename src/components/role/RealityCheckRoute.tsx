@@ -359,6 +359,79 @@ export const RealityCheckRoute = ({
             </Field>
           </div>
 
+          {/* Qualifications and background */}
+          <div className="mt-3 rounded-lg border border-gray-700/40 bg-gray-800/30 p-2.5">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-500 mb-1">
+              Qualifications and background
+            </p>
+            <p className="text-[10px] text-gray-500 mb-2 leading-snug">
+              Routes can depend on your subjects, qualifications, and English/study readiness.
+            </p>
+
+            <Field
+              label={`Relevant background${backgroundRequired ? "" : " (optional)"}`}
+              helper="What have you studied or worked in?"
+              error={backgroundMissing ? "Add a little more detail about what you studied or worked in." : null}
+            >
+              <input
+                type="text"
+                value={answers.relevantBackground}
+                onChange={(e) => setAnswers((a) => ({ ...a, relevantBackground: e.target.value }))}
+                placeholder="e.g. psychology degree, retail manager, healthcare assistant, biology A-level, no healthcare experience"
+                disabled={loading}
+                className="w-full rounded-lg bg-gray-700/60 border border-gray-600 px-2.5 py-1 text-sm text-white placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-amber-300/60"
+              />
+            </Field>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 mt-2">
+              <Field
+                label="Do you have GCSE English and maths, or equivalent?"
+                helper="Many routes ask for English and maths or an equivalent qualification."
+              >
+                <ChipGroup
+                  options={ENGLISH_MATHS}
+                  value={answers.englishMaths}
+                  onChange={(v) => setAnswers((a) => ({ ...a, englishMaths: v }))}
+                  disabled={loading}
+                />
+              </Field>
+
+              <Field
+                label="Do you have science or role-related subjects?"
+                helper="For some routes, subjects like science, health, maths, or technology can affect your options."
+              >
+                <ChipGroup
+                  options={SCIENCE_SUBJECTS}
+                  value={answers.scienceSubjects}
+                  onChange={(v) => setAnswers((a) => ({ ...a, scienceSubjects: v }))}
+                  disabled={loading}
+                />
+              </Field>
+
+              <Field label="Highest qualification level">
+                <ChipGroup
+                  options={QUALIFICATION_LEVELS}
+                  value={answers.qualificationLevel}
+                  onChange={(v) => setAnswers((a) => ({ ...a, qualificationLevel: v }))}
+                  disabled={loading}
+                />
+              </Field>
+
+              <Field
+                label="Are you comfortable studying and working in English?"
+                helper="Some routes involve written assignments, interviews, placements, or professional communication."
+              >
+                <ChipGroup
+                  options={ENGLISH_COMFORT}
+                  value={answers.englishComfort}
+                  onChange={(v) => setAnswers((a) => ({ ...a, englishComfort: v }))}
+                  disabled={loading}
+                />
+              </Field>
+            </div>
+          </div>
+
+
           {/* CTA sits close to primary fields */}
           <div className="mt-2.5 flex flex-wrap items-center gap-2.5">
             <button
