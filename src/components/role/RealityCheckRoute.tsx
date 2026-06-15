@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/posthog";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { saveDecision, stashPendingDecision } from "@/lib/saved-decisions";
-import { Loader2, Sparkles, AlertOctagon, MapPin, Compass, LifeBuoy, ListChecks, BookmarkPlus, Check, UserCog } from "lucide-react";
+import { Loader2, Sparkles, AlertOctagon, MapPin, Compass, LifeBuoy, ListChecks, BookmarkPlus, Check, UserCog, Pencil, Gavel } from "lucide-react";
 import { SupportMatches } from "@/components/role/SupportMatches";
 import {
   BUDGETS,
@@ -17,6 +17,27 @@ import {
   type RealityCheckResult,
   type RoleContext,
 } from "@/lib/reality-check/types";
+
+const labelFor = <T extends string>(
+  options: { value: T; label: string }[],
+  v: T | null,
+): string | null => (v ? options.find((o) => o.value === v)?.label ?? null : null);
+
+const answerChips = (a: RealityCheckAnswers): string[] => {
+  const chips: string[] = [];
+  const sp = labelFor(STARTING_POINTS, a.startingPoint);
+  if (sp) chips.push(sp);
+  const inc = labelFor(INCOME_NEEDS, a.incomeNeed);
+  if (inc) chips.push(inc);
+  const b = labelFor(BUDGETS, a.budget);
+  if (b) chips.push(`${b} budget`);
+  if (a.area.trim()) chips.push(a.area.trim());
+  const cf = labelFor(COMMUTE_FLEX, a.commuteFlex);
+  if (cf) chips.push(cf);
+  const wh = labelFor(WEEKLY_HOURS, a.weeklyHours);
+  if (wh) chips.push(wh);
+  return chips;
+};
 import {
   answersToProfile,
   emptyProfileFields,
@@ -116,6 +137,7 @@ export const RealityCheckRoute = ({
   const [result, setResult] = useState<RealityCheckResult | null>(null);
   const [initialProfile, setInitialProfile] = useState<DecisionProfileFields | null>(null);
   const [prefilled, setPrefilled] = useState(false);
+  const resultRef = useRef<HTMLDivElement | null>(null);
 
   // Prefill from the user's saved Decision Profile when logged in.
   useEffect(() => {
@@ -147,6 +169,13 @@ export const RealityCheckRoute = ({
       cancelled = true;
     };
   }, [user?.id]);
+
+  // Smooth-scroll into the result area once a result lands.
+  useEffect(() => {
+    if (result && resultRef.current) {
+      resultRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [result]);
 
   // Required fields: starting point, income need, budget, area.
   const missing: string[] = [];
@@ -193,29 +222,52 @@ export const RealityCheckRoute = ({
     onResult?.(false);
   };
 
+  const chips = answerChips(answers);
+
   return (
     <section
       aria-label="Reality-check this route"
       className="relative rounded-xl border border-gray-800 bg-gradient-to-br from-gray-900 to-gray-800 p-3 sm:p-4 mb-6 text-white shadow-sm"
     >
-      <div className="flex items-center gap-2 mb-1">
-        <Sparkles className="h-3.5 w-3.5 text-amber-300" />
-        <p className="text-[11px] font-semibold uppercase tracking-wider text-amber-300">
-          Reality-check this route
-        </p>
-      </div>
-      <h2 className="text-base font-medium mb-0.5">
-        Is {role.role_name} realistic for you?
-      </h2>
-      <p className="text-[11px] text-gray-400 mb-2.5 leading-snug">
-        Four quick facts about your situation. We'll show the route with the best odds — plus a backup, and one to avoid.
-      </p>
+      {!result && (
+        <>
+          <div className="flex items-center gap-2 mb-1">
+            <Sparkles className="h-3.5 w-3.5 text-amber-300" />
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-amber-300">
+              Reality-check this route
+            </p>
+          </div>
+          <h2 className="text-base font-medium mb-0.5">
+            Is {role.role_name} realistic for you?
+          </h2>
+          <p className="text-[11px] text-gray-400 mb-2.5 leading-snug">
+            Four quick facts about your situation. We'll show the route with the best odds — plus a backup, and one to avoid.
+          </p>
+        </>
+      )}
+
+      {result && (
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-gray-700 bg-gray-800/60 px-3 py-2">
+          <p className="text-[11px] text-gray-300 leading-snug">
+            <span className="font-semibold uppercase tracking-wider text-gray-500 mr-1.5">Checked for:</span>
+            {chips.join(" · ")}
+          </p>
+          <button
+            type="button"
+            onClick={reset}
+            className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-200 hover:text-white underline underline-offset-2"
+          >
+            <Pencil className="h-3 w-3" /> Edit answers
+          </button>
+        </div>
+      )}
 
       {!result && prefilled && (
         <div className="mb-2.5 flex items-center justify-between gap-3 rounded-lg border border-amber-300/20 bg-amber-300/5 px-2.5 py-1.5">
           <p className="text-[11px] text-amber-100">
             Using your saved Decision Profile.
           </p>
+
           <Link
             to="/my-decisions#decision-profile"
             className="text-[11px] text-amber-200 underline underline-offset-2 hover:text-white inline-flex items-center gap-1"
@@ -327,14 +379,16 @@ export const RealityCheckRoute = ({
       )}
 
       {result && (
-        <ResultView
-          result={result}
-          answers={answers}
-          role={role}
-          onReset={reset}
-          initialProfile={initialProfile}
-          onProfileSaved={(p) => setInitialProfile(p)}
-        />
+        <div ref={resultRef}>
+          <ResultView
+            result={result}
+            answers={answers}
+            role={role}
+            onReset={reset}
+            initialProfile={initialProfile}
+            onProfileSaved={(p) => setInitialProfile(p)}
+          />
+        </div>
       )}
     </section>
   );
@@ -451,18 +505,40 @@ function ResultView({
   initialProfile: DecisionProfileFields | null;
   onProfileSaved: (p: DecisionProfileFields) => void;
 }) {
+  const firstMove = result.firstMoves?.[0];
   return (
     <div className="space-y-4">
-      {/* Verdict */}
-      <div>
-        <span
-          className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${verdictTone(
-            result.overallVerdict
-          )}`}
-        >
-          {result.overallVerdict}
-        </span>
+      {/* Decision summary — scannable verdict at the top */}
+      <div className="rounded-xl border border-amber-300/40 bg-gradient-to-br from-gray-800 to-gray-900 p-4">
+        <div className="flex items-center gap-2 mb-2 text-amber-300">
+          <Gavel className="h-4 w-4" />
+          <p className="text-[11px] font-semibold uppercase tracking-wider">Your route judgement</p>
+        </div>
+        <div className="mb-3">
+          <span
+            className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${verdictTone(
+              result.overallVerdict
+            )}`}
+          >
+            {result.overallVerdict}
+          </span>
+        </div>
+        <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm">
+          <SummaryRow label="Best route" value={result.bestRoute.title} tone="emerald" />
+          <SummaryRow label="Be careful with" value={result.routeToAvoid.title} tone="rose" />
+          <SummaryRow
+            label="Local realism"
+            value={
+              <span className={`capitalize font-medium ${localToneText(result.localRealism.rating)}`}>
+                {result.localRealism.rating}
+              </span>
+            }
+            tone="amber"
+          />
+          {firstMove && <SummaryRow label="First move" value={firstMove} tone="sky" />}
+        </dl>
       </div>
+
 
       {/* Best route */}
       <Card icon={<Compass className="h-4 w-4" />} eyebrow="Best route for you" tone="emerald">
@@ -637,6 +713,32 @@ function Stat({ label, value }: { label: string; value: string }) {
     <div className="rounded-lg bg-gray-800/60 border border-gray-600 p-2">
       <p className="text-[10px] uppercase tracking-wider text-gray-400">{label}</p>
       <p className="text-xs font-medium text-white leading-tight mt-0.5">{value}</p>
+    </div>
+  );
+}
+
+const summaryLabelTone: Record<string, string> = {
+  emerald: "text-emerald-300",
+  sky:     "text-sky-300",
+  rose:    "text-rose-300",
+  amber:   "text-amber-300",
+};
+
+function SummaryRow({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: React.ReactNode;
+  tone: "emerald" | "sky" | "rose" | "amber";
+}) {
+  return (
+    <div className="flex flex-col">
+      <dt className={`text-[10px] font-semibold uppercase tracking-wider ${summaryLabelTone[tone]}`}>
+        {label}
+      </dt>
+      <dd className="text-sm text-gray-100 leading-snug mt-0.5">{value}</dd>
     </div>
   );
 }
