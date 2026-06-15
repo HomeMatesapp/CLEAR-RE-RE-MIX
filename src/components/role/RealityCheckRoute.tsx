@@ -426,7 +426,21 @@ function SavePrompt({
 
 // ── Result rendering ──────────────────────────────────────────────────────────
 
-function ResultView({ result, answers, role, onReset }: { result: RealityCheckResult; answers: RealityCheckAnswers; role: RoleContext; onReset: () => void }) {
+function ResultView({
+  result,
+  answers,
+  role,
+  onReset,
+  initialProfile,
+  onProfileSaved,
+}: {
+  result: RealityCheckResult;
+  answers: RealityCheckAnswers;
+  role: RoleContext;
+  onReset: () => void;
+  initialProfile: DecisionProfileFields | null;
+  onProfileSaved: (p: DecisionProfileFields) => void;
+}) {
   return (
     <div className="space-y-4">
       {/* Verdict */}
