@@ -12,6 +12,7 @@ import { usePersonalisation, recommendedPathway, personalisationBanner } from "@
 import { useAuth } from "@/hooks/useAuth";
 import { ratingPillClass } from "@/lib/ratingTone";
 import { RealityCheckCTA } from "@/components/role/RealityCheckCTA";
+import { loadSessionResult } from "@/components/role/reality-check-shared";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { SupportMatches } from "@/components/role/SupportMatches";
 
@@ -262,6 +263,12 @@ const RolePage = () => {
     // and don't want auth state changes to trigger a full role re-fetch.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
+
+  // Reflect any in-session Reality-check result so we hide redundant support cards.
+  useEffect(() => {
+    if (!role) return;
+    setHasRealityCheckResult(!!loadSessionResult(role.role_slug));
+  }, [role?.role_slug]);
 
   useEffect(() => {
     if (!role || !isPersonalised || personalisationApplied) return;
