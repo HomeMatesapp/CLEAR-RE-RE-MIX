@@ -13,6 +13,7 @@ import ProviderPage from "./pages/ProviderPage";
 import Personalise from "./pages/Personalise";
 import Profile from "./pages/Profile";
 import MyDecisions from "./pages/MyDecisions";
+import OpportunitiesPage from "./pages/OpportunitiesPage";
 import HowItWorks from "./pages/HowItWorks";
 import Support from "./pages/Support";
 import Sources from "./pages/Sources";
@@ -46,6 +47,7 @@ const App = () => (
                 <Route path="/personalise" element={<Personalise />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/my-decisions" element={<MyDecisions />} />
+                <Route path="/my-decisions/:decisionId/opportunities" element={<OpportunitiesPage />} />
                 <Route path="/how-it-works" element={<HowItWorks />} />
                 <Route path="/support" element={<Support />} />
                 <Route path="/sources" element={<Sources />} />
