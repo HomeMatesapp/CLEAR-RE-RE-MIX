@@ -568,7 +568,7 @@ export function SavePrompt({
         <div>
           <p className="text-sm font-semibold text-white">Save this decision</p>
           <p className="text-xs text-gray-300 mt-1 leading-relaxed">
-            Keep this route check, compare it with other careers, and come back when you're ready.
+            Save this route check to get matching opportunities — apprenticeships, jobs, courses, and support near you.
           </p>
         </div>
       </div>
