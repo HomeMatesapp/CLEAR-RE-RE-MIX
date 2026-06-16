@@ -499,6 +499,7 @@ export function SavePrompt({
   const navigate = useNavigate();
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [savedId, setSavedId] = useState<string | null>(null);
 
   const onSave = async () => {
     if (saving || saved) return;
@@ -512,8 +513,9 @@ export function SavePrompt({
 
     setSaving(true);
     try {
-      await saveDecision(user.id, role, answers, result);
+      const row = await saveDecision(user.id, role, answers, result);
       setSaved(true);
+      setSavedId(row?.id ?? null);
       trackEvent("decision_saved", { role: role.role_name });
       toast({
         title: "Saved to My Career Decisions",
@@ -536,13 +538,24 @@ export function SavePrompt({
         <Check className="h-4 w-4 text-emerald-300 mt-0.5 flex-shrink-0" />
         <div className="flex-1">
           <p className="text-sm font-medium text-white">Saved to My Career Decisions</p>
-          <button
-            type="button"
-            onClick={() => navigate("/my-decisions")}
-            className="text-xs text-emerald-200 underline underline-offset-2 hover:text-white mt-1"
-          >
-            View My Career Decisions
-          </button>
+          <div className="flex flex-wrap items-center gap-3 mt-1">
+            {savedId && (
+              <button
+                type="button"
+                onClick={() => navigate(`/my-decisions/${savedId}/opportunities`)}
+                className="text-xs font-medium bg-amber-300 text-gray-900 px-3 py-1.5 rounded-lg hover:bg-amber-200 transition-colors"
+              >
+                Find matching opportunities
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => navigate("/my-decisions")}
+              className="text-xs text-emerald-200 underline underline-offset-2 hover:text-white"
+            >
+              View My Career Decisions
+            </button>
+          </div>
         </div>
       </div>
     );
