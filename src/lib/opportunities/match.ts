@@ -71,14 +71,18 @@ export function scoreOpportunity(
   const route_tags = opp.route_tags?.map(lc) ?? [];
 
   if (best) {
-    const bestHit = route_tags.some((t) => best.includes(t)) || best.includes(title);
+    const bestHit =
+      route_tags.some((t) => t && best.includes(t)) ||
+      (title && (best.includes(title) || title.includes(best)));
     if (bestHit) {
       score += 20;
       reasons.push("Aligns with your best route.");
     }
   }
   if (avoid) {
-    const avoidHit = route_tags.some((t) => avoid.includes(t)) || avoid.includes(title);
+    const avoidHit =
+      route_tags.some((t) => t && avoid.includes(t)) ||
+      (title && (avoid.includes(title) || title.includes(avoid)));
     if (avoidHit) {
       score -= 25;
       checks.push("Your Reality-check flagged this kind of route as risky for you.");
