@@ -329,10 +329,16 @@ const MyDecisions = () => {
                         )}
                       </dl>
 
-                      <div className="mt-4 flex items-center gap-4 text-sm">
+                      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+                        <Link
+                          to={`/my-decisions/${d.id}/opportunities`}
+                          className="inline-flex items-center gap-1 text-primary font-medium hover:underline"
+                        >
+                          <Target className="h-3.5 w-3.5" /> Find opportunities
+                        </Link>
                         <Link
                           to={`/role/${d.role_slug}`}
-                          className="inline-flex items-center gap-1 text-primary hover:underline"
+                          className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground"
                         >
                           Back to role <ArrowRight className="h-3.5 w-3.5" />
                         </Link>
