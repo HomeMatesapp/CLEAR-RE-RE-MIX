@@ -11,7 +11,8 @@ import { deslugifyRole } from "@/lib/role";
 import { usePersonalisation, recommendedPathway, personalisationBanner } from "@/hooks/usePersonalisation";
 import { useAuth } from "@/hooks/useAuth";
 import { ratingPillClass } from "@/lib/ratingTone";
-import { RealityCheckRoute } from "@/components/role/RealityCheckRoute";
+import { RealityCheckCTA } from "@/components/role/RealityCheckCTA";
+import { loadSessionResult } from "@/components/role/reality-check-shared";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { SupportMatches } from "@/components/role/SupportMatches";
 
@@ -262,6 +263,12 @@ const RolePage = () => {
     // and don't want auth state changes to trigger a full role re-fetch.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
+
+  // Reflect any in-session Reality-check result so we hide redundant support cards.
+  useEffect(() => {
+    if (!role) return;
+    setHasRealityCheckResult(!!loadSessionResult(role.role_slug));
+  }, [role?.role_slug]);
 
   useEffect(() => {
     if (!role || !isPersonalised || personalisationApplied) return;
@@ -518,14 +525,14 @@ const RolePage = () => {
           )}
         </div>
 
-        {/* Reality-check this route — interactive AI module (remix experiment) */}
-        <RealityCheckRoute
-          role={{ ...role, id: role.id, role_slug: role.role_slug }}
-          onResult={setHasRealityCheckResult}
-        />
+        {/* Reality-check this route — compact CTA links to the dedicated page.
+            The full form lives at /role/:slug/reality-check. If a result already
+            exists in this session, the CTA shows a compact summary instead. */}
+        <RealityCheckCTA roleSlug={role.role_slug} roleName={role.role_name} />
 
         {/* Optional: grants / bursaries / access schemes that may apply.
-            Hidden once Reality-check has a result — it surfaces matches inside the result card. */}
+            Hidden once Reality-check has a session result (matches surface on the
+            dedicated page). */}
         {!hasRealityCheckResult && (
           <SupportMatches roleSlug={role.role_slug} roleName={role.role_name} />
         )}

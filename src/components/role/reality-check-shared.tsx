@@ -1,0 +1,661 @@
+// Shared building blocks for the Reality-check UI.
+// Used by the dedicated /role/:slug/reality-check page and the compact
+// role-page CTA. Kept dark-themed to match the existing styling.
+
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  AlertOctagon,
+  BookmarkPlus,
+  Check,
+  Compass,
+  Gavel,
+  LifeBuoy,
+  ListChecks,
+  Loader2,
+  MapPin,
+  UserCog,
+} from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
+import { trackEvent } from "@/lib/posthog";
+import { saveDecision, stashPendingDecision } from "@/lib/saved-decisions";
+import { SupportMatches } from "@/components/role/SupportMatches";
+import {
+  BUDGETS,
+  COMMUTE_FLEX,
+  ENGLISH_COMFORT,
+  ENGLISH_MATHS,
+  INCOME_NEEDS,
+  QUALIFICATION_LEVELS,
+  SCIENCE_SUBJECTS,
+  STARTING_POINTS,
+  WEEKLY_HOURS,
+  type RealityCheckAnswers,
+  type RealityCheckResult,
+  type RoleContext,
+} from "@/lib/reality-check/types";
+import {
+  answersToProfile,
+  hasAnyProfileField,
+  profilesDiffer,
+  type DecisionProfileFields,
+} from "@/lib/reality-check/profile-mapping";
+
+// ── Defaults ──────────────────────────────────────────────────────────────────
+
+export const emptyAnswers: RealityCheckAnswers = {
+  startingPoint: null,
+  incomeNeed: null,
+  weeklyHours: null,
+  budget: null,
+  area: "",
+  commuteFlex: null,
+  notes: "",
+  relevantBackground: "",
+  englishMaths: null,
+  scienceSubjects: null,
+  qualificationLevel: null,
+  englishComfort: null,
+};
+
+// Starting points where Relevant background is required (vs optional).
+export const BACKGROUND_REQUIRED_FOR: Array<RealityCheckAnswers["startingPoint"]> = [
+  "graduate",
+  "career_changer",
+  "adjacent",
+];
+
+// Heuristic — for healthcare/STEM/technical roles we keep "science" wording.
+// For everything else we soften to "role-related subjects".
+export const isStemOrHealthcareRole = (roleName: string): boolean => {
+  const n = roleName.toLowerCase();
+  return /(nurse|midwif|doctor|gp|paramedic|therapist|radiograph|pharmacist|dentist|psycholog|engineer|scientist|technician|electrician|plumber|mechanic|developer|programmer|analyst|laborator|biomed|chemist|physic|surveyor|architect|veterinar|biolog|data)/.test(
+    n,
+  );
+};
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+export const labelFor = <T extends string>(
+  options: { value: T; label: string }[],
+  v: T | null,
+): string | null => (v ? options.find((o) => o.value === v)?.label ?? null : null);
+
+export const answerChips = (a: RealityCheckAnswers): string[] => {
+  const chips: string[] = [];
+  const sp = labelFor(STARTING_POINTS, a.startingPoint);
+  if (sp) chips.push(sp);
+  if (a.relevantBackground.trim()) chips.push(a.relevantBackground.trim());
+  const ql = labelFor(QUALIFICATION_LEVELS, a.qualificationLevel);
+  if (ql) chips.push(ql);
+  const em = labelFor(ENGLISH_MATHS, a.englishMaths);
+  if (em) chips.push(`English/maths: ${em}`);
+  const inc = labelFor(INCOME_NEEDS, a.incomeNeed);
+  if (inc) chips.push(inc);
+  const b = labelFor(BUDGETS, a.budget);
+  if (b) chips.push(`${b} budget`);
+  if (a.area.trim()) chips.push(a.area.trim());
+  const cf = labelFor(COMMUTE_FLEX, a.commuteFlex);
+  if (cf) chips.push(cf);
+  const wh = labelFor(WEEKLY_HOURS, a.weeklyHours);
+  if (wh) chips.push(wh);
+  return chips;
+};
+
+export const verdictTone = (v: string): string => {
+  const s = v.toLowerCase();
+  if (s.includes("not for you")) return "bg-rose-50 text-rose-800 border-rose-200";
+  if (s.includes("long shot"))   return "bg-amber-50 text-amber-800 border-amber-200";
+  if (s.includes("hard"))        return "bg-amber-50 text-amber-800 border-amber-200";
+  if (s.includes("realistic"))   return "bg-emerald-50 text-emerald-800 border-emerald-200";
+  return "bg-gray-50 text-gray-800 border-gray-200";
+};
+
+export const confidenceTone = (c: string): string => {
+  if (c === "high")   return "bg-emerald-100 text-emerald-800";
+  if (c === "medium") return "bg-amber-100 text-amber-800";
+  return "bg-gray-200 text-gray-700";
+};
+
+export const localToneText = (r: string): string => {
+  if (r === "strong") return "text-emerald-700";
+  if (r === "weak")   return "text-rose-700";
+  return "text-amber-700";
+};
+
+// ── Session storage (cross-page summary) ──────────────────────────────────────
+
+const sessionKey = (slug: string) => `cr_rc_${slug}`;
+
+export interface SessionRCEntry {
+  answers: RealityCheckAnswers;
+  result: RealityCheckResult;
+  savedAt: string;
+}
+
+export const loadSessionResult = (slug: string): SessionRCEntry | null => {
+  try {
+    const raw = sessionStorage.getItem(sessionKey(slug));
+    if (!raw) return null;
+    return JSON.parse(raw) as SessionRCEntry;
+  } catch {
+    return null;
+  }
+};
+
+export const saveSessionResult = (slug: string, entry: SessionRCEntry) => {
+  try {
+    sessionStorage.setItem(sessionKey(slug), JSON.stringify(entry));
+  } catch {
+    /* ignore */
+  }
+};
+
+export const clearSessionResult = (slug: string) => {
+  try {
+    sessionStorage.removeItem(sessionKey(slug));
+  } catch {
+    /* ignore */
+  }
+};
+
+// ── Small reusable UI ─────────────────────────────────────────────────────────
+
+export function ChipGroup<T extends string>({
+  options,
+  value,
+  onChange,
+  disabled,
+}: {
+  options: { value: T; label: string }[];
+  value: T | null;
+  onChange: (v: T) => void;
+  disabled?: boolean;
+}) {
+  return (
+    <div className="flex flex-wrap gap-1.5">
+      {options.map((o) => {
+        const active = o.value === value;
+        return (
+          <button
+            key={o.value}
+            type="button"
+            disabled={disabled}
+            onClick={() => onChange(o.value)}
+            className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
+              active
+                ? "border-amber-300 bg-amber-300 text-gray-900"
+                : "border-gray-600 bg-gray-700/50 text-gray-200 hover:bg-gray-700"
+            } disabled:opacity-50 disabled:cursor-not-allowed`}
+          >
+            {o.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+export function Field({
+  label,
+  helper,
+  error,
+  children,
+}: {
+  label: string;
+  helper?: string;
+  error?: string | null;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <label className="block text-xs font-medium text-gray-300 mb-1">{label}</label>
+      {helper && <p className="text-[10px] text-gray-500 mb-1.5 leading-snug">{helper}</p>}
+      {children}
+      {error && <p className="text-[10px] text-rose-300 mt-1">{error}</p>}
+    </div>
+  );
+}
+
+// ── Result rendering ──────────────────────────────────────────────────────────
+
+const toneRing: Record<string, string> = {
+  emerald: "border-emerald-400/40",
+  sky:     "border-sky-400/40",
+  rose:    "border-rose-400/60 ring-1 ring-rose-400/30",
+  amber:   "border-amber-300/40",
+};
+const toneIcon: Record<string, string> = {
+  emerald: "text-emerald-300",
+  sky:     "text-sky-300",
+  rose:    "text-rose-300",
+  amber:   "text-amber-300",
+};
+
+function Card({
+  icon,
+  eyebrow,
+  tone,
+  children,
+}: {
+  icon: React.ReactNode;
+  eyebrow: string;
+  tone: "emerald" | "sky" | "rose" | "amber";
+  children: React.ReactNode;
+}) {
+  return (
+    <div className={`rounded-xl bg-gray-700/40 border ${toneRing[tone]} p-4`}>
+      <div className={`flex items-center gap-2 mb-2 ${toneIcon[tone]}`}>
+        {icon}
+        <p className="text-[11px] font-semibold uppercase tracking-wider">{eyebrow}</p>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg bg-gray-800/60 border border-gray-600 p-2">
+      <p className="text-[10px] uppercase tracking-wider text-gray-400">{label}</p>
+      <p className="text-xs font-medium text-white leading-tight mt-0.5">{value}</p>
+    </div>
+  );
+}
+
+const summaryLabelTone: Record<string, string> = {
+  emerald: "text-emerald-300",
+  sky:     "text-sky-300",
+  rose:    "text-rose-300",
+  amber:   "text-amber-300",
+};
+
+function SummaryRow({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: React.ReactNode;
+  tone: "emerald" | "sky" | "rose" | "amber";
+}) {
+  return (
+    <div className="flex flex-col">
+      <dt className={`text-[10px] font-semibold uppercase tracking-wider ${summaryLabelTone[tone]}`}>
+        {label}
+      </dt>
+      <dd className="text-sm text-gray-100 leading-snug mt-0.5">{value}</dd>
+    </div>
+  );
+}
+
+export function ResultView({
+  result,
+  answers,
+  role,
+  onEdit,
+  initialProfile,
+  onProfileSaved,
+}: {
+  result: RealityCheckResult;
+  answers: RealityCheckAnswers;
+  role: RoleContext;
+  onEdit: () => void;
+  initialProfile: DecisionProfileFields | null;
+  onProfileSaved: (p: DecisionProfileFields) => void;
+}) {
+  const firstMove = result.firstMoves?.[0];
+  return (
+    <div className="space-y-4">
+      {/* Decision summary */}
+      <div className="rounded-xl border border-amber-300/40 bg-gradient-to-br from-gray-800 to-gray-900 p-4">
+        <div className="flex items-center gap-2 mb-2 text-amber-300">
+          <Gavel className="h-4 w-4" />
+          <p className="text-[11px] font-semibold uppercase tracking-wider">Your route judgement</p>
+        </div>
+        <div className="mb-3">
+          <span
+            className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${verdictTone(
+              result.overallVerdict,
+            )}`}
+          >
+            {result.overallVerdict}
+          </span>
+        </div>
+        <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm">
+          <SummaryRow label="Best route" value={result.bestRoute.title} tone="emerald" />
+          <SummaryRow label="Be careful with" value={result.routeToAvoid.title} tone="rose" />
+          <SummaryRow
+            label="Local realism"
+            value={
+              <span className={`capitalize font-medium ${localToneText(result.localRealism.rating)}`}>
+                {result.localRealism.rating}
+              </span>
+            }
+            tone="amber"
+          />
+          {firstMove && <SummaryRow label="First move" value={firstMove} tone="sky" />}
+        </dl>
+      </div>
+
+      {/* Best route */}
+      <Card icon={<Compass className="h-4 w-4" />} eyebrow="Best route for you" tone="emerald">
+        <div className="flex items-start justify-between gap-3">
+          <h3 className="text-base font-semibold text-white">{result.bestRoute.title}</h3>
+          {result.bestRoute.confidence && (
+            <span
+              className={`text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full ${confidenceTone(
+                result.bestRoute.confidence,
+              )}`}
+            >
+              {result.bestRoute.confidence} confidence
+            </span>
+          )}
+        </div>
+        <p className="text-sm text-gray-200 mt-1 leading-relaxed">{result.bestRoute.summary}</p>
+
+        {result.bestRoute.whyThisFits?.length > 0 && (
+          <div className="mt-3">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-emerald-300 mb-1">Why this fits you</p>
+            <ul className="space-y-1">
+              {result.bestRoute.whyThisFits.map((w, i) => (
+                <li key={i} className="text-sm text-gray-200 flex gap-2">
+                  <span className="text-emerald-300">•</span>
+                  <span>{w}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div className="grid grid-cols-3 gap-2 mt-3">
+          <Stat label="Time"     value={result.bestRoute.estimatedTime} />
+          <Stat label="Cost"     value={result.bestRoute.likelyCost} />
+          <Stat label="Hard bit" value={result.bestRoute.mainDifficulty} />
+        </div>
+      </Card>
+
+      {/* Backup route */}
+      <Card icon={<LifeBuoy className="h-4 w-4" />} eyebrow="Backup route" tone="sky">
+        <h3 className="text-base font-semibold text-white">{result.backupRoute.title}</h3>
+        <p className="text-sm text-gray-200 mt-1 leading-relaxed">{result.backupRoute.summary}</p>
+        {result.backupRoute.tradeOff && (
+          <p className="text-xs text-gray-400 mt-2">
+            <span className="font-semibold text-sky-300 uppercase tracking-wider mr-1">Trade-off:</span>
+            {result.backupRoute.tradeOff}
+          </p>
+        )}
+      </Card>
+
+      {/* Route to be careful with */}
+      <Card icon={<AlertOctagon className="h-4 w-4" />} eyebrow="Route to be careful with" tone="rose">
+        <h3 className="text-base font-semibold text-white">{result.routeToAvoid.title}</h3>
+        {result.routeToAvoid.whyRisky && (
+          <div className="mt-2">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-rose-300 mb-1">Why this is risky for you</p>
+            <p className="text-sm text-gray-200 leading-relaxed">{result.routeToAvoid.whyRisky}</p>
+          </div>
+        )}
+        {result.routeToAvoid.whenItMightWork && (
+          <div className="mt-3">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-rose-300 mb-1">When it might still work</p>
+            <p className="text-sm text-gray-300 leading-relaxed">{result.routeToAvoid.whenItMightWork}</p>
+          </div>
+        )}
+      </Card>
+
+      {/* Local realism */}
+      <Card icon={<MapPin className="h-4 w-4" />} eyebrow="Local realism" tone="amber">
+        <div className="flex items-center gap-2">
+          <span className={`text-sm font-semibold capitalize ${localToneText(result.localRealism.rating)}`}>
+            {result.localRealism.rating}
+          </span>
+        </div>
+        <p className="text-sm text-gray-200 mt-1 leading-relaxed">{result.localRealism.summary}</p>
+        {result.localRealism.dependsOn?.length > 0 && (
+          <div className="mt-3">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-amber-300 mb-1">Depends on</p>
+            <ul className="space-y-1">
+              {result.localRealism.dependsOn.map((d, i) => (
+                <li key={i} className="text-sm text-gray-200 flex gap-2">
+                  <span className="text-amber-300">•</span>
+                  <span>{d}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </Card>
+
+      {/* First moves */}
+      {result.firstMoves?.length > 0 && (
+        <Card icon={<ListChecks className="h-4 w-4" />} eyebrow="First 3 moves" tone="amber">
+          <ol className="space-y-2">
+            {result.firstMoves.map((m, i) => (
+              <li key={i} className="flex gap-3 items-start">
+                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-amber-300 text-gray-900 text-xs font-semibold flex items-center justify-center">
+                  {i + 1}
+                </span>
+                <span className="text-sm text-gray-200 leading-relaxed">{m}</span>
+              </li>
+            ))}
+          </ol>
+        </Card>
+      )}
+
+      {role.role_slug && (
+        <SupportMatches
+          roleSlug={role.role_slug}
+          roleName={role.role_name}
+          variant="dark"
+          max={3}
+        />
+      )}
+
+      <SavePrompt role={role} answers={answers} result={result} />
+
+      <ProfileSyncPrompt
+        answers={answers}
+        initialProfile={initialProfile}
+        onProfileSaved={onProfileSaved}
+      />
+
+      <div className="flex flex-wrap items-center gap-4 pt-1">
+        <button
+          type="button"
+          onClick={onEdit}
+          className="text-xs text-amber-200 underline underline-offset-2 hover:text-white"
+        >
+          Edit answers
+        </button>
+        {role.role_slug && (
+          <Link
+            to={`/role/${role.role_slug}`}
+            className="text-xs text-gray-300 underline underline-offset-2 hover:text-white"
+          >
+            Back to role page
+          </Link>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── Save prompt ───────────────────────────────────────────────────────────────
+
+export function SavePrompt({
+  role,
+  answers,
+  result,
+}: {
+  role: RoleContext;
+  answers: RealityCheckAnswers;
+  result: RealityCheckResult;
+}) {
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const onSave = async () => {
+    if (saving || saved) return;
+    trackEvent("save_decision_clicked", { role: role.role_name, logged_in: !!user });
+
+    if (!user) {
+      stashPendingDecision(role, answers, result);
+      navigate(`/signup?redirect=/my-decisions&reason=save`);
+      return;
+    }
+
+    setSaving(true);
+    try {
+      await saveDecision(user.id, role, answers, result);
+      setSaved(true);
+      trackEvent("decision_saved", { role: role.role_name });
+      toast({
+        title: "Saved to My Career Decisions",
+        description: "You can come back and compare routes any time.",
+      });
+    } catch (e) {
+      toast({
+        title: "Couldn't save",
+        description: (e as Error).message ?? "Try again in a moment.",
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (saved) {
+    return (
+      <div className="rounded-xl border border-emerald-400/40 bg-emerald-500/10 p-4 flex items-start gap-3">
+        <Check className="h-4 w-4 text-emerald-300 mt-0.5 flex-shrink-0" />
+        <div className="flex-1">
+          <p className="text-sm font-medium text-white">Saved to My Career Decisions</p>
+          <button
+            type="button"
+            onClick={() => navigate("/my-decisions")}
+            className="text-xs text-emerald-200 underline underline-offset-2 hover:text-white mt-1"
+          >
+            View My Career Decisions
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-xl border border-amber-300/40 bg-amber-300/5 p-4">
+      <div className="flex items-start gap-2 mb-2">
+        <BookmarkPlus className="h-4 w-4 text-amber-300 mt-0.5" />
+        <div>
+          <p className="text-sm font-semibold text-white">Save this decision</p>
+          <p className="text-xs text-gray-300 mt-1 leading-relaxed">
+            Keep this route check, compare it with other careers, and come back when you're ready.
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        onClick={onSave}
+        disabled={saving}
+        className="mt-2 inline-flex items-center gap-2 text-sm font-medium bg-amber-300 text-gray-900 px-4 py-2 rounded-lg hover:bg-amber-200 transition-colors disabled:opacity-50"
+      >
+        {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <BookmarkPlus className="h-4 w-4" />}
+        {saving ? "Saving…" : "Save to My Career Decisions"}
+      </button>
+      {!user && (
+        <p className="text-[11px] text-gray-400 mt-2">
+          We'll ask you to create a free account so you can return to it.
+        </p>
+      )}
+    </div>
+  );
+}
+
+// ── Decision Profile sync prompt ──────────────────────────────────────────────
+
+export function ProfileSyncPrompt({
+  answers,
+  initialProfile,
+  onProfileSaved,
+}: {
+  answers: RealityCheckAnswers;
+  initialProfile: DecisionProfileFields | null;
+  onProfileSaved: (p: DecisionProfileFields) => void;
+}) {
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [saving, setSaving] = useState(false);
+  const [done, setDone] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+
+  if (!user || done || dismissed) return null;
+
+  const current = answersToProfile(answers);
+  if (!hasAnyProfileField(current)) return null;
+
+  const isNew = !initialProfile;
+  const isUpdate = !!initialProfile && profilesDiffer(initialProfile, current);
+  if (!isNew && !isUpdate) return null;
+
+  const heading = isNew
+    ? "Save these answers to your Decision Profile?"
+    : "Update your Decision Profile with these answers?";
+
+  const onConfirm = async () => {
+    if (saving) return;
+    setSaving(true);
+    const payload = { user_id: user.id, ...current };
+    const { error } = await supabase
+      .from("decision_profiles")
+      .upsert(payload as never, { onConflict: "user_id" });
+    setSaving(false);
+    if (error) {
+      toast({ title: "Couldn't save profile", description: error.message, variant: "destructive" });
+      return;
+    }
+    onProfileSaved(current);
+    setDone(true);
+    toast({
+      title: isNew ? "Decision Profile saved" : "Decision Profile updated",
+      description: "Clear Routes will use these constraints next time.",
+    });
+  };
+
+  return (
+    <div className="rounded-xl border border-sky-400/30 bg-sky-400/5 p-4">
+      <div className="flex items-start gap-2 mb-2">
+        <UserCog className="h-4 w-4 text-sky-300 mt-0.5 flex-shrink-0" />
+        <div>
+          <p className="text-sm font-semibold text-white">{heading}</p>
+          <p className="text-xs text-gray-300 mt-1 leading-relaxed">
+            Your Decision Profile helps Clear Routes judge routes from your real situation.
+          </p>
+        </div>
+      </div>
+      <div className="mt-2 flex items-center gap-3">
+        <button
+          type="button"
+          onClick={onConfirm}
+          disabled={saving}
+          className="inline-flex items-center gap-2 text-sm font-medium bg-sky-300 text-gray-900 px-3 py-1.5 rounded-lg hover:bg-sky-200 transition-colors disabled:opacity-50"
+        >
+          {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
+          {saving ? "Saving…" : isNew ? "Save profile" : "Update profile"}
+        </button>
+        <button
+          type="button"
+          onClick={() => setDismissed(true)}
+          className="text-xs text-gray-400 hover:text-gray-200 underline underline-offset-2"
+        >
+          Not now
+        </button>
+      </div>
+    </div>
+  );
+}
