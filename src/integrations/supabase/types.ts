@@ -167,6 +167,171 @@ export type Database = {
         }
         Relationships: []
       }
+      opportunities: {
+        Row: {
+          application_url: string | null
+          cost: string | null
+          created_at: string
+          deadline: string | null
+          description: string | null
+          employer_name: string | null
+          english_maths_requirements: string | null
+          entry_requirements: string | null
+          funding_type: string | null
+          id: string
+          is_online: boolean
+          is_remote: boolean
+          is_seed: boolean
+          is_sponsored: boolean
+          location_name: string | null
+          outward_code: string | null
+          postcode: string | null
+          provider_name: string | null
+          qualification_level: string | null
+          radius_miles: number | null
+          role_tags: string[]
+          route_tags: string[]
+          salary: string | null
+          source_url: string | null
+          sponsor_label: string | null
+          start_date: string | null
+          status: string
+          title: string
+          type: string
+          updated_at: string
+          verified_at: string | null
+          warning_notes: string | null
+        }
+        Insert: {
+          application_url?: string | null
+          cost?: string | null
+          created_at?: string
+          deadline?: string | null
+          description?: string | null
+          employer_name?: string | null
+          english_maths_requirements?: string | null
+          entry_requirements?: string | null
+          funding_type?: string | null
+          id?: string
+          is_online?: boolean
+          is_remote?: boolean
+          is_seed?: boolean
+          is_sponsored?: boolean
+          location_name?: string | null
+          outward_code?: string | null
+          postcode?: string | null
+          provider_name?: string | null
+          qualification_level?: string | null
+          radius_miles?: number | null
+          role_tags?: string[]
+          route_tags?: string[]
+          salary?: string | null
+          source_url?: string | null
+          sponsor_label?: string | null
+          start_date?: string | null
+          status?: string
+          title: string
+          type: string
+          updated_at?: string
+          verified_at?: string | null
+          warning_notes?: string | null
+        }
+        Update: {
+          application_url?: string | null
+          cost?: string | null
+          created_at?: string
+          deadline?: string | null
+          description?: string | null
+          employer_name?: string | null
+          english_maths_requirements?: string | null
+          entry_requirements?: string | null
+          funding_type?: string | null
+          id?: string
+          is_online?: boolean
+          is_remote?: boolean
+          is_seed?: boolean
+          is_sponsored?: boolean
+          location_name?: string | null
+          outward_code?: string | null
+          postcode?: string | null
+          provider_name?: string | null
+          qualification_level?: string | null
+          radius_miles?: number | null
+          role_tags?: string[]
+          route_tags?: string[]
+          salary?: string | null
+          source_url?: string | null
+          sponsor_label?: string | null
+          start_date?: string | null
+          status?: string
+          title?: string
+          type?: string
+          updated_at?: string
+          verified_at?: string | null
+          warning_notes?: string | null
+        }
+        Relationships: []
+      }
+      opportunity_enquiries: {
+        Row: {
+          consent_given: boolean
+          consent_timestamp: string | null
+          created_at: string
+          decision_id: string | null
+          email: string
+          id: string
+          message: string | null
+          name: string
+          opportunity_id: string
+          phone: string | null
+          shared_context: Json
+          user_id: string
+        }
+        Insert: {
+          consent_given?: boolean
+          consent_timestamp?: string | null
+          created_at?: string
+          decision_id?: string | null
+          email: string
+          id?: string
+          message?: string | null
+          name: string
+          opportunity_id: string
+          phone?: string | null
+          shared_context?: Json
+          user_id: string
+        }
+        Update: {
+          consent_given?: boolean
+          consent_timestamp?: string | null
+          created_at?: string
+          decision_id?: string | null
+          email?: string
+          id?: string
+          message?: string | null
+          name?: string
+          opportunity_id?: string
+          phone?: string | null
+          shared_context?: Json
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "opportunity_enquiries_decision_id_fkey"
+            columns: ["decision_id"]
+            isOneToOne: false
+            referencedRelation: "saved_decisions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "opportunity_enquiries_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pathway_families: {
         Row: {
           description: string | null
