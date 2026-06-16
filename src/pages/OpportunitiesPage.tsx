@@ -126,7 +126,13 @@ const OpportunitiesPage = () => {
     return g;
   }, [scored]);
 
-  const nextSteps = useMemo(() => scored.slice(0, 3), [scored]);
+  // "Best next step" should never surface anything we've demoted into
+  // "Paid options to be careful with" — those carry warnings and would
+  // undermine the promise of this section.
+  const nextSteps = useMemo(
+    () => scored.filter((s) => s.group !== "paid_careful").slice(0, 3),
+    [scored],
+  );
 
   const incomeLabel = labelFor(INCOME_NEEDS, answers.incomeNeed);
   const budgetLabel = labelFor(BUDGETS, answers.budget);
@@ -202,8 +208,8 @@ const OpportunitiesPage = () => {
             <ContextCell label="Best route" value={decision.best_route_title ?? "—"} />
             <ContextCell label="Need to earn" value={incomeLabel ?? "—"} />
             <ContextCell
-              label="Qualification gap"
-              value={qualGap ? `Missing ${englishMathsLabel ?? "English/maths"}` : "None flagged"}
+              label="English / maths"
+              value={qualGap ? `Gap: ${englishMathsLabel ?? "—"}` : englishMathsLabel ?? "—"}
               tone={qualGap ? "amber" : "default"}
             />
           </dl>
