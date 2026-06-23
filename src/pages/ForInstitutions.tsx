@@ -54,7 +54,7 @@ const ForInstitutions = () => {
       return;
     }
     setSubmitting(true);
-    const { error } = await supabase.from("institution_enquiries").insert(parsed.data);
+    const { error } = await supabase.from("institution_enquiries").insert([parsed.data]);
     setSubmitting(false);
     if (error) {
       toast({
