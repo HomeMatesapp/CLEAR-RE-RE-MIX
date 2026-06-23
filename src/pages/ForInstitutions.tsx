@@ -54,7 +54,17 @@ const ForInstitutions = () => {
       return;
     }
     setSubmitting(true);
-    const { error } = await supabase.from("institution_enquiries").insert([parsed.data]);
+    const data = parsed.data as {
+      name: string;
+      work_email: string;
+      institution: string;
+      job_title: string;
+      learner_count?: string;
+      message: string;
+      enquiry_type: "demo" | "pilot";
+      contact_consent: true;
+    };
+    const { error } = await supabase.from("institution_enquiries").insert(data);
     setSubmitting(false);
     if (error) {
       toast({
