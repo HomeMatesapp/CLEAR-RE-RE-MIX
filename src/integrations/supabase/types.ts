@@ -542,6 +542,78 @@ export type Database = {
         }
         Relationships: []
       }
+      reality_check_explanation_cache: {
+        Row: {
+          created_at: string
+          hit_count: number
+          key: string
+          last_hit_at: string
+          payload: Json
+        }
+        Insert: {
+          created_at?: string
+          hit_count?: number
+          key: string
+          last_hit_at?: string
+          payload: Json
+        }
+        Update: {
+          created_at?: string
+          hit_count?: number
+          key?: string
+          last_hit_at?: string
+          payload?: Json
+        }
+        Relationships: []
+      }
+      reality_check_feedback: {
+        Row: {
+          created_at: string
+          detail: string | null
+          id: string
+          reason: string
+          role_slug: string
+          verdict: string | null
+        }
+        Insert: {
+          created_at?: string
+          detail?: string | null
+          id?: string
+          reason: string
+          role_slug: string
+          verdict?: string | null
+        }
+        Update: {
+          created_at?: string
+          detail?: string | null
+          id?: string
+          reason?: string
+          role_slug?: string
+          verdict?: string | null
+        }
+        Relationships: []
+      }
+      reality_check_rate: {
+        Row: {
+          count: number
+          key_hash: string
+          scope: string
+          window_start: string
+        }
+        Insert: {
+          count?: number
+          key_hash: string
+          scope: string
+          window_start: string
+        }
+        Update: {
+          count?: number
+          key_hash?: string
+          scope?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       role_views: {
         Row: {
           id: string
@@ -607,10 +679,12 @@ export type Database = {
           review_status: string | null
           role_name: string
           role_slug: string
+          salary_as_at: string | null
           salary_entry: number | null
           salary_experienced: number | null
           salary_senior: number | null
           salary_source: string | null
+          salary_source_url: string | null
           second_path: string | null
           short_description: string | null
           third_path: string | null
@@ -661,10 +735,12 @@ export type Database = {
           review_status?: string | null
           role_name: string
           role_slug: string
+          salary_as_at?: string | null
           salary_entry?: number | null
           salary_experienced?: number | null
           salary_senior?: number | null
           salary_source?: string | null
+          salary_source_url?: string | null
           second_path?: string | null
           short_description?: string | null
           third_path?: string | null
@@ -715,10 +791,12 @@ export type Database = {
           review_status?: string | null
           role_name?: string
           role_slug?: string
+          salary_as_at?: string | null
           salary_entry?: number | null
           salary_experienced?: number | null
           salary_senior?: number | null
           salary_source?: string | null
+          salary_source_url?: string | null
           second_path?: string | null
           short_description?: string | null
           third_path?: string | null
@@ -1004,6 +1082,10 @@ export type Database = {
         Returns: undefined
       }
       get_contamination_fn_def: { Args: never; Returns: string }
+      reality_check_rate_increment: {
+        Args: { p_key_hash: string; p_scope: string; p_window_start: string }
+        Returns: number
+      }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
     }
