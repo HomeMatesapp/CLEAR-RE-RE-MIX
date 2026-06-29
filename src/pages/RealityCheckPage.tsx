@@ -49,6 +49,7 @@ type Role = RoleContext & {
   role_slug: string;
   role_name: string;
   reality_rating?: string | null;
+  service_level?: import("@/lib/reality-check/service-levels").RoleServiceLevel | null;
 };
 
 // ── Progressive disclosure helpers ────────────────────────────────────────────
@@ -111,7 +112,7 @@ const RealityCheckPage = () => {
       setLoading(true);
       const { data } = await supabase
         .from("roles")
-        .select("id, role_slug, role_name, short_description, reality_check, uncomfortable_truth, opportunity_cost, who_not_for, career_regret_risk, competition_level, demand, ai_impact_level, salary_entry, salary_experienced, salary_senior, pathway_school_leaver, pathway_graduate, pathway_adjacent, pathway_no_background, typical_backgrounds, key_employers")
+        .select("id, role_slug, role_name, service_level, short_description, reality_check, uncomfortable_truth, opportunity_cost, who_not_for, career_regret_risk, competition_level, demand, ai_impact_level, salary_entry, salary_experienced, salary_senior, pathway_school_leaver, pathway_graduate, pathway_adjacent, pathway_no_background, typical_backgrounds, key_employers")
         .eq("role_slug", slug)
         .maybeSingle();
       if (cancelled) return;
