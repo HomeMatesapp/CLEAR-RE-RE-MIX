@@ -284,6 +284,14 @@ const summaryLabelTone: Record<string, string> = {
   amber:   "text-amber-300",
 };
 
+// Background tone for the new Release 1 readiness banner.
+const readinessBannerTone: Record<Readiness, string> = {
+  ready_now:      "border-emerald-400/40 bg-gradient-to-br from-emerald-900/40 to-gray-900",
+  nearly_ready:   "border-amber-300/40 bg-gradient-to-br from-amber-900/30 to-gray-900",
+  needs_bridging: "border-amber-300/40 bg-gradient-to-br from-amber-900/30 to-gray-900",
+  high_risk_now:  "border-rose-400/50 bg-gradient-to-br from-rose-900/40 to-gray-900",
+};
+
 function SummaryRow({
   label,
   value,
@@ -319,37 +327,40 @@ export function ResultView({
   onProfileSaved: (p: DecisionProfileFields) => void;
 }) {
   const firstMove = result.firstMoves?.[0];
+  const readiness: Readiness = result.readiness ?? "nearly_ready";
+  const supported = isSupportedRegion(answers.region);
   return (
     <div className="space-y-4">
-      {/* Decision summary */}
-      <div className="rounded-xl border border-amber-300/40 bg-gradient-to-br from-gray-800 to-gray-900 p-4">
+      {/* Release 1 readiness banner — deterministic, four states */}
+      <div className={`rounded-xl border p-4 ${readinessBannerTone[readiness]}`}>
         <div className="flex items-center gap-2 mb-2 text-amber-300">
           <Gavel className="h-4 w-4" />
           <p className="text-[11px] font-semibold uppercase tracking-wider">Your route judgement</p>
         </div>
-        <div className="mb-3">
-          <span
-            className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${verdictTone(
-              result.overallVerdict,
-            )}`}
-          >
-            {result.overallVerdict}
+        <div className="flex items-center gap-2 mb-2">
+          <span className="inline-flex items-center rounded-full bg-white/10 border border-white/20 px-3 py-1 text-xs font-semibold text-white">
+            {READINESS_LABEL[readiness]}
           </span>
         </div>
+        {result.readinessReason && (
+          <p className="text-sm text-gray-200 leading-relaxed mb-3">{result.readinessReason}</p>
+        )}
         <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm">
           <SummaryRow label="Best route" value={result.bestRoute.title} tone="emerald" />
+          {result.biggestBlocker && (
+            <SummaryRow label="Biggest blocker" value={result.biggestBlocker} tone="rose" />
+          )}
           <SummaryRow label="Be careful with" value={result.routeToAvoid.title} tone="rose" />
-          <SummaryRow
-            label="Local realism"
-            value={
-              <span className={`capitalize font-medium ${localToneText(result.localRealism.rating)}`}>
-                {result.localRealism.rating}
-              </span>
-            }
-            tone="amber"
-          />
-          {firstMove && <SummaryRow label="First move" value={firstMove} tone="sky" />}
+          {(result.immediateAction || firstMove) && (
+            <SummaryRow label="Do this week" value={result.immediateAction || firstMove!} tone="sky" />
+          )}
         </dl>
+        {answers.region && !supported && (
+          <p className="mt-3 text-[11px] text-gray-300 leading-snug border-t border-white/10 pt-3">
+            Your route judgement is available, but verified local opportunity coverage is currently focused on London,
+            Greater Manchester, and Birmingham and the West Midlands.
+          </p>
+        )}
       </div>
 
       {/* Best route */}
@@ -418,28 +429,8 @@ export function ResultView({
         )}
       </Card>
 
-      {/* Local realism */}
-      <Card icon={<MapPin className="h-4 w-4" />} eyebrow="Local realism" tone="amber">
-        <div className="flex items-center gap-2">
-          <span className={`text-sm font-semibold capitalize ${localToneText(result.localRealism.rating)}`}>
-            {result.localRealism.rating}
-          </span>
-        </div>
-        <p className="text-sm text-gray-200 mt-1 leading-relaxed">{result.localRealism.summary}</p>
-        {result.localRealism.dependsOn?.length > 0 && (
-          <div className="mt-3">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-amber-300 mb-1">Depends on</p>
-            <ul className="space-y-1">
-              {result.localRealism.dependsOn.map((d, i) => (
-                <li key={i} className="text-sm text-gray-200 flex gap-2">
-                  <span className="text-amber-300">•</span>
-                  <span>{d}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </Card>
+      {/* Local realism card removed in Release 1 — local realism is communicated
+          through verified opportunities (ships Release 3), not interpretive prose. */}
 
       {/* First moves */}
       {result.firstMoves?.length > 0 && (
