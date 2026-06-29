@@ -32,13 +32,16 @@ import {
   ENGLISH_MATHS,
   INCOME_NEEDS,
   QUALIFICATION_LEVELS,
+  READINESS_LABEL,
   SCIENCE_SUBJECTS,
   STARTING_POINTS,
   WEEKLY_HOURS,
   type RealityCheckAnswers,
   type RealityCheckResult,
+  type Readiness,
   type RoleContext,
 } from "@/lib/reality-check/types";
+import { REGIONS, isSupportedRegion, regionLabel } from "@/lib/reality-check/regions";
 import {
   answersToProfile,
   hasAnyProfileField,
@@ -100,6 +103,8 @@ export const answerChips = (a: RealityCheckAnswers): string[] => {
   if (inc) chips.push(inc);
   const b = labelFor(BUDGETS, a.budget);
   if (b) chips.push(`${b} budget`);
+  const rg = regionLabel(a.region);
+  if (rg) chips.push(rg);
   if (a.area.trim()) chips.push(a.area.trim());
   const cf = labelFor(COMMUTE_FLEX, a.commuteFlex);
   if (cf) chips.push(cf);
@@ -107,6 +112,9 @@ export const answerChips = (a: RealityCheckAnswers): string[] => {
   if (wh) chips.push(wh);
   return chips;
 };
+
+// Re-export so RealityCheckPage can build the region step from one place.
+export { REGIONS };
 
 export const verdictTone = (v: string): string => {
   const s = v.toLowerCase();
