@@ -87,13 +87,22 @@ const OpportunitiesPage = () => {
       }
       setDecision(d as SavedDecisionFull);
 
-      const { data: o } = await supabase
+      const today = new Date().toISOString().slice(0, 10);
+      const { data: o, error: opportunitiesError } = await supabase
         .from("opportunities")
         .select("*")
         .eq("status", "active")
+        .eq("is_seed", false)
+        .not("verified_at", "is", null)
+        .or(`deadline.is.null,deadline.gte.${today}`)
         .contains("role_tags", [d.role_slug]);
       if (cancelled) return;
-      setOpps((o as Opportunity[] | null) ?? []);
+      if (opportunitiesError) {
+        console.error("Could not load verified opportunities", opportunitiesError);
+        setOpps([]);
+      } else {
+        setOpps((o as Opportunity[] | null) ?? []);
+      }
       setLoading(false);
     })();
     return () => {
@@ -261,7 +270,7 @@ const OpportunitiesPage = () => {
         {scored.length === 0 && (
           <div className="rounded-2xl border border-border bg-muted/40 p-8 text-center">
             <p className="text-sm text-muted-foreground">
-              No opportunities matched yet. We'll add more as Clear Routes grows.
+              No verified live opportunities match this route yet. We hide examples, expired listings and unverified records.
             </p>
           </div>
         )}
@@ -349,11 +358,6 @@ function OpportunityCard({
           {o.is_sponsored && (
             <span className="inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-2 py-0.5 text-[10px] font-semibold text-sky-800">
               {o.sponsor_label ?? "Sponsored"}
-            </span>
-          )}
-          {o.is_seed && (
-            <span className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-800">
-              Example listing
             </span>
           )}
         </div>

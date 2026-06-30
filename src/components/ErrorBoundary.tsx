@@ -26,9 +26,8 @@ class ErrorBoundary extends Component<Props, State> {
     console.error("[ErrorBoundary] Caught error:", error, errorInfo);
     try {
       trackEvent("app_error", {
-        error: error.message,
-        stack: error.stack,
-        componentStack: errorInfo.componentStack,
+        error_name: error.name,
+        path: window.location.pathname,
       });
     } catch (e) {
       console.error("[ErrorBoundary] Failed to report error to analytics:", e);

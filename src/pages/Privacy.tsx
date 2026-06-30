@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { AnalyticsPreferenceControls } from "@/components/AnalyticsConsent";
 
 const Privacy = () => {
   useEffect(() => {
@@ -24,7 +25,7 @@ const Privacy = () => {
             Privacy Policy
           </h1>
 
-          <p className="text-sm text-muted-foreground mb-8">Last updated: 8 June 2026</p>
+          <p className="text-sm text-muted-foreground mb-8">Last updated: 29 June 2026</p>
 
           <div className="prose prose-sm max-w-none text-muted-foreground space-y-8">
             <section>
@@ -62,9 +63,9 @@ const Privacy = () => {
                 <li>To keep the service secure and prevent abuse</li>
               </ul>
               <p>
-                The Reality-check is AI-assisted: your answers are sent to a third-party large language model provider to
-                generate the judgement. We do not use your answers for advertising and we do not share them with training
-                providers.
+                The Reality-check uses a deterministic rules engine. Your answers are evaluated against reviewed route and
+                entry-requirement logic; they are not sent to a large language model. We do not use your answers for
+                advertising and we do not share them with training providers.
               </p>
             </section>
 
@@ -96,20 +97,22 @@ const Privacy = () => {
             </section>
 
             <section>
-              <h2 className="font-display text-xl font-bold text-foreground mb-3">5. Analytics and session recording</h2>
+              <h2 className="font-display text-xl font-bold text-foreground mb-3">5. Analytics</h2>
               <p>
-                We use PostHog to capture aggregate analytics events (e.g. <code>search_submitted</code>, <code>role_page_viewed</code>,{" "}
-                <code>pathway_card_clicked</code>, <code>provider_link_clicked</code>) so we can see which roles and routes are useful.
-                Where session recording is enabled it is pseudonymised, masked, and never used on pages that show personal information.
+                With your permission, we use PostHog to capture limited product events such as searches, role-page views and
+                outbound provider-link clicks. PostHog is not initialised until you choose “Allow analytics”. We identify a
+                signed-in account only by its internal user ID and do not send the account email to PostHog. Session recording
+                is disabled.
               </p>
             </section>
 
             <section>
               <h2 className="font-display text-xl font-bold text-foreground mb-3">6. Cookies</h2>
               <p>
-                We use a small number of essential cookies for authentication and session management, and analytics cookies via PostHog.
-                Where required by UK law we ask for your consent before placing non-essential cookies.
+                We use essential browser storage for authentication, security and saved decisions. PostHog analytics storage
+                is created only after you explicitly allow analytics. Choosing “Essential only” leaves analytics disabled.
               </p>
+              <div className="mt-4"><AnalyticsPreferenceControls /></div>
             </section>
 
             <section>

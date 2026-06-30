@@ -30,7 +30,7 @@ const faqSections = [
     questions: [
       {
         q: "What is a Reality-check?",
-        a: "A Reality-check is a short set of questions about your situation — time, money, qualifications, location, constraints — applied to a specific role. It returns a route judgement with a best route in, a backup, a route to avoid, a read on local realism, and a first move you can make this week. It is AI-assisted guidance, not a guarantee of outcome.",
+        a: "A Reality-check is a short set of questions about your situation — time, money, qualifications, region and constraints — applied to a reviewed role. A deterministic rules engine returns one of four readiness states, the strongest route, a fallback, the main blocker and a first action. It is guidance, not a guarantee of outcome.",
       },
       {
         q: "What is My Career Decisions?",
@@ -104,8 +104,8 @@ const faqSections = [
         a: "Salaries and competition signals are reviewed quarterly. Apprenticeships, bootcamp availability, and funded support are reviewed at least twice a year and after every government spending announcement. Each role page shows a 'last reviewed' date.",
       },
       {
-        q: "How is AI used in the product?",
-        a: "Role page content — pathways, salaries, competition signals, provider lists — is hand-curated, not AI-generated. The Reality-check route judgement is AI-assisted: it combines your answers with our editorial data on the role to form a judgement. We show you the judgement, not raw model output, and we don't use it to invent providers, salaries or eligibility.",
+        q: "Does the Reality-check use generative AI?",
+        a: "No. The Reality-check uses deterministic rules applied to your answers and reviewed role data. AI exposure remains one evidence category on role pages, but no large language model generates your route judgement or invents providers, salaries or eligibility.",
       },
       {
         q: "How do I report something that is wrong?",

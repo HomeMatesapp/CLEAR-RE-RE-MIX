@@ -1,51 +1,60 @@
 # Clear Routes
 
-Reality-check a UK career route before you commit time or money. Clear Routes turns a role + your situation into a route judgement: best route in, backup route, route to avoid, what's realistic locally, and a first move for this week.
+Reality-check a UK career route before committing time or money. Clear Routes combines reviewed role data with a deterministic readiness engine to show a readiness state, the most suitable route, a safer fallback, the main blocker, and a concrete next action.
 
 Live at: https://clearroutes.co.uk
 
 ## What it does
 
-- **Reality-check** — an AI-assisted route judgement for a specific role, given your situation.
-- **My Career Decisions** — saved route checks you can revisit and compare.
-- **Decision Profile** — your saved constraints (hours, budget, qualifications, location, support context) reused on every check.
-- **Support matching** — surfaces UK funded programmes that may be relevant to your Decision Profile.
-- **Role pages** — curated, hand-written role information: realistic pathways in, salary ranges, competition, AI exposure, training providers.
+- **Reality-check** — a rules-based route judgement for a reviewed role, based on the user's situation.
+- **My Career Decisions** — saved route checks users can revisit and compare.
+- **Decision Profile** — saved constraints such as hours, budget, qualifications and region.
+- **Support matching** — surfaces UK-funded programmes that may be relevant to a Decision Profile.
+- **Role pages** — curated role information covering pathways, salary ranges, competition, AI exposure and providers.
+- **Verified opportunities** — only active, non-seed records with a verification timestamp are publicly shown.
 
 The product is free. There is no paid tier and no checkout.
 
 ## Tech stack
 
 - Frontend: React 18, TypeScript, Vite, Tailwind, shadcn/ui
-- Backend: Lovable Cloud (Postgres + Auth + Edge Functions)
-- AI: used for the Reality-check route judgement
-- Analytics: PostHog
-- Hosting: Lovable (frontend), Lovable Cloud (backend, EU region)
+- Backend: Supabase-compatible Postgres, Auth and Edge Functions through Lovable Cloud
+- Reality-check: deterministic four-state readiness engine, mirrored in the client and edge function
+- Analytics: PostHog, disabled until explicit consent
+- Hosting: Lovable frontend and EU-region backend
 
 ## Project structure
 
-- `/src/pages` — top-level routes (`Index`, `RolePage`, `MyDecisions`, `Personalise`, `Support`, etc.)
+- `/src/pages` — top-level routes
 - `/src/components` — shared UI components
-- `/src/components/role` — role-page components (Reality-check, support matches, pathways, salary grid)
-- `/src/lib/reality-check` — Reality-check profile mapping and route recommendation logic
-- `/src/lib/saved-decisions.ts` — saved career decision helpers
+- `/src/components/role` — role-page and Reality-check components
+- `/src/lib/reality-check` — deterministic readiness, profile mapping and source logic
+- `/src/lib/saved-decisions.ts` — privacy-minimised saved-decision helpers
 - `/src/hooks` — custom React hooks
 - `/src/integrations/supabase` — backend client and generated types
-- `/supabase/functions` — edge functions (`reality-check`, `search-roles`, `get-role`, `fetch-job-count`)
-- `/supabase/migrations` — database schema migrations
+- `/supabase/functions` — edge functions
+- `/supabase/migrations` — database schema and access-policy migrations
 
 ## Edge functions
 
-- `reality-check` — takes a role + Decision Profile answers, returns the AI-assisted route judgement
+- `reality-check` — validates a role and answer payload, then returns the deterministic readiness result
 - `search-roles` — role search for the homepage
 - `get-role` — role page payload
-- `fetch-job-count` — live UK job count for a role (Reed API)
+- `fetch-job-count` — cached UK job-count lookup using the Reed API
+
+All browser-facing functions use an origin allowlist rather than wildcard CORS.
 
 ## Environment variables
 
-- `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` / `VITE_SUPABASE_PROJECT_ID` — backend client config (frontend, auto-managed)
-- `LOVABLE_API_KEY` — AI Gateway key used by the Reality-check edge function (backend secret)
-- `POSTHOG_KEY` — currently hardcoded in `src/lib/posthog.ts`; should be moved to env
+Copy `.env.example` to `.env` for local development.
+
+- `VITE_SUPABASE_URL` — active backend URL
+- `VITE_SUPABASE_PUBLISHABLE_KEY` — browser-safe publishable key
+- `VITE_SUPABASE_PROJECT_ID` — must match the project reference in the URL
+- `VITE_POSTHOG_KEY` — optional; analytics remains off until the visitor explicitly agrees
+- `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `REED_API_KEY` — backend-only edge-function secrets managed by the deployment platform
+
+The client fails fast when the URL and project ID do not match.
 
 ## Local development
 
@@ -54,23 +63,28 @@ npm install
 npm run dev
 ```
 
-The app runs at http://localhost:5173. Edge functions run on Lovable Cloud and auto-deploy from the repo.
+The app runs at http://localhost:5173.
 
 ## Testing
 
 ```bash
-npm run test
+npm test
+npm run build
 ```
 
-Vitest unit tests cover Reality-check profile mapping, route recommendation, saved decisions, and role helpers.
+Vitest covers readiness classification, profile mapping, source selection, role helpers, opportunity matching and saved-decision privacy behaviour.
 
-## Deployment
+## Data and privacy controls
 
-Frontend deploys via Lovable on push. Edge functions deploy via Lovable Cloud. Domain (clearroutes.co.uk) is managed via Namecheap.
+- PostHog is not initialised and no analytics storage is created before consent.
+- Authenticated analytics uses the internal user ID only; email addresses are not sent to PostHog.
+- Pending browser decisions expire after 24 hours and exclude notes and free-text background details.
+- Session Reality-check answers expire after two hours and omit notes plus non-essential answer fields.
+- Database snapshots contain only fields needed for matching and compact result summaries.
+- Public opportunity reads are restricted by row-level security to active, verified, non-seed and non-expired records.
 
-## Known issues / tech debt
+## Known technical debt
 
-- Several pages use `as any` to bypass generated type checks; types should be regenerated.
-- `RolePage.tsx` is oversized and should be decomposed further.
-- PostHog API key is hardcoded in `src/lib/posthog.ts` and should be moved to env.
-- Integration test coverage of the full Reality-check → save decision flow is still light.
+- Some generated Supabase types still require narrow casts and should be regenerated after the latest migration is deployed.
+- `RolePage.tsx` remains oversized and should be decomposed.
+- End-to-end coverage of signup confirmation and the complete Reality-check-to-save flow should be expanded.

@@ -72,12 +72,11 @@ const Sources = () => {
             relocation flexibility), the Reality-check produces:
           </p>
           <ul className="list-disc pl-5 space-y-1.5 text-[15px] leading-relaxed text-foreground">
-            <li>An overall verdict — realistic, realistic but hard, long shot, or probably not for you.</li>
-            <li>A best route, with an approximate time, cost and main difficulty for this person.</li>
-            <li>A backup route and the trade-off it carries.</li>
-            <li>A route to be careful with, and why it may be a mismatch.</li>
-            <li>An approximate local realism rating, based on the national pattern for the role.</li>
-            <li>Three concrete first moves the person could take this week.</li>
+            <li>One of four readiness states: ready now, nearly ready, needs a bridging step, or high-risk now.</li>
+            <li>The route that best matches the person's current starting point and constraints.</li>
+            <li>A fallback route and the trade-off it carries.</li>
+            <li>The main blocker affecting readiness.</li>
+            <li>One concrete action the person can take this week.</li>
           </ul>
         </section>
 
@@ -86,18 +85,18 @@ const Sources = () => {
             How route recommendations are produced
           </h2>
           <p className="text-[15px] leading-relaxed text-foreground">
-            The role page holds editorially-reviewed pathway descriptions
+            The role page holds editorially reviewed pathway descriptions
             (school leaver, graduate, adjacent, no background) and structured
-            facts (salary anchors, demand, competition, AI exposure). The
-            Reality-check picks the pathway most relevant to the person's
-            starting point and asks a large language model to weigh the
-            person's constraints against that pathway and the role facts,
-            within strict rules:
+            facts such as salary anchors, demand, competition and AI exposure.
+            The Reality-check applies a versioned deterministic rules engine to
+            the person's qualifications, starting point, income need, available
+            time, budget and region. The same readiness logic is mirrored in the
+            browser and edge function, with these constraints:
           </p>
           <ul className="list-disc pl-5 space-y-1.5 text-[15px] leading-relaxed text-foreground">
             <li>No providers, employers, courses or schemes are named unless they appear in the role data.</li>
             <li>No salaries, fees, timelines or eligibility rules are invented — qualitative wording is used when a figure is not supported.</li>
-            <li>Local realism is approximate. We do not have live local vacancy data.</li>
+            <li>Local availability is not inferred. Only separately verified opportunity records are shown.</li>
             <li>When a route may need a bridging step (e.g. functional skills, Access course, English-language support), it is suggested rather than asserted.</li>
           </ul>
         </section>

@@ -20,7 +20,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { trackEvent } from "@/lib/posthog";
-import { saveDecision, stashPendingDecision } from "@/lib/saved-decisions";
+import {
+  saveDecision,
+  stashPendingDecision,
+  sanitiseDecisionAnswers,
+} from "@/lib/saved-decisions";
 import { SupportMatches } from "@/components/role/SupportMatches";
 import { WhyThisResult } from "@/components/reality-check/WhyThisResult";
 import { SourcesPanel } from "@/components/reality-check/SourcesPanel";
@@ -140,6 +144,7 @@ export const localToneText = (r: string): string => {
 // ── Session storage (cross-page summary) ──────────────────────────────────────
 
 const sessionKey = (slug: string) => `cr_rc_${slug}`;
+const SESSION_TTL_MS = 2 * 60 * 60 * 1000;
 
 export interface SessionRCEntry {
   answers: RealityCheckAnswers;
@@ -151,7 +156,13 @@ export const loadSessionResult = (slug: string): SessionRCEntry | null => {
   try {
     const raw = sessionStorage.getItem(sessionKey(slug));
     if (!raw) return null;
-    return JSON.parse(raw) as SessionRCEntry;
+    const parsed = JSON.parse(raw) as SessionRCEntry;
+    const savedAt = Date.parse(parsed.savedAt);
+    if (!Number.isFinite(savedAt) || Date.now() - savedAt > SESSION_TTL_MS) {
+      sessionStorage.removeItem(sessionKey(slug));
+      return null;
+    }
+    return parsed;
   } catch {
     return null;
   }
@@ -159,7 +170,26 @@ export const loadSessionResult = (slug: string): SessionRCEntry | null => {
 
 export const saveSessionResult = (slug: string, entry: SessionRCEntry) => {
   try {
-    sessionStorage.setItem(sessionKey(slug), JSON.stringify(entry));
+    const safe = sanitiseDecisionAnswers(entry.answers);
+    const safeEntry: SessionRCEntry = {
+      ...entry,
+      answers: {
+        startingPoint: safe.startingPoint,
+        relevantBackground: safe.relevantBackground,
+        englishMaths: safe.englishMaths,
+        scienceSubjects: null,
+        qualificationLevel: safe.qualificationLevel,
+        englishComfort: null,
+        incomeNeed: safe.incomeNeed,
+        weeklyHours: null,
+        budget: safe.budget,
+        region: safe.region,
+        area: safe.area,
+        commuteFlex: safe.commuteFlex,
+        notes: "",
+      },
+    };
+    sessionStorage.setItem(sessionKey(slug), JSON.stringify(safeEntry));
   } catch {
     /* ignore */
   }

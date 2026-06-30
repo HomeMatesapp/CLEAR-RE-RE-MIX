@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Session } from "@supabase/supabase-js";
-import { identifyUser, resetUser } from "@/lib/posthog";
+import { ANALYTICS_CONSENT_EVENT, identifyUser, resetUser } from "@/lib/posthog";
 import { flushPendingDecision } from "@/lib/saved-decisions";
 
 interface AuthContextType {
@@ -26,7 +26,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [firstName, setFirstName] = useState<string | null>(null);
 
-  const ensureProfile = async (userId: string) => {
+  const ensureProfile = async (authUser: User) => {
+    const userId = authUser.id;
+    const metadataFirstName = typeof authUser.user_metadata?.first_name === "string"
+      ? authUser.user_metadata.first_name.trim()
+      : "";
     const { data } = await supabase
       .from("user_profiles")
       .select("first_name")
@@ -36,12 +40,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (!data) {
       // Use upsert to avoid duplicates
       await supabase.from("user_profiles").upsert(
-        { user_id: userId },
+        { user_id: userId, first_name: metadataFirstName || null },
         { onConflict: "user_id" }
       );
-      setFirstName(null);
+      setFirstName(metadataFirstName || null);
     } else {
-      setFirstName(data?.first_name ?? null);
+      if (!data.first_name && metadataFirstName) {
+        await supabase
+          .from("user_profiles")
+          .update({ first_name: metadataFirstName })
+          .eq("user_id", userId);
+      }
+      setFirstName(data.first_name || metadataFirstName || null);
     }
   };
 
@@ -52,8 +62,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(session?.user ?? null);
         setLoading(false);
         if (session?.user) {
-          identifyUser(session.user.id, { email: session.user.email });
-          ensureProfile(session.user.id);
+          identifyUser(session.user.id);
+          ensureProfile(session.user);
           // Flush any decision the user stashed before signing in,
           // regardless of which page they land on.
           if (event === "SIGNED_IN" || event === "INITIAL_SESSION") {
@@ -71,12 +81,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(session?.user ?? null);
       setLoading(false);
       if (session?.user) {
-        ensureProfile(session.user.id);
+        identifyUser(session.user.id);
+        ensureProfile(session.user);
       }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (!user) return;
+    const identifyAfterConsent = () => identifyUser(user.id);
+    window.addEventListener(ANALYTICS_CONSENT_EVENT, identifyAfterConsent);
+    identifyAfterConsent();
+    return () => window.removeEventListener(ANALYTICS_CONSENT_EVENT, identifyAfterConsent);
+  }, [user]);
 
   const signOut = async () => {
     await supabase.auth.signOut();

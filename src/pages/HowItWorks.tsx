@@ -18,13 +18,13 @@ const HowItWorks = () => (
         </p>
         <p>
           You pick a role, tell us a bit about your situation, and we return a route judgement: the
-          best route in for you, a backup route, a route to avoid, what's realistic locally, and the
+          your readiness state, the strongest route, a fallback, the main blocker, and the
           first move to make this week.
         </p>
         <p>
-          The route check is AI-assisted. It uses your answers plus our editorial data on each role —
-          pay ranges, competition, training options, and support — to form a judgement. It is guidance,
-          not a guarantee.
+          The route check uses deterministic rules together with reviewed role data — entry routes,
+          likely requirements, pay ranges and competition — to form a judgement. It is guidance, not a
+          guarantee.
         </p>
         <p>
           You can save any route check as a career decision and come back to it. Your Decision Profile
@@ -69,7 +69,7 @@ const HowItWorks = () => (
             </span>
             <h3 className="mt-3 text-base font-semibold text-foreground">Get a route judgement</h3>
             <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
-              Best route, backup, route to avoid, local realism, and first moves.
+              Readiness state, strongest route, fallback, main blocker, and immediate action.
             </p>
           </li>
         </ol>
