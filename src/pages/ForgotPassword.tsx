@@ -6,8 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Zap } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const ForgotPassword = () => {
+  const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -15,10 +17,14 @@ const ForgotPassword = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: "https://clearroutes.co.uk/reset-password",
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
     });
     setLoading(false);
+    if (error) {
+      toast({ title: "Could not send reset link", description: error.message, variant: "destructive" });
+      return;
+    }
     setSubmitted(true);
   };
 

@@ -31,7 +31,7 @@ const Terms = () => {
               <h2 className="font-display text-xl font-bold text-foreground mb-3">1. About Clear Routes</h2>
               <p>
                 Clear Routes is a free UK product that helps people reality-check a career route before committing time or
-                money. It includes Reality-check (an AI-assisted route judgement based on your situation), My Career Decisions
+                money. It includes Reality-check (a deterministic route judgement based on your situation), My Career Decisions
                 (a workspace for saved route checks), a Decision Profile (your saved constraints), curated role pages, and
                 support / funding matching where relevant. By using this website you agree to these terms.
               </p>
@@ -59,7 +59,7 @@ const Terms = () => {
             <section>
               <h2 className="font-display text-xl font-bold text-foreground mb-3">4. What we provide — and what we don't</h2>
               <p>
-                Clear Routes provides curated UK careers information and AI-assisted route judgements for general guidance.
+                Clear Routes provides curated UK careers information and rules-based route judgements for general guidance.
                 It is <strong>not</strong> regulated careers advice, <strong>not</strong> financial advice, and{" "}
                 <strong>not</strong> legal advice. Reality-check outputs are judgements, not predictions, and we do not
                 guarantee any career, salary, training, funding or employment outcome.
@@ -101,17 +101,16 @@ const Terms = () => {
             </section>
 
             <section>
-              <h2 className="font-display text-xl font-bold text-foreground mb-3">6. How we use AI</h2>
+              <h2 className="font-display text-xl font-bold text-foreground mb-3">6. How route judgements are produced</h2>
               <p>
-                Role page content — pathways, salary ranges, competition signals, provider lists and AI-impact ratings —
-                is hand-curated and reviewed before publication. We do not use large language models to invent providers,
+                Role-page content — pathways, salary ranges, competition signals, provider lists and AI-impact ratings —
+                is editorially reviewed before publication. We do not use large language models to invent providers,
                 salaries, eligibility or competition data.
               </p>
               <p>
-                The Reality-check feature is AI-assisted. It combines the answers you give about your situation with our
-                editorial data on the role to produce a route judgement (best route in, backup route, route to avoid,
-                local realism, first move). The judgement is generated for you and is not a guaranteed outcome. Treat it
-                as a structured second opinion, not as regulated advice.
+                The Reality-check applies deterministic rules to the answers you give and the reviewed data held for the
+                role. It produces one of four readiness states, a recommended route, a fallback, the main blocker and an
+                immediate action. The result is a structured second opinion, not a prediction or regulated advice.
               </p>
             </section>
 

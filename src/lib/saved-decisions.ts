@@ -1,7 +1,70 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { RealityCheckAnswers, RealityCheckResult, RoleContext } from "@/lib/reality-check/types";
+import type {
+  RealityCheckAnswers,
+  RealityCheckResult,
+  RoleContext,
+} from "@/lib/reality-check/types";
 
 const PENDING_KEY = "cr_pending_decision";
+const PENDING_TTL_MS = 24 * 60 * 60 * 1000;
+
+export interface DecisionAnswerSnapshot {
+  startingPoint: RealityCheckAnswers["startingPoint"];
+  englishMaths: RealityCheckAnswers["englishMaths"];
+  qualificationLevel: RealityCheckAnswers["qualificationLevel"];
+  incomeNeed: RealityCheckAnswers["incomeNeed"];
+  budget: RealityCheckAnswers["budget"];
+  region: RealityCheckAnswers["region"];
+  area: string;
+  commuteFlex: RealityCheckAnswers["commuteFlex"];
+  relevantBackground: string;
+}
+
+export interface DecisionResultSnapshot {
+  readiness?: RealityCheckResult["readiness"];
+  readinessReason?: string;
+  biggestBlocker?: string;
+  immediateAction?: string;
+  overallVerdict?: RealityCheckResult["overallVerdict"];
+  bestRoute?: { title: string };
+  backupRoute?: { title: string };
+  routeToAvoid?: { title: string };
+  localRealism?: { rating: "strong" | "mixed" | "weak" };
+  firstMoves?: string[];
+}
+
+export const sanitiseDecisionAnswers = (
+  answers: Partial<RealityCheckAnswers>,
+): DecisionAnswerSnapshot => ({
+  startingPoint: answers.startingPoint ?? null,
+  englishMaths: answers.englishMaths ?? null,
+  qualificationLevel: answers.qualificationLevel ?? null,
+  incomeNeed: answers.incomeNeed ?? null,
+  budget: answers.budget ?? null,
+  region: answers.region ?? null,
+  area: (answers.area ?? "").trim().slice(0, 80),
+  commuteFlex: answers.commuteFlex ?? null,
+  // Matching only needs to know whether related experience was supplied. Do
+  // not persist the user's free-text description.
+  relevantBackground: (answers.relevantBackground ?? "").trim() ? "Provided" : "",
+});
+
+export const sanitiseDecisionResult = (
+  result: DecisionResultSnapshot | RealityCheckResult,
+): DecisionResultSnapshot => ({
+  readiness: result.readiness,
+  readinessReason: result.readinessReason,
+  biggestBlocker: result.biggestBlocker,
+  immediateAction: result.immediateAction,
+  overallVerdict: result.overallVerdict,
+  bestRoute: result.bestRoute?.title ? { title: result.bestRoute.title } : undefined,
+  backupRoute: result.backupRoute?.title ? { title: result.backupRoute.title } : undefined,
+  routeToAvoid: result.routeToAvoid?.title ? { title: result.routeToAvoid.title } : undefined,
+  localRealism: result.localRealism?.rating
+    ? { rating: result.localRealism.rating }
+    : undefined,
+  firstMoves: result.firstMoves?.slice(0, 3),
+});
 
 export interface PendingDecision {
   role: {
@@ -9,8 +72,8 @@ export interface PendingDecision {
     role_slug?: string;
     role_name: string;
   };
-  answers: RealityCheckAnswers;
-  result: RealityCheckResult;
+  answers: DecisionAnswerSnapshot;
+  result: DecisionResultSnapshot;
   created_at: string;
 }
 
@@ -21,8 +84,8 @@ export const stashPendingDecision = (
 ) => {
   const payload: PendingDecision = {
     role: { id: role.id, role_slug: role.role_slug, role_name: role.role_name },
-    answers,
-    result,
+    answers: sanitiseDecisionAnswers(answers),
+    result: sanitiseDecisionResult(result),
     created_at: new Date().toISOString(),
   };
   try {
@@ -36,7 +99,13 @@ export const readPendingDecision = (): PendingDecision | null => {
   try {
     const raw = localStorage.getItem(PENDING_KEY);
     if (!raw) return null;
-    return JSON.parse(raw) as PendingDecision;
+    const parsed = JSON.parse(raw) as PendingDecision;
+    const createdAt = Date.parse(parsed.created_at);
+    if (!Number.isFinite(createdAt) || Date.now() - createdAt > PENDING_TTL_MS) {
+      localStorage.removeItem(PENDING_KEY);
+      return null;
+    }
+    return parsed;
   } catch {
     return null;
   }
@@ -53,22 +122,24 @@ export const clearPendingDecision = () => {
 export const saveDecision = async (
   userId: string,
   role: { id?: string; role_slug?: string; role_name: string },
-  answers: RealityCheckAnswers,
-  result: RealityCheckResult,
+  answers: Partial<RealityCheckAnswers>,
+  result: DecisionResultSnapshot | RealityCheckResult,
 ) => {
+  const safeAnswers = sanitiseDecisionAnswers(answers);
+  const safeResult = sanitiseDecisionResult(result);
   const row = {
     user_id: userId,
     role_id: role.id ?? null,
     role_slug: role.role_slug ?? "",
     role_name: role.role_name,
-    overall_verdict: result.overallVerdict ?? null,
-    best_route_title: result.bestRoute?.title ?? null,
-    backup_route_title: result.backupRoute?.title ?? null,
-    route_to_avoid_title: result.routeToAvoid?.title ?? null,
-    local_realism_rating: result.localRealism?.rating ?? null,
-    first_move: result.firstMoves?.[0] ?? null,
-    input_snapshot: answers as unknown as Record<string, unknown>,
-    result_snapshot: result as unknown as Record<string, unknown>,
+    overall_verdict: safeResult.overallVerdict ?? null,
+    best_route_title: safeResult.bestRoute?.title ?? null,
+    backup_route_title: safeResult.backupRoute?.title ?? null,
+    route_to_avoid_title: safeResult.routeToAvoid?.title ?? null,
+    local_realism_rating: safeResult.localRealism?.rating ?? null,
+    first_move: safeResult.immediateAction ?? safeResult.firstMoves?.[0] ?? null,
+    input_snapshot: safeAnswers as unknown as Record<string, unknown>,
+    result_snapshot: safeResult as unknown as Record<string, unknown>,
   };
   const { data, error } = await supabase
     .from("saved_decisions")
@@ -87,14 +158,10 @@ export const flushPendingDecision = async (userId: string): Promise<boolean> => 
   if (inFlight) return inFlight;
   const pending = readPendingDecision();
   if (!pending) return false;
-  // Basic shape validation — malformed payloads (e.g. corrupted localStorage)
-  // should be discarded silently rather than thrown into the save path.
   if (!pending.role || !pending.role.role_name || !pending.answers || !pending.result) {
     clearPendingDecision();
     return false;
   }
-  // Clear immediately so a second synchronous call after the first one
-  // resolves finds nothing to save.
   clearPendingDecision();
   inFlight = (async () => {
     try {
@@ -109,7 +176,6 @@ export const flushPendingDecision = async (userId: string): Promise<boolean> => 
   return inFlight;
 };
 
-// Test-only helper to reset module-level state between tests.
 export const __resetFlushGuard = () => {
   inFlight = null;
 };

@@ -49,7 +49,10 @@ const Signup = () => {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
-        options: { emailRedirectTo: redirectTo },
+        options: {
+          emailRedirectTo: redirectTo,
+          data: { first_name: firstName.trim() },
+        },
       });
 
       if (error) throw error;
@@ -58,10 +61,10 @@ const Signup = () => {
       // With email confirmation required, there's no session yet and the insert
       // would fail with 401.
       if (data.user && data.session) {
-        await supabase.from("user_profiles").insert({
+        await supabase.from("user_profiles").upsert({
           user_id: data.user.id,
           first_name: firstName.trim() || null,
-        } as never);
+        } as never, { onConflict: "user_id" });
       }
 
       trackEvent("signup_completed", { has_redirect: !!redirectPath });

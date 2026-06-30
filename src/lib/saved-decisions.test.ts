@@ -23,6 +23,7 @@ import {
   flushPendingDecision,
   readPendingDecision,
   stashPendingDecision,
+  sanitiseDecisionAnswers,
 } from "./saved-decisions";
 import type { RealityCheckAnswers, RealityCheckResult, RoleContext } from "./reality-check/types";
 
@@ -64,16 +65,23 @@ beforeEach(() => {
 });
 
 describe("pending decision: stash / read / clear", () => {
-  it("stashes and reads back, preserving qualifications and background", () => {
+  it("stashes only the fields needed for matching and removes free text", () => {
     stashPendingDecision(role, answers, result);
     const p = readPendingDecision();
     expect(p?.role.role_slug).toBe("registered-nurse");
     expect(p?.answers.area).toBe("Manchester");
-    expect(p?.answers.relevantBackground).toBe("psychology degree, healthcare assistant");
+    expect(p?.answers.relevantBackground).toBe("Provided");
+    expect((p?.answers as unknown as Record<string, unknown>).notes).toBeUndefined();
     expect(p?.answers.englishMaths).toBe("both");
-    expect(p?.answers.scienceSubjects).toBe("yes");
     expect(p?.answers.qualificationLevel).toBe("undergrad");
-    expect(p?.answers.englishComfort).toBe("yes");
+  });
+
+
+  it("sanitises free-text answers before persistence", () => {
+    const safe = sanitiseDecisionAnswers({ ...answers, notes: "private note" });
+    expect(safe.relevantBackground).toBe("Provided");
+    expect((safe as unknown as Record<string, unknown>).notes).toBeUndefined();
+    expect((safe as unknown as Record<string, unknown>).scienceSubjects).toBeUndefined();
   });
 
   it("clears pending decision", () => {
