@@ -15,9 +15,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        display: ['"Fraunces"', "Georgia", "serif"],
-        body: ["Inter", "system-ui", "sans-serif"],
+        sans: ['"Atkinson Hyperlegible"', "system-ui", "sans-serif"],
+        display: ['"Bricolage Grotesque"', "system-ui", "sans-serif"],
+        body: ['"Atkinson Hyperlegible"', "system-ui", "sans-serif"],
+        mono: ['"IBM Plex Mono"', "ui-monospace", "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -25,6 +26,16 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        /* Field Map raw tokens — use sparingly. Prefer semantic tokens
+           (primary, foreground, muted…) in components. `path` is reserved
+           for primary actions and route lines only — never decorative. */
+        paper: "hsl(var(--paper))",
+        ink: "hsl(var(--ink))",
+        path: "hsl(var(--path))",
+        wood: "hsl(var(--wood))",
+        danger: "hsl(var(--danger))",
+        contour: "hsl(var(--contour))",
+        tint: "hsl(var(--tint))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
