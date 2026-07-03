@@ -717,6 +717,7 @@ export type Database = {
           review_status: string | null
           role_name: string
           role_slug: string
+          route_logic_reviewed_at: string | null
           salary_as_at: string | null
           salary_entry: number | null
           salary_experienced: number | null
@@ -774,6 +775,7 @@ export type Database = {
           review_status?: string | null
           role_name: string
           role_slug: string
+          route_logic_reviewed_at?: string | null
           salary_as_at?: string | null
           salary_entry?: number | null
           salary_experienced?: number | null
@@ -831,6 +833,7 @@ export type Database = {
           review_status?: string | null
           role_name?: string
           role_slug?: string
+          route_logic_reviewed_at?: string | null
           salary_as_at?: string | null
           salary_entry?: number | null
           salary_experienced?: number | null
