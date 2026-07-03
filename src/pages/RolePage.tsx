@@ -15,7 +15,7 @@ import { RealityCheckCTA } from "@/components/role/RealityCheckCTA";
 import { loadSessionResult } from "@/components/role/reality-check-shared";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { SupportMatches } from "@/components/role/SupportMatches";
-import { ServiceLevelBadge } from "@/components/ServiceLevelBadge";
+// ServiceLevelBadge removed from role page; kept in codebase for other surfaces.
 import type { RoleServiceLevel } from "@/lib/reality-check/service-levels";
 
 // ── TYPES ─────────────────────────────────────────────────────────────────────
