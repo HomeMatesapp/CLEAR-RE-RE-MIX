@@ -55,6 +55,7 @@ type Role = {
   degree_required: string | null;
   most_common_route: string | null;
   service_level: RoleServiceLevel | null;
+  route_logic_reviewed_at: string | null;
 };
 
 type Provider = {
