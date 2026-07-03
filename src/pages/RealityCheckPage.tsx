@@ -178,30 +178,8 @@ const RealityCheckPage = () => {
     !!answers.startingPoint && BACKGROUND_REQUIRED_FOR.includes(answers.startingPoint);
   const backgroundMissing = backgroundRequired && answers.relevantBackground.trim().length < 3;
 
-  // Section gating
-  const section1Complete =
-    !!answers.startingPoint && (!backgroundRequired || answers.relevantBackground.trim().length >= 3);
-  const section2Complete =
-    !!answers.qualificationLevel && !!answers.englishMaths && !!answers.scienceSubjects;
-  const section3Complete = !!answers.englishComfort;
-  const section4Complete =
-    !!answers.incomeNeed && !!answers.budget && !!answers.region;
-
-  const showSection2 = !!answers.startingPoint;
-  const showSection3 = showSection2 && section2Complete;
-  const showSection4 = showSection3 && section3Complete;
-  const showSection5 = showSection4 && section4Complete;
-
-  const currentStep: 0 | 1 | 2 | 3 = result
-    ? 3
-    : !showSection2
-    ? 0
-    : !showSection4
-    ? 1
-    : !showSection5
-    ? 2
-    : 2;
-
+  // Validity is now enforced step-by-step in the WizardForm; the aggregate
+  // `canSubmit` gate below still guards the network submit for defence in depth.
   const missing: string[] = [];
   if (!answers.startingPoint) missing.push("starting point");
   if (backgroundMissing) missing.push("relevant background");
@@ -213,6 +191,8 @@ const RealityCheckPage = () => {
   if (!answers.budget) missing.push("budget");
   if (!answers.region) missing.push("region");
   const canSubmit = missing.length === 0;
+
+  const currentStep: 0 | 1 | 2 | 3 = result ? 3 : 0;
 
   // ── Submit ───────────────────────────────────────────────────────────────────
 
