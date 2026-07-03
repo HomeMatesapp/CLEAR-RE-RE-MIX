@@ -723,26 +723,26 @@ const RolePage = () => {
               </AccordionTrigger>
               <AccordionContent>
                 <p className="text-xs text-gray-400 mb-3">
-                  These are the routes most people use. Your Reality-check result above already picks the best one for your situation.
+                  {role.service_level === "reality_check"
+                    ? "Your Reality-check result above already picks the best one for your situation."
+                    : "These are the routes most people use."}
                 </p>
+                {/* Only render tabs the role actually has content for. */}
                 <div className="flex flex-wrap gap-1.5 mb-4">
-                  {pathwayMeta.map((p) => {
-                    const has = !!pathwayContent[p.key];
+                  {availablePathways.map((p) => {
                     const isActive = activePathway === p.key;
                     return (
                       <button
                         key={p.key}
                         onClick={() => {
-                          if (!has) return;
                           setActivePathway(p.key);
                           trackEvent("pathway_card_clicked", { role: role.role_name, pathway: p.key });
                         }}
-                        disabled={!has}
                         className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
                           isActive
                             ? "border-primary bg-primary/5 text-primary font-medium"
                             : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
-                        } ${!has ? "opacity-40 cursor-not-allowed" : ""}`}
+                        }`}
                       >
                         {p.label}
                       </button>
@@ -752,12 +752,27 @@ const RolePage = () => {
                 {activeMeta && activeText && (
                   <div className="border border-gray-100 rounded-lg p-3 bg-gray-50/50">
                     <h3 className="text-sm font-medium text-gray-900 mb-1.5">{activeMeta.label}</h3>
-                    <div className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
-                      {activeText}
+                    <div className="text-sm text-gray-600 leading-relaxed space-y-2">
+                      {normalizePathwayLines(activeText).map((line, i) => {
+                        const idx = line.indexOf(":");
+                        if (idx > 0 && idx < 60) {
+                          return (
+                            <p key={i} className="m-0">
+                              <span className="font-semibold text-gray-800">
+                                {line.slice(0, idx)}
+                              </span>
+                              {line.slice(idx)}
+                            </p>
+                          );
+                        }
+                        return <p key={i} className="m-0">{line}</p>;
+                      })}
                     </div>
                   </div>
                 )}
-                {successRoutes.length > 0 && (
+                {/* Merge undersized "successful people" content: if only 0-1 items,
+                    render as a trailing line; otherwise as its own sub-block. */}
+                {successRoutes.length >= 2 ? (
                   <div className="mt-3 border border-gray-100 rounded-lg p-3 bg-gray-50/50">
                     <p className="text-xs font-medium text-gray-500 mb-2">What successful people actually did</p>
                     <div className="space-y-1.5">
@@ -771,33 +786,39 @@ const RolePage = () => {
                       ))}
                     </div>
                   </div>
-                )}
+                ) : successRoutes.length === 1 ? (
+                  <p className="mt-3 text-xs text-gray-500 italic">
+                    <span className="font-medium not-italic text-gray-600">What tends to work:</span>{" "}
+                    {successRoutes[0]}
+                  </p>
+                ) : null}
               </AccordionContent>
             </AccordionItem>
           )}
 
-          {(role.uncomfortable_truth || role.opportunity_cost) && (
+          {role.opportunity_cost && (
+            <AccordionItem value="opportunity-cost">
+              <AccordionTrigger className="text-sm font-medium text-gray-900">
+                Opportunity cost
+              </AccordionTrigger>
+              <AccordionContent>
+                <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line m-0">
+                  {role.opportunity_cost}
+                </p>
+              </AccordionContent>
+            </AccordionItem>
+          )}
+
+          {role.uncomfortable_truth && (
             <AccordionItem value="truth">
               <AccordionTrigger className="text-sm font-medium text-gray-900">
                 The uncomfortable truth
               </AccordionTrigger>
               <AccordionContent>
-                <div className="space-y-4">
-                  {role.uncomfortable_truth && (
-                    <div className="border-l-[3px] border-[#b91c1c] bg-[#fbf3f3] rounded-r-lg px-4 py-3">
-                      <p className="text-sm text-gray-800 leading-relaxed m-0 whitespace-pre-line">
-                        {role.uncomfortable_truth}
-                      </p>
-                    </div>
-                  )}
-                  {role.opportunity_cost && (
-                    <div>
-                      <p className="text-xs font-medium text-gray-500 mb-1">Opportunity cost</p>
-                      <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line m-0">
-                        {role.opportunity_cost}
-                      </p>
-                    </div>
-                  )}
+                <div className="border-l-[3px] border-[#b91c1c] bg-[#fbf3f3] rounded-r-lg px-4 py-3">
+                  <p className="text-sm text-gray-800 leading-relaxed m-0 whitespace-pre-line">
+                    {role.uncomfortable_truth}
+                  </p>
                 </div>
               </AccordionContent>
             </AccordionItem>
@@ -831,7 +852,44 @@ const RolePage = () => {
             </AccordionItem>
           )}
 
-
+          {(altCareers.length > 0 || hasEmployers) && (
+            <AccordionItem value="similar">
+              <AccordionTrigger className="text-sm font-medium text-gray-900">
+                Similar roles and employers
+              </AccordionTrigger>
+              <AccordionContent>
+                {altCareers.length > 0 && (
+                  <div className="mb-4">
+                    <p className="text-xs font-medium text-gray-500 mb-2">Similar roles</p>
+                    <div className="flex flex-wrap gap-2">
+                      {altCareers.map((c) => (
+                        <Link
+                          key={c.slug}
+                          to={`/role/${c.slug}`}
+                          className="text-sm px-3 py-1.5 bg-white border border-gray-200 rounded-full text-gray-700 hover:border-primary/30 hover:text-primary transition-colors"
+                        >
+                          {c.name} →
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {hasEmployers && (
+                  <div>
+                    <p className="text-xs font-medium text-gray-500 mb-2">Key employers</p>
+                    <ul className="space-y-1.5 text-sm text-gray-700">
+                      {role.key_employers!.map((e) => (
+                        <li key={e} className="flex gap-2 items-start leading-snug">
+                          <span className="text-gray-400 flex-shrink-0 mt-0.5">·</span>
+                          <span>{prettifyEmployer(e)}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </AccordionContent>
+            </AccordionItem>
+          )}
 
           {Object.keys(grouped).length > 0 && (
             <AccordionItem value="providers">
@@ -877,47 +935,6 @@ const RolePage = () => {
                     </div>
                   ))}
                 </div>
-              </AccordionContent>
-            </AccordionItem>
-          )}
-
-          {(altCareers.length > 0 || hasEmployers) && (
-            <AccordionItem value="similar">
-              <AccordionTrigger className="text-sm font-medium text-gray-900">
-                Similar roles and employers
-              </AccordionTrigger>
-              <AccordionContent>
-                {altCareers.length > 0 && (
-                  <div className="mb-4">
-                    <p className="text-xs font-medium text-gray-500 mb-2">You may also want to explore</p>
-                    <div className="flex flex-wrap gap-2">
-                      {altCareers.map((c) => (
-                        <Link
-                          key={c.slug}
-                          to={`/role/${c.slug}`}
-                          className="text-sm px-3 py-1.5 bg-white border border-gray-200 rounded-full text-gray-700 hover:border-primary/30 hover:text-primary transition-colors"
-                        >
-                          {c.name} →
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {hasEmployers && (
-                  <div>
-                    <p className="text-xs font-medium text-gray-500 mb-2">Key employers</p>
-                    <div className="flex flex-wrap gap-2">
-                      {role.key_employers!.map((e) => (
-                        <span
-                          key={e}
-                          className="text-xs px-3 py-1 bg-gray-100 text-gray-600 rounded-full border border-gray-200"
-                        >
-                          {e}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </AccordionContent>
             </AccordionItem>
           )}
