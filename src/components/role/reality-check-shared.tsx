@@ -492,21 +492,64 @@ export function ResultView({
       })()}
 
       {role.role_slug && (
-        <SupportMatches
-          roleSlug={role.role_slug}
-          roleName={role.role_name}
-          variant="dark"
-          max={3}
-        />
+        <div id="support-matches" className="scroll-mt-20">
+          <SupportMatches
+            roleSlug={role.role_slug}
+            roleName={role.role_name}
+            variant="dark"
+            max={3}
+          />
+        </div>
       )}
 
-      <SavePrompt role={role} answers={answers} result={result} />
+      <div id="save-decision" className="scroll-mt-20">
+        <SavePrompt role={role} answers={answers} result={result} />
+      </div>
 
       <ProfileSyncPrompt
         answers={answers}
         initialProfile={initialProfile}
         onProfileSaved={onProfileSaved}
       />
+
+      {/* What next — keeps the user in the journey after receiving the result. */}
+      <section
+        aria-label="What next"
+        className="rounded-xl border border-gray-800 bg-gray-900/60 p-4"
+      >
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-amber-300 mb-3">
+          What next
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <a
+            href="#save-decision"
+            className="rounded-lg border border-gray-700 bg-gray-800/60 hover:bg-gray-800 p-3 text-left transition-colors"
+          >
+            <p className="text-sm font-semibold text-white leading-snug">Save this decision</p>
+            <p className="text-[11px] text-gray-400 mt-1 leading-snug">
+              Keep this judgement and unlock verified opportunities in your area.
+            </p>
+          </a>
+          <a
+            href="#support-matches"
+            className="rounded-lg border border-gray-700 bg-gray-800/60 hover:bg-gray-800 p-3 text-left transition-colors"
+          >
+            <p className="text-sm font-semibold text-white leading-snug">Find funding &amp; support</p>
+            <p className="text-[11px] text-gray-400 mt-1 leading-snug">
+              Grants, bursaries and access schemes that may apply to this route.
+            </p>
+          </a>
+          <Link
+            to="/"
+            className="rounded-lg border border-gray-700 bg-gray-800/60 hover:bg-gray-800 p-3 text-left transition-colors"
+          >
+            <p className="text-sm font-semibold text-white leading-snug">Compare another career</p>
+            <p className="text-[11px] text-gray-400 mt-1 leading-snug">
+              Reality-check a related role and see which route fits you better.
+            </p>
+          </Link>
+        </div>
+      </section>
 
       <div className="flex flex-wrap items-center gap-4 pt-1">
         <button
