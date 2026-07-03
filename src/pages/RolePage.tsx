@@ -568,6 +568,12 @@ const RolePage = () => {
           )}
         </div>
 
+        {role.service_level === "reality_check" && role.route_logic_reviewed_at && (
+          <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-ink/60 mb-4">
+            Route logic reviewed {formatReviewedAt(role.route_logic_reviewed_at)}
+          </p>
+        )}
+
         {/* Service-level badge intentionally removed from the role page —
             the info_only state is already communicated by the CTA card copy.
             The ServiceLevelBadge component is retained for other surfaces. */}
