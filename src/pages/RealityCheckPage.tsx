@@ -192,7 +192,13 @@ const RealityCheckPage = () => {
   if (!answers.region) missing.push("region");
   const canSubmit = missing.length === 0;
 
-  const currentStep: 0 | 1 | 2 | 3 = result ? 3 : 0;
+  const currentStep: 0 | 1 | 2 | 3 = result
+    ? 3
+    : !answers.qualificationLevel
+    ? 0
+    : !answers.incomeNeed
+    ? 1
+    : 2;
 
   // ── Submit ───────────────────────────────────────────────────────────────────
 
