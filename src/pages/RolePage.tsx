@@ -543,12 +543,10 @@ const RolePage = () => {
           serviceLevel={role.service_level}
         />
 
-        {/* Optional: grants / bursaries / access schemes that may apply.
-            Hidden once Reality-check has a session result (matches surface on the
-            dedicated page). */}
-        {!hasRealityCheckResult && (
-          <SupportMatches roleSlug={role.role_slug} roleName={role.role_name} />
-        )}
+        {/* SupportMatches moved below the balance-pair — keeps the pre-CTA
+            area focused on the single decision (start the Reality-check). */}
+
+
 
 
         {/* Personalisation banner */}
