@@ -165,6 +165,40 @@ const salaryRangeChip = (entry: number | null, senior: number | null, exp: numbe
 
 const fmtSalary = (n: number | null) => (n == null ? "—" : fmtK(n));
 
+// Strip leading emoji/symbols, sentence-case ALL-CAPS sentences, and split into
+// paragraphs so we can bold the leading clause. Data is untouched — display only.
+function normalizePathwayLines(raw: string): string[] {
+  return raw
+    .split(/\n+/)
+    .map((line) => {
+      // strip leading emoji + non-letter chars
+      let s = line.replace(/^[\s\p{Extended_Pictographic}\p{Emoji_Presentation}·•\-–—▶►►]+/u, "").trim();
+      // sentence-case any ALL-CAPS sentence
+      const sentences = s.split(/(?<=[.!?])\s+/);
+      const fixed = sentences.map((sent) => {
+        const letters = sent.replace(/[^A-Za-z]/g, "");
+        if (letters.length > 3 && letters === letters.toUpperCase()) {
+          const lower = sent.toLowerCase();
+          return lower.charAt(0).toUpperCase() + lower.slice(1);
+        }
+        return sent;
+      });
+      return fixed.join(" ");
+    })
+    .filter(Boolean);
+}
+
+// Restore lost separators inside employer entries (2+ spaces → ", ").
+const prettifyEmployer = (s: string) =>
+  s.replace(/\s{2,}/g, ", ").replace(/\(\s*/g, "(").replace(/\s*\)/g, ")").trim();
+
+const formatReviewedAt = (iso: string | null): string | null => {
+  if (!iso) return null;
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return null;
+  return d.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
+};
+
 // Rating tone colours live in src/lib/ratingTone.ts (central, extensible).
 
 // ── PAGE ──────────────────────────────────────────────────────────────────────
