@@ -22,8 +22,8 @@ const baseAnswers: RealityCheckAnswers = {
   ...emptyAnswers,
   startingPoint: "graduate",
   relevantBackground: "psychology degree",
-  qualificationLevel: "level_6_plus",
-  englishMaths: "have_both",
+  qualificationLevel: "undergrad",
+  englishMaths: "both",
 };
 
 beforeEach(() => {
