@@ -774,15 +774,25 @@ export function SavePrompt({
     if (saving || saved) return;
     trackEvent("save_decision_clicked", { role: role.role_name, logged_in: !!user });
 
+    // Build a V2 snapshot from the submitted answers so both anonymous
+    // (stashed) and authenticated saves persist the versioned record.
+    // Unresolved starting-point free text is not available at this point (it
+    // isn't carried into the result view), which is fine — the snapshot just
+    // omits a starting-point entry in that edge case, mirroring the legacy
+    // record where startingPoint is null.
+    const answerSnapshot = buildSnapshotFromLegacy(answers, {
+      roleSlug: role.role_slug ?? "",
+    });
+
     if (!user) {
-      stashPendingDecision(role, answers, result);
+      stashPendingDecision(role, answers, result, answerSnapshot);
       navigate(`/signup?redirect=/my-decisions&reason=save`);
       return;
     }
 
     setSaving(true);
     try {
-      const row = await saveDecision(user.id, role, answers, result);
+      const row = await saveDecision(user.id, role, answers, result, answerSnapshot);
       setSaved(true);
       setSavedId(row?.id ?? null);
       trackEvent("decision_saved", { role: role.role_name });
@@ -790,6 +800,7 @@ export function SavePrompt({
         title: "Saved to My Career Decisions",
         description: "You can come back and compare routes any time.",
       });
+
     } catch (e) {
       toast({
         title: "Couldn't save",
