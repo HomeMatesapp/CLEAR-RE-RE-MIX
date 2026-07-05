@@ -691,6 +691,7 @@ export type Database = {
           degree_required: string | null
           demand: string | null
           demand_source: string | null
+          hub_summary: string | null
           id: string
           job_security: string | null
           key_employers: string[] | null
@@ -749,6 +750,7 @@ export type Database = {
           degree_required?: string | null
           demand?: string | null
           demand_source?: string | null
+          hub_summary?: string | null
           id?: string
           job_security?: string | null
           key_employers?: string[] | null
@@ -807,6 +809,7 @@ export type Database = {
           degree_required?: string | null
           demand?: string | null
           demand_source?: string | null
+          hub_summary?: string | null
           id?: string
           job_security?: string | null
           key_employers?: string[] | null
