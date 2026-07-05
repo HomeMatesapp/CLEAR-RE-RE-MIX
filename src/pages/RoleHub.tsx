@@ -68,7 +68,7 @@ const RoleHub = () => {
       const { data, error } = await supabase
         .from("roles")
         .select(
-          "id, role_name, role_slug, short_description, salary_entry, salary_experienced, salary_senior, demand, competition_level, ai_impact_level"
+          "id, role_name, role_slug, short_description, hub_summary, salary_entry, salary_experienced, salary_senior, demand, competition_level, ai_impact_level"
         )
         .eq("role_slug", slug)
         .maybeSingle();
