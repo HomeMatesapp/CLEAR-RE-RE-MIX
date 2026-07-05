@@ -234,14 +234,8 @@ export type StartingPointStatus =
   | "unresolved_not_sure"
   | "unresolved_other";
 
-import {
-  ANSWER_SCHEMA_VERSION,
-  QUESTIONNAIRE_VERSION,
-  QUESTION_IDS,
-  buildSnapshotFromLegacy,
-  toLegacyRealityCheckAnswers,
-  type RealityCheckAnswerSnapshotV2,
-} from "@/lib/reality-check/answer-snapshot";
+
+
 
 export interface RealityCheckDraftV2 {
   schemaVersion: 2;
