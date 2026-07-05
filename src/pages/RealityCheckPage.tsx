@@ -204,18 +204,6 @@ const RealityCheckPage = () => {
     }
   }, [result]);
 
-  // Persist in-progress answers so a refresh mid-wizard doesn't wipe them.
-  // Only writes after hydration to avoid clobbering restored state.
-  useEffect(() => {
-    if (!slug || !hydratedProgress || result) return;
-    saveInProgressAnswers(slug, {
-      answers,
-      stepIndex,
-      startingPointStatus,
-      startingPointOtherText,
-    });
-  }, [slug, hydratedProgress, result, answers, stepIndex, startingPointStatus, startingPointOtherText]);
-
   // ── Validation & progressive disclosure ─────────────────────────────────────
 
   const sciencyRole = role ? isStemOrHealthcareRole(role.role_name) : false;
@@ -224,12 +212,40 @@ const RealityCheckPage = () => {
     !!answers.startingPoint && BACKGROUND_REQUIRED_FOR.includes(answers.startingPoint);
   const backgroundMissing = backgroundRequired && answers.relevantBackground.trim().length < 3;
 
+  // Dependency cleanup — when a conditional question is no longer visible
+  // (e.g. background question hidden after user re-selects starting point),
+  // its answer must not linger in state, persistence, or the submission
+  // payload. Runs on every render but only writes when a change is needed.
+  useEffect(() => {
+    if (!backgroundRequired && answers.relevantBackground) {
+      setAnswers((a) => sanitiseAnswersForVisibility(a, { backgroundRequired: false }));
+    }
+  }, [backgroundRequired, answers.relevantBackground]);
+
+  // Persist in-progress answers so a refresh mid-wizard doesn't wipe them.
+  // Only writes after hydration to avoid clobbering restored state. Uses
+  // stepId (not a numeric index) so the persisted position stays meaningful
+  // when the question order changes.
+  useEffect(() => {
+    if (!slug || !hydratedProgress || result) return;
+    if (!stepId) return;
+    saveInProgressAnswers(slug, {
+      answers,
+      stepId,
+      startingPointStatus,
+      startingPointOtherText,
+    });
+  }, [slug, hydratedProgress, result, answers, stepId, startingPointStatus, startingPointOtherText]);
+
   // Validity is now enforced step-by-step in the WizardForm; the aggregate
   // `canSubmit` gate below still guards the network submit for defence in depth.
   // Q1 is considered answered if either a canonical starting point is chosen
   // OR the user selected "Not sure" / "Something else" (answered_unresolved).
   const startingPointAnswered =
     !!answers.startingPoint ||
+    startingPointStatus === "unresolved_not_sure" ||
+    startingPointStatus === "unresolved_other";
+  const startingPointUnresolved =
     startingPointStatus === "unresolved_not_sure" ||
     startingPointStatus === "unresolved_other";
   const missing: string[] = [];
