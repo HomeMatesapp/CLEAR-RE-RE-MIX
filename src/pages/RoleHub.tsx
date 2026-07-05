@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,6 +14,7 @@ type HubRole = {
   role_name: string;
   role_slug: string;
   short_description: string | null;
+  hub_summary: string | null;
   salary_entry: number | null;
   salary_experienced: number | null;
   salary_senior: number | null;
