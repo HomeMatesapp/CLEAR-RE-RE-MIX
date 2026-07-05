@@ -576,7 +576,6 @@ const WizardForm = ({
 
   const notSureActive = startingPointStatus === "unresolved_not_sure";
   const otherActive = startingPointStatus === "unresolved_other";
-  const startingPointUnresolved = notSureActive || otherActive;
   const startingPointAnswered = !!answers.startingPoint || startingPointUnresolved;
 
   const rawSteps: (WizardStep | null)[] = [
