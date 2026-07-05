@@ -141,7 +141,7 @@ const MyRoute = () => {
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
 
-      const rows = ((dRows ?? []) as unknown as SavedRow[]) ?? [];
+      const rows = (dRows ?? []) as unknown as SavedRow[];
       if (cancelled) return;
       setDecisions(rows);
       const active = rows[0] ?? null;
