@@ -873,6 +873,8 @@ export type Database = {
       }
       saved_decisions: {
         Row: {
+          answer_schema_version: number | null
+          answer_snapshot: Json | null
           backup_route_title: string | null
           best_route_title: string | null
           created_at: string
@@ -881,6 +883,7 @@ export type Database = {
           input_snapshot: Json | null
           local_realism_rating: string | null
           overall_verdict: string | null
+          questionnaire_version: string | null
           result_snapshot: Json | null
           role_id: string | null
           role_name: string
@@ -891,6 +894,8 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          answer_schema_version?: number | null
+          answer_snapshot?: Json | null
           backup_route_title?: string | null
           best_route_title?: string | null
           created_at?: string
@@ -899,6 +904,7 @@ export type Database = {
           input_snapshot?: Json | null
           local_realism_rating?: string | null
           overall_verdict?: string | null
+          questionnaire_version?: string | null
           result_snapshot?: Json | null
           role_id?: string | null
           role_name: string
@@ -909,6 +915,8 @@ export type Database = {
           user_id: string
         }
         Update: {
+          answer_schema_version?: number | null
+          answer_snapshot?: Json | null
           backup_route_title?: string | null
           best_route_title?: string | null
           created_at?: string
@@ -917,6 +925,7 @@ export type Database = {
           input_snapshot?: Json | null
           local_realism_rating?: string | null
           overall_verdict?: string | null
+          questionnaire_version?: string | null
           result_snapshot?: Json | null
           role_id?: string | null
           role_name?: string

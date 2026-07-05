@@ -1,6 +1,8 @@
-// Unit tests for the Increment 1a wizard shell helpers:
-// draft persistence (schemaVersion + TTL), unresolved starting-point handling,
-// visibility-based answer cleanup, and stepId clamping.
+// Unit tests for the questionnaire shell helpers:
+// draft persistence (V2 snapshot + TTL + V1 rejection), unresolved
+// starting-point handling, visibility-based answer cleanup, and stepId
+// clamping. Adapter-level and snapshot-level tests live in
+// ./answer-snapshot.test.ts.
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
@@ -35,8 +37,8 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-describe("draft persistence (schemaVersion + TTL)", () => {
-  it("round-trips a saved draft with schemaVersion 1", () => {
+describe("draft persistence (V2 snapshot + TTL)", () => {
+  it("round-trips a saved V2 draft and reconstructs legacy answers", () => {
     saveInProgressAnswers(SLUG, {
       answers: baseAnswers,
       stepId: "qualification",
@@ -46,23 +48,51 @@ describe("draft persistence (schemaVersion + TTL)", () => {
 
     const loaded = loadInProgressAnswers(SLUG);
     expect(loaded).not.toBeNull();
-    expect(loaded?.schemaVersion).toBe(1);
     expect(loaded?.stepId).toBe("qualification");
     expect(loaded?.answers.startingPoint).toBe("graduate");
+    expect(loaded?.answers.qualificationLevel).toBe("undergrad");
+    // Free text is preserved as a "Provided" sentinel by the legacy adapter,
+    // never the original text.
+    expect(loaded?.answers.relevantBackground).toBe("Provided");
+    expect(loaded?.startingPointStatus).toBe("resolved");
   });
 
-  it("ignores drafts written under an older/unknown schema", () => {
+  it("persists a V2-shaped record in sessionStorage", () => {
+    saveInProgressAnswers(SLUG, {
+      answers: baseAnswers,
+      stepId: "qualification",
+      startingPointStatus: "resolved",
+      startingPointOtherText: "",
+    });
+    const raw = JSON.parse(sessionStorage.getItem(KEY)!);
+    expect(raw.schemaVersion).toBe(2);
+    expect(raw.answerSnapshot.schemaVersion).toBe(2);
+    expect(raw.answerSnapshot.questionnaireVersion).toMatch(/^core-/);
+    expect(raw.answerSnapshot.answers.starting_point.confirmedCanonicalValue).toBe("graduate");
+  });
+
+  it("rejects V1 drafts written by earlier increments", () => {
     sessionStorage.setItem(
       KEY,
       JSON.stringify({
-        // no schemaVersion — represents pre-Increment-1a drafts
+        schemaVersion: 1,
         answers: baseAnswers,
-        stepIndex: 3,
-        savedAt: new Date().toISOString(),
+        stepId: "qualification",
+        startingPointStatus: "resolved",
+        startingPointOtherText: "",
+        savedAt: Date.now(),
       }),
     );
     expect(loadInProgressAnswers(SLUG)).toBeNull();
-    // and cleans up the stale entry
+    expect(sessionStorage.getItem(KEY)).toBeNull();
+  });
+
+  it("ignores drafts written under an unknown schema", () => {
+    sessionStorage.setItem(
+      KEY,
+      JSON.stringify({ answers: baseAnswers, stepIndex: 3, savedAt: new Date().toISOString() }),
+    );
+    expect(loadInProgressAnswers(SLUG)).toBeNull();
     expect(sessionStorage.getItem(KEY)).toBeNull();
   });
 
@@ -76,7 +106,6 @@ describe("draft persistence (schemaVersion + TTL)", () => {
       startingPointStatus: "resolved",
       startingPointOtherText: "",
     });
-    // Fast-forward beyond the 24h TTL
     vi.setSystemTime(now + 25 * 60 * 60 * 1000);
     expect(loadInProgressAnswers(SLUG)).toBeNull();
   });
@@ -100,8 +129,6 @@ describe("draft persistence (schemaVersion + TTL)", () => {
       startingPointStatus: "resolved",
       startingPointOtherText: "",
     });
-    // Simulate a failed submit: submit() catches and does NOT call
-    // clearInProgressAnswers, so the draft must still be there.
     const loaded = loadInProgressAnswers(SLUG);
     expect(loaded).not.toBeNull();
     expect(loaded?.stepId).toBe("review");
@@ -109,7 +136,7 @@ describe("draft persistence (schemaVersion + TTL)", () => {
 });
 
 describe("unresolved starting point", () => {
-  it("stores unresolved_not_sure and keeps startingPoint null", () => {
+  it("stores unresolved_not_sure and keeps legacy startingPoint null", () => {
     saveInProgressAnswers(SLUG, {
       answers: { ...emptyAnswers, startingPoint: null },
       stepId: "review",
@@ -132,6 +159,13 @@ describe("unresolved starting point", () => {
     expect(loaded.startingPointStatus).toBe("unresolved_other");
     expect(loaded.answers.startingPoint).toBeNull();
     expect(loaded.startingPointOtherText).toBe("between roles after a career break");
+    // The free text lives in the snapshot's rawText — never in a canonical
+    // field the engine reads.
+    const raw = JSON.parse(sessionStorage.getItem(KEY)!);
+    expect(raw.answerSnapshot.answers.starting_point.rawText).toBe(
+      "between roles after a career break",
+    );
+    expect(raw.answerSnapshot.answers.starting_point.confirmedCanonicalValue).toBeUndefined();
   });
 
   it("exposes copy for the reduced-specificity notice on review and result", () => {
@@ -147,9 +181,7 @@ describe("sanitiseAnswersForVisibility", () => {
       startingPoint: "school_leaver",
       relevantBackground: "psychology degree",
     };
-    const cleaned = sanitiseAnswersForVisibility(withBackground, {
-      backgroundRequired: false,
-    });
+    const cleaned = sanitiseAnswersForVisibility(withBackground, { backgroundRequired: false });
     expect(cleaned.relevantBackground).toBe("");
   });
 
@@ -159,9 +191,7 @@ describe("sanitiseAnswersForVisibility", () => {
       startingPoint: "graduate",
       relevantBackground: "psychology degree",
     };
-    const cleaned = sanitiseAnswersForVisibility(withBackground, {
-      backgroundRequired: true,
-    });
+    const cleaned = sanitiseAnswersForVisibility(withBackground, { backgroundRequired: true });
     expect(cleaned.relevantBackground).toBe("psychology degree");
   });
 
@@ -173,16 +203,12 @@ describe("sanitiseAnswersForVisibility", () => {
 
 describe("clampStepId", () => {
   const visible = ["starting_point", "qualification", "english_maths", "review"];
-
   it("returns the stored id when still visible", () => {
     expect(clampStepId("qualification", visible)).toBe("qualification");
   });
-
   it("falls back to the first visible step when the stored id is now hidden", () => {
-    // e.g. the user was on 'background' but that step no longer exists
     expect(clampStepId("background", visible)).toBe("starting_point");
   });
-
   it("falls back to the first visible step for null/undefined", () => {
     expect(clampStepId(null, visible)).toBe("starting_point");
     expect(clampStepId(undefined, visible)).toBe("starting_point");
@@ -190,8 +216,6 @@ describe("clampStepId", () => {
 });
 
 describe("visible-steps derivation (progress count)", () => {
-  // The wizard derives its progress count from a visibleSteps array;
-  // adding/removing the conditional background step must change the count.
   const buildQuestionIds = (backgroundRequired: boolean): string[] =>
     [
       "starting_point",
@@ -211,7 +235,6 @@ describe("visible-steps derivation (progress count)", () => {
   it("counts 11 questions when the background step is hidden", () => {
     expect(buildQuestionIds(false)).toHaveLength(11);
   });
-
   it("counts 12 questions when the background step is visible", () => {
     expect(buildQuestionIds(true)).toHaveLength(12);
   });
