@@ -471,7 +471,7 @@ const RealityCheckPage = () => {
     : "Subjects you've studied that relate to this role can affect your options.";
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-paper text-ink">
       <Helmet>
         <title>Reality-check {role.role_name} | Clear Routes</title>
         <meta
@@ -480,104 +480,100 @@ const RealityCheckPage = () => {
         />
       </Helmet>
 
-      <Navbar />
+      <WizardHeader roleName={role.role_name} roleSlug={role.role_slug} />
 
-      <main className="max-w-2xl w-full mx-auto px-4 py-6 font-sans">
-        <Link
-          to={`/role/${role.role_slug}`}
-          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground mb-4"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" />
-          Back to {role.role_name}
-        </Link>
+      <div className="relative flex-1 overflow-hidden">
+        <ContourBackdrop />
+        <main className="relative max-w-[820px] mx-auto px-4 sm:px-8 py-8 sm:py-12 pb-20">
+          <p className="font-mono text-[12.5px] tracking-[0.14em] uppercase text-muted-foreground">
+            Reality-check · <b className="text-ink font-semibold">{role.role_name}</b>
+          </p>
 
-        <h1 className="text-2xl font-medium text-gray-900 mb-1">
-          Reality-check your route into {role.role_name}
-        </h1>
-        <p className="text-sm text-gray-500 mb-6 leading-relaxed">
-          We'll use your background, qualifications, budget, time, and area to judge the most realistic route.
-        </p>
-
-        <section
-          aria-label="Reality-check this route"
-          className="relative rounded-xl border border-gray-800 bg-gradient-to-br from-gray-900 to-gray-800 p-4 sm:p-5 text-white shadow-sm"
-        >
-          <StepIndicator current={currentStep} />
+          <PhaseTrail current={currentStep} />
 
           {!result && prefilled && (
-            <div className="mb-3 flex items-center justify-between gap-3 rounded-lg border border-amber-300/20 bg-amber-300/5 px-2.5 py-1.5">
-              <p className="text-[11px] text-amber-100">Using your saved Decision Profile.</p>
+            <div className="mt-6 flex items-center justify-between gap-3 rounded-md border-2 border-ink bg-tint px-3 py-2">
+              <p className="text-[13px] text-ink">Using your saved Decision Profile.</p>
               <Link
                 to="/my-decisions#decision-profile"
-                className="text-[11px] text-amber-200 underline underline-offset-2 hover:text-white inline-flex items-center gap-1"
+                className="text-[12px] font-mono text-path underline underline-offset-4 hover:text-ink inline-flex items-center gap-1"
               >
-                <UserCog className="h-3 w-3" /> Edit
+                <UserCog className="h-3.5 w-3.5" /> Edit
               </Link>
             </div>
           )}
 
-          {result && (
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-gray-700 bg-gray-800/60 px-3 py-2">
-              <p className="text-[11px] text-gray-300 leading-snug">
-                <span className="font-semibold uppercase tracking-wider text-gray-500 mr-1.5">Checked for:</span>
-                {chips.join(" · ")}
-              </p>
-              <button
-                type="button"
-                onClick={editAnswers}
-                className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-200 hover:text-white underline underline-offset-2"
-              >
-                <Pencil className="h-3 w-3" /> Edit answers
-              </button>
-            </div>
+          {!result ? (
+            <section
+              aria-label="Reality-check this route"
+              aria-live="polite"
+              className="mt-8 bg-white border-2 border-ink rounded-[10px] overflow-hidden"
+            >
+              <WizardForm
+                answers={answers}
+                setAnswers={setAnswers}
+                submitting={submitting}
+                submit={submit}
+                canSubmit={canSubmit}
+                error={error}
+                backgroundRequired={backgroundRequired}
+                backgroundMissing={backgroundMissing}
+                scienceLabel={scienceLabel}
+                scienceHelper={scienceHelper}
+                stepId={stepId}
+                setStepId={setStepId}
+                startingPointUnresolved={startingPointUnresolved}
+                startingPointStatus={startingPointStatus}
+                setStartingPointStatus={setStartingPointStatus}
+                startingPointOtherText={startingPointOtherText}
+                setStartingPointOtherText={setStartingPointOtherText}
+              />
+            </section>
+          ) : (
+            <section
+              aria-label="Reality-check result"
+              className="mt-8 bg-white border-2 border-ink rounded-[10px] p-4 sm:p-6"
+            >
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-2 border-b-2 border-dashed border-[hsl(40_15%_82%)] pb-3">
+                <p className="text-[12px] text-muted-foreground leading-snug">
+                  <span className="font-mono uppercase tracking-wider text-ink mr-1.5">Checked for:</span>
+                  {chips.join(" · ")}
+                </p>
+                <button
+                  type="button"
+                  onClick={editAnswers}
+                  className="inline-flex items-center gap-1 font-mono text-[12px] text-path hover:text-ink underline underline-offset-4"
+                >
+                  <Pencil className="h-3 w-3" /> Edit answers
+                </button>
+              </div>
+              <div ref={resultRef}>
+                {startingPointUnresolved && (
+                  <div className="mb-4 rounded-md border-l-4 border-path bg-tint px-3 py-2">
+                    <p className="text-[13px] text-ink leading-snug">
+                      {UNRESOLVED_STARTING_POINT_NOTICE}
+                    </p>
+                  </div>
+                )}
+                <ResultView
+                  result={result}
+                  answers={answers}
+                  role={role}
+                  onEdit={editAnswers}
+                  initialProfile={initialProfile}
+                  onProfileSaved={(p) => setInitialProfile(p)}
+                />
+              </div>
+            </section>
           )}
 
           {!result && (
-            <WizardForm
-              answers={answers}
-              setAnswers={setAnswers}
-              submitting={submitting}
-              submit={submit}
-              canSubmit={canSubmit}
-              error={error}
-              backgroundRequired={backgroundRequired}
-              backgroundMissing={backgroundMissing}
-              scienceLabel={scienceLabel}
-              scienceHelper={scienceHelper}
-              stepId={stepId}
-              setStepId={setStepId}
-              startingPointUnresolved={startingPointUnresolved}
-              startingPointStatus={startingPointStatus}
-              setStartingPointStatus={setStartingPointStatus}
-              startingPointOtherText={startingPointOtherText}
-              setStartingPointOtherText={setStartingPointOtherText}
-            />
+            <p className="mt-5 text-center font-mono text-[12.5px] text-muted-foreground">
+              Your progress is saved on this device · No account needed
+            </p>
           )}
-
-
-          {result && (
-            <div ref={resultRef}>
-              {startingPointUnresolved && (
-                <div className="mb-3 rounded-lg border border-amber-300/30 bg-amber-300/5 px-3 py-2">
-                  <p className="text-[11px] text-amber-100 leading-snug">
-                    {UNRESOLVED_STARTING_POINT_NOTICE}
-                  </p>
-                </div>
-              )}
-              <ResultView
-                result={result}
-                answers={answers}
-                role={role}
-                onEdit={editAnswers}
-                initialProfile={initialProfile}
-                onProfileSaved={(p) => setInitialProfile(p)}
-              />
-            </div>
-          )}
-        </section>
-      </main>
-
-      <Footer />
+        </main>
+      </div>
     </div>
   );
 };
