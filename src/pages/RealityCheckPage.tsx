@@ -1007,32 +1007,39 @@ const WizardForm = ({
 
         return (
           <div>
-            <h2 className="text-base font-medium text-white mb-1">Ready to check your route?</h2>
-            <p className="text-[11px] text-gray-400 mb-3 leading-snug">
+            <h1 className="font-display font-extrabold text-ink tracking-[-0.02em] leading-[1.08] text-[clamp(24px,3.6vw,34px)]">
+              Ready to check your route?
+            </h1>
+            <p className="mt-2.5 text-[15px] leading-relaxed text-[hsl(90_10%_28%)] max-w-[56ch]">
               Review your answers. Use Back to change anything before we run the check.
             </p>
-            <dl className="rounded-lg border border-gray-700 bg-gray-800/60 divide-y divide-gray-700/60">
+            <dl className="mt-6 rounded-md border-2 border-ink divide-y-2 divide-ink/10 bg-white">
               {summaryRows.map((row) => (
-                <div key={row.label} className="grid grid-cols-[minmax(0,9rem)_1fr] gap-3 px-3 py-2">
-                  <dt className="text-[11px] uppercase tracking-wider text-gray-500">{row.label}</dt>
-                  <dd className="text-xs text-gray-100 break-words">{row.value}</dd>
+                <div
+                  key={row.label}
+                  className="grid grid-cols-1 sm:grid-cols-[minmax(0,11rem)_1fr] gap-1 sm:gap-4 px-4 py-3"
+                >
+                  <dt className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
+                    {row.label}
+                  </dt>
+                  <dd className="text-[15px] text-ink break-words">{row.value}</dd>
                 </div>
               ))}
             </dl>
             {startingPointUnresolved && (
-              <div className="mt-3 rounded-lg border border-amber-300/30 bg-amber-300/5 px-3 py-2">
-                <p className="text-[11px] text-amber-100 leading-snug">
+              <div className="mt-4 rounded-md border-l-4 border-path bg-tint px-3 py-2.5">
+                <p className="text-[13.5px] text-ink leading-snug">
                   {UNRESOLVED_STARTING_POINT_NOTICE}
                 </p>
                 {otherActive && startingPointOtherText.trim() && (
-                  <p className="mt-1 text-[11px] text-amber-100/80 leading-snug">
+                  <p className="mt-1.5 text-[13px] text-ink/80 leading-snug">
                     {UNRESOLVED_STARTING_POINT_OTHER_NOTICE}
                   </p>
                 )}
               </div>
             )}
             {!canSubmit && (
-              <p className="mt-3 text-[11px] text-amber-200/90 leading-snug">
+              <p className="mt-4 text-[13.5px] text-danger font-medium leading-snug">
                 A few earlier questions still need an answer — use Back to complete them.
               </p>
             )}
@@ -1080,71 +1087,64 @@ const WizardForm = ({
   };
 
   return (
-    <div className="space-y-4">
-      {/* Fine-grained progress */}
-      <div>
-        <div className="flex items-center justify-between text-[11px] text-gray-400 mb-1.5">
-          <span>
-            {isReview
-              ? `Review · ${totalQuestions} question${totalQuestions === 1 ? "" : "s"}`
-              : `Question ${currentQuestionNumber} of ${totalQuestions}`}
-          </span>
+    <div>
+      {/* Card header — question count + compact progress bar */}
+      <div className="flex justify-between items-center gap-3 px-6 py-3.5 bg-tint border-b-2 border-ink">
+        <span className="font-mono text-[12px] tracking-[0.14em] uppercase text-muted-foreground">
+          {isReview ? `Review · ${totalQuestions} questions` : `Question ${currentQuestionNumber} of ${totalQuestions}`}
+        </span>
+        <span
+          className="flex-1 max-w-[220px] h-[6px] border-[1.5px] border-ink rounded-full overflow-hidden bg-white"
+          aria-hidden="true"
+        >
+          <span
+            className="block h-full bg-path transition-all duration-300"
+            style={{ width: `${progressPct}%` }}
+          />
+        </span>
+      </div>
+
+      {/* Card body — current question */}
+      <div key={step.id} className="p-6 sm:p-10">
+        {step.render()}
+        {error && <p role="alert" className="mt-4 text-sm font-medium text-danger">{error}</p>}
+      </div>
+
+      {/* Card footer — Back / Skip / Next */}
+      <div className="flex flex-col-reverse sm:flex-row justify-between items-stretch sm:items-center gap-3 px-6 py-4 border-t-2 border-dashed border-[hsl(40_15%_82%)]">
+        <button
+          type="button"
+          onClick={goBack}
+          disabled={safeIndex === 0 || submitting}
+          className="font-body font-bold text-[15px] bg-transparent border-2 border-transparent text-muted-foreground px-4 py-2.5 rounded-[5px] hover:text-ink hover:border-ink disabled:opacity-35 disabled:cursor-default disabled:hover:border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-path"
+        >
+          ← Back
+        </button>
+        <div className="flex flex-col-reverse sm:flex-row sm:items-center gap-3 sm:gap-5">
           {step.optional && !isReview && (
             <button
               type="button"
               onClick={goNext}
               disabled={submitting}
-              className="text-amber-200 hover:text-white underline underline-offset-2"
+              className="font-mono text-[13px] text-muted-foreground hover:text-ink underline underline-offset-4 bg-transparent border-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-path rounded"
             >
-              Skip
+              Skip this question
             </button>
           )}
+          <button
+            type="button"
+            onClick={goNext}
+            disabled={!canAdvance || submitting}
+            className="font-display font-bold text-[16px] bg-path text-white border-0 px-7 py-3.5 rounded-[5px] hover:bg-ink disabled:bg-[hsl(40_15%_82%)] disabled:text-muted-foreground disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-path focus-visible:ring-offset-2 focus-visible:ring-offset-white inline-flex items-center justify-center gap-2 min-h-[44px]"
+          >
+            {submitting && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
+            {submitting ? "Finding your route…" : isReview ? "Show my realistic route →" : "Next →"}
+          </button>
         </div>
-        <div className="h-1 rounded-full bg-gray-700/60 overflow-hidden">
-          <div
-            className="h-full bg-amber-300 transition-all duration-300"
-            style={{ width: `${progressPct}%` }}
-          />
-        </div>
-      </div>
-
-      {/* Active question */}
-      <div key={step.id} className="pt-1">
-        {step.render()}
-      </div>
-
-      {error && <p className="text-xs text-rose-300">{error}</p>}
-
-      {/* Navigation */}
-      <div className="flex items-center justify-between gap-3 border-t border-gray-700/50 pt-4">
-        <button
-          type="button"
-          onClick={goBack}
-          disabled={safeIndex === 0 || submitting}
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-300 hover:text-white px-3 py-2 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back
-        </button>
-        <button
-          type="button"
-          onClick={goNext}
-          disabled={!canAdvance || submitting}
-          className="inline-flex items-center gap-1.5 text-sm font-medium bg-amber-300 text-gray-900 px-4 py-2 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed hover:bg-amber-200 transition-colors"
-        >
-          {submitting ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : isReview ? (
-            <Sparkles className="h-4 w-4" />
-          ) : null}
-          {submitting
-            ? "Finding your route…"
-            : isReview
-            ? "Show my realistic route"
-            : "Next"}
-          {!submitting && !isReview && <ArrowRight className="h-4 w-4" />}
-        </button>
       </div>
     </div>
   );
 };
+
+const PAPER_INPUT =
+  "w-full rounded-md bg-white border-2 border-ink px-3 py-2.5 text-[15px] text-ink placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-path focus:ring-offset-0";
