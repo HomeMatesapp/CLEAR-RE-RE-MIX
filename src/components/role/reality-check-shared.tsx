@@ -52,6 +52,15 @@ import {
   profilesDiffer,
   type DecisionProfileFields,
 } from "@/lib/reality-check/profile-mapping";
+import {
+  ANSWER_SCHEMA_VERSION,
+  QUESTIONNAIRE_VERSION,
+  QUESTION_IDS,
+  buildSnapshotFromLegacy,
+  toLegacyRealityCheckAnswers,
+  type RealityCheckAnswerSnapshotV2,
+} from "@/lib/reality-check/answer-snapshot";
+
 
 // ── Defaults ──────────────────────────────────────────────────────────────────
 
