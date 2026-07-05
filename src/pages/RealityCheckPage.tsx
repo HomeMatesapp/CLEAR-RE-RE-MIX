@@ -195,6 +195,18 @@ const RealityCheckPage = () => {
     }
   }, [result]);
 
+  // Persist in-progress answers so a refresh mid-wizard doesn't wipe them.
+  // Only writes after hydration to avoid clobbering restored state.
+  useEffect(() => {
+    if (!slug || !hydratedProgress || result) return;
+    saveInProgressAnswers(slug, {
+      answers,
+      stepIndex,
+      startingPointStatus,
+      startingPointOtherText,
+    });
+  }, [slug, hydratedProgress, result, answers, stepIndex, startingPointStatus, startingPointOtherText]);
+
   // ── Validation & progressive disclosure ─────────────────────────────────────
 
   const sciencyRole = role ? isStemOrHealthcareRole(role.role_name) : false;
@@ -205,8 +217,12 @@ const RealityCheckPage = () => {
 
   // Validity is now enforced step-by-step in the WizardForm; the aggregate
   // `canSubmit` gate below still guards the network submit for defence in depth.
+  // Q1 is considered answered if either a canonical starting point is chosen
+  // OR the user selected "Not sure" / "Something else" (answered_unresolved).
+  const startingPointAnswered =
+    !!answers.startingPoint || startingPointStatus === "answered_unresolved";
   const missing: string[] = [];
-  if (!answers.startingPoint) missing.push("starting point");
+  if (!startingPointAnswered) missing.push("starting point");
   if (backgroundMissing) missing.push("relevant background");
   if (!answers.qualificationLevel) missing.push("highest qualification");
   if (!answers.englishMaths) missing.push("English/maths");
