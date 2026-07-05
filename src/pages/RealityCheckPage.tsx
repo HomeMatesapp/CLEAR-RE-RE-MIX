@@ -41,6 +41,10 @@ import {
   loadSessionResult,
   saveSessionResult,
   clearSessionResult,
+  loadInProgressAnswers,
+  saveInProgressAnswers,
+  clearInProgressAnswers,
+  type StartingPointStatus,
 } from "@/components/role/reality-check-shared";
 import { isSupportedRegion } from "@/lib/reality-check/regions";
 import { isRealityCheckEnabled as isRealityCheckReady } from "@/lib/reality-check/service-levels";
