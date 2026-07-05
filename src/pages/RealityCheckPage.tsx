@@ -827,18 +827,77 @@ const WizardForm = ({
         </Field>
       ),
     },
+    {
+      id: "review",
+      phase: 2,
+      isReview: true,
+      isValid: () => canSubmit,
+      render: () => {
+        const summaryRows: { label: string; value: string }[] = [];
+        const startingLabel = answers.startingPoint
+          ? STARTING_POINTS.find((o) => o.value === answers.startingPoint)?.label ?? null
+          : startingPointStatus === "answered_unresolved"
+          ? startingPointOtherText.trim() || "Not sure"
+          : null;
+        if (startingLabel) summaryRows.push({ label: "Starting from", value: startingLabel });
+        if (answers.relevantBackground.trim())
+          summaryRows.push({ label: "Background", value: answers.relevantBackground.trim() });
+        const ql = QUALIFICATION_LEVELS.find((o) => o.value === answers.qualificationLevel)?.label;
+        if (ql) summaryRows.push({ label: "Highest qualification", value: ql });
+        const em = ENGLISH_MATHS.find((o) => o.value === answers.englishMaths)?.label;
+        if (em) summaryRows.push({ label: "English & maths", value: em });
+        const sci = SCIENCE_SUBJECTS.find((o) => o.value === answers.scienceSubjects)?.label;
+        if (sci) summaryRows.push({ label: "Role-related subjects", value: sci });
+        const ec = ENGLISH_COMFORT.find((o) => o.value === answers.englishComfort)?.label;
+        if (ec) summaryRows.push({ label: "Studying in English", value: ec });
+        const inc = INCOME_NEEDS.find((o) => o.value === answers.incomeNeed)?.label;
+        if (inc) summaryRows.push({ label: "Earning need", value: inc });
+        const bd = BUDGETS.find((o) => o.value === answers.budget)?.label;
+        if (bd) summaryRows.push({ label: "Training budget", value: bd });
+        const rg = REGIONS.find((o) => o.value === answers.region)?.label;
+        if (rg) summaryRows.push({ label: "Region", value: rg });
+        if (answers.area.trim()) summaryRows.push({ label: "Town / postcode", value: answers.area.trim() });
+        const wh = WEEKLY_HOURS.find((o) => o.value === answers.weeklyHours)?.label;
+        if (wh) summaryRows.push({ label: "Weekly time", value: wh });
+        const cf = COMMUTE_FLEX.find((o) => o.value === answers.commuteFlex)?.label;
+        if (cf) summaryRows.push({ label: "Travel", value: cf });
+
+        return (
+          <div>
+            <h2 className="text-base font-medium text-white mb-1">Ready to check your route?</h2>
+            <p className="text-[11px] text-gray-400 mb-3 leading-snug">
+              Review your answers. Use Back to change anything before we run the check.
+            </p>
+            <dl className="rounded-lg border border-gray-700 bg-gray-800/60 divide-y divide-gray-700/60">
+              {summaryRows.map((row) => (
+                <div key={row.label} className="grid grid-cols-[minmax(0,9rem)_1fr] gap-3 px-3 py-2">
+                  <dt className="text-[11px] uppercase tracking-wider text-gray-500">{row.label}</dt>
+                  <dd className="text-xs text-gray-100 break-words">{row.value}</dd>
+                </div>
+              ))}
+            </dl>
+            {!canSubmit && (
+              <p className="mt-3 text-[11px] text-amber-200/90 leading-snug">
+                A few earlier questions still need an answer — use Back to complete them.
+              </p>
+            )}
+          </div>
+        );
+      },
+    },
   ];
 
   const steps = rawSteps.filter((s): s is WizardStep => s !== null);
   const total = steps.length;
   const safeIndex = Math.min(stepIndex, total - 1);
   const step = steps[safeIndex];
+  const isReview = step.isReview === true;
   const isLast = safeIndex === total - 1;
   const canAdvance = step.isValid() || step.optional === true;
   const progressPct = Math.round(((safeIndex + 1) / total) * 100);
 
   const goNext = () => {
-    if (isLast) {
+    if (isReview) {
       submit();
     } else {
       setStepIndex((i) => Math.min(i + 1, total - 1));
