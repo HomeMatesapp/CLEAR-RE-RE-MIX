@@ -740,6 +740,7 @@ const WizardForm = ({
             <Field
               label="What have you studied or worked in?"
               helper="A brief note helps us judge whether you'll meet entry requirements."
+              why="If your starting point is a related field or a career change, your existing study or work can shorten a route — but only when it maps to what employers or awarding bodies recognise."
               error={backgroundMissing ? "Add a little more detail." : null}
             >
               <input
@@ -748,7 +749,7 @@ const WizardForm = ({
                 onChange={(e) => set("relevantBackground", e.target.value)}
                 placeholder="e.g. psychology degree, retail manager, biology A-level"
                 disabled={submitting}
-                className="w-full rounded-lg bg-gray-700/60 border border-gray-600 px-2.5 py-1.5 text-sm text-white placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-amber-300/60"
+                className={PAPER_INPUT}
               />
             </Field>
           ),
@@ -759,7 +760,10 @@ const WizardForm = ({
       phase: 1,
       isValid: () => !!answers.qualificationLevel,
       render: () => (
-        <Field label="What's your highest qualification?">
+        <Field
+          label="What's your highest qualification?"
+          why="Different routes have different entry doors. Your highest qualification decides which are open right now, and which need bridging first."
+        >
           <ChipGroup
             options={QUALIFICATION_LEVELS}
             value={answers.qualificationLevel}
@@ -777,6 +781,7 @@ const WizardForm = ({
         <Field
           label="Do you have GCSE English and maths, or equivalent?"
           helper="Many routes ask for English and maths or an equivalent qualification."
+          why="Most regulated and apprenticeship routes require English and maths at GCSE grade 4/C or equivalent — sometimes as a strict entry gate."
         >
           <ChipGroup
             options={ENGLISH_MATHS}
@@ -792,7 +797,11 @@ const WizardForm = ({
       phase: 1,
       isValid: () => !!answers.scienceSubjects,
       render: () => (
-        <Field label={scienceLabel} helper={scienceHelper}>
+        <Field
+          label={scienceLabel}
+          helper={scienceHelper}
+          why="Some routes have subject-specific entry requirements — this signals whether you already meet them or would need a bridging qualification."
+        >
           <ChipGroup
             options={SCIENCE_SUBJECTS}
             value={answers.scienceSubjects}
@@ -810,6 +819,7 @@ const WizardForm = ({
         <Field
           label="Are you comfortable studying and working in English?"
           helper="We only use this to suggest realistic support — never to gatekeep."
+          why="If English isn't your first language, we can point you at support and preparation routes instead of assuming you don't need them."
         >
           <ChipGroup
             options={ENGLISH_COMFORT}
@@ -828,6 +838,7 @@ const WizardForm = ({
         <Field
           label="Do you need to earn while training?"
           helper="This changes which routes are realistic — for example, apprenticeships pay, university generally doesn't."
+          why="If you need income now, unpaid or full-time study routes may not be realistic — this rules those out honestly rather than recommending routes you'd have to abandon."
         >
           <ChipGroup
             options={INCOME_NEEDS}
@@ -846,6 +857,7 @@ const WizardForm = ({
         <Field
           label="How much can you spend on training?"
           helper="Roughly — we use this to filter routes you can actually afford."
+          why="Some routes cost nothing and pay you; others quietly cost thousands. We use this to rule out routes that would put you in debt for no better outcome — never to sell you anything."
         >
           <ChipGroup
             options={BUDGETS}
@@ -861,10 +873,11 @@ const WizardForm = ({
       phase: 2,
       isValid: () => !!answers.region,
       render: () => (
-        <div className="space-y-3">
+        <div className="space-y-6">
           <Field
             label="Where in the UK do you live?"
             helper="We use this to set realistic expectations for local opportunity coverage."
+            why="Some routes cluster in specific regions and countries of the UK have different funding and entry rules. Your region shapes which routes are actually reachable."
           >
             <ChipGroup
               options={REGIONS}
@@ -873,21 +886,24 @@ const WizardForm = ({
               disabled={submitting}
             />
             {answers.region && !isSupportedRegion(answers.region) && (
-              <p className="mt-1.5 text-[10px] text-amber-200/90 leading-snug">
+              <p className="mt-3 text-[13px] text-wood font-medium leading-snug">
                 Verified local opportunity coverage isn't available in your area yet — your route judgement will still work.
               </p>
             )}
           </Field>
-          <Field label="Town or postcode (optional)" helper="Add more detail if you'd like — it's not required.">
+          <div>
+            <label className="block font-mono text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">
+              Town or postcode (optional)
+            </label>
             <input
               type="text"
               value={answers.area}
               onChange={(e) => set("area", e.target.value)}
               placeholder="e.g. Leeds, SE15"
               disabled={submitting}
-              className="w-full rounded-lg bg-gray-700/60 border border-gray-600 px-2.5 py-1.5 text-sm text-white placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-amber-300/60"
+              className={PAPER_INPUT}
             />
-          </Field>
+          </div>
         </div>
       ),
     },
@@ -900,6 +916,7 @@ const WizardForm = ({
         <Field
           label="How much time can you give this each week?"
           helper="A rough estimate is fine. Skip if you're not sure."
+          why="Time is the constraint people most often overestimate. A part-time college route needs steady evening hours for two years; an apprenticeship replaces your working week entirely."
         >
           <ChipGroup
             options={WEEKLY_HOURS}
@@ -919,6 +936,7 @@ const WizardForm = ({
         <Field
           label="How far are you willing to travel or relocate?"
           helper="Some routes cluster in particular places — this helps us judge fit."
+          why="If a good route requires moving city or a long commute you can't sustain, we'd rather flag that upfront than let you find out three months in."
         >
           <ChipGroup
             options={COMMUTE_FLEX}
@@ -944,8 +962,8 @@ const WizardForm = ({
             onChange={(e) => set("notes", e.target.value)}
             placeholder="Tell us anything that could affect what's realistic for you."
             disabled={submitting}
-            rows={3}
-            className="w-full rounded-lg bg-gray-700/40 border border-gray-600/60 px-2.5 py-1.5 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-1 focus:ring-amber-300/40 resize-none"
+            rows={4}
+            className={`${PAPER_INPUT} resize-none`}
           />
         </Field>
       ),
