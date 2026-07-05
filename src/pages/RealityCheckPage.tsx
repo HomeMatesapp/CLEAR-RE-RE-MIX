@@ -110,6 +110,15 @@ const RealityCheckPage = () => {
   const [prefilled, setPrefilled] = useState(false);
   const resultRef = useRef<HTMLDivElement | null>(null);
 
+  // Wizard state — persisted across refresh so partially-completed answers
+  // survive an accidental reload. `startingPointStatus === "answered_unresolved"`
+  // means the user picked "Not sure" or "Something else" for Q1: the engine
+  // gets no signal from that field, but the questionnaire can still submit.
+  const [stepIndex, setStepIndex] = useState(0);
+  const [startingPointStatus, setStartingPointStatus] = useState<StartingPointStatus | null>(null);
+  const [startingPointOtherText, setStartingPointOtherText] = useState("");
+  const [hydratedProgress, setHydratedProgress] = useState(false);
+
   // Load role
   useEffect(() => {
     let cancelled = false;
