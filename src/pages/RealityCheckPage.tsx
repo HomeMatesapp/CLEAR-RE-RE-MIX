@@ -44,6 +44,10 @@ import {
   loadInProgressAnswers,
   saveInProgressAnswers,
   clearInProgressAnswers,
+  sanitiseAnswersForVisibility,
+  clampStepId,
+  UNRESOLVED_STARTING_POINT_NOTICE,
+  UNRESOLVED_STARTING_POINT_OTHER_NOTICE,
   type StartingPointStatus,
 } from "@/components/role/reality-check-shared";
 import { isSupportedRegion } from "@/lib/reality-check/regions";
