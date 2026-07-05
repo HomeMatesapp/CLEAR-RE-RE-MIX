@@ -4,6 +4,12 @@ import type {
   RealityCheckResult,
   RoleContext,
 } from "@/lib/reality-check/types";
+import {
+  ANSWER_SCHEMA_VERSION,
+  QUESTIONNAIRE_VERSION,
+  type RealityCheckAnswerSnapshotV2,
+} from "@/lib/reality-check/answer-snapshot";
+
 
 const PENDING_KEY = "cr_pending_decision";
 const PENDING_TTL_MS = 24 * 60 * 60 * 1000;
@@ -74,6 +80,10 @@ export interface PendingDecision {
   };
   answers: DecisionAnswerSnapshot;
   result: DecisionResultSnapshot;
+  // Increment 1b: optional versioned answer snapshot. Existing pending
+  // decisions written before Increment 1b (no snapshot) remain valid — the
+  // saved row simply has no answer_snapshot column populated.
+  answerSnapshot?: RealityCheckAnswerSnapshotV2;
   created_at: string;
 }
 
@@ -81,11 +91,13 @@ export const stashPendingDecision = (
   role: RoleContext,
   answers: RealityCheckAnswers,
   result: RealityCheckResult,
+  answerSnapshot?: RealityCheckAnswerSnapshotV2,
 ) => {
   const payload: PendingDecision = {
     role: { id: role.id, role_slug: role.role_slug, role_name: role.role_name },
     answers: sanitiseDecisionAnswers(answers),
     result: sanitiseDecisionResult(result),
+    answerSnapshot,
     created_at: new Date().toISOString(),
   };
   try {
@@ -94,6 +106,7 @@ export const stashPendingDecision = (
     /* ignore */
   }
 };
+
 
 export const readPendingDecision = (): PendingDecision | null => {
   try {
@@ -124,10 +137,15 @@ export const saveDecision = async (
   role: { id?: string; role_slug?: string; role_name: string },
   answers: Partial<RealityCheckAnswers>,
   result: DecisionResultSnapshot | RealityCheckResult,
+  answerSnapshot?: RealityCheckAnswerSnapshotV2,
 ) => {
   const safeAnswers = sanitiseDecisionAnswers(answers);
   const safeResult = sanitiseDecisionResult(result);
-  const row = {
+  // Legacy compatibility columns are ALWAYS populated so old readers keep
+  // working. The versioned answer_snapshot is populated when the caller
+  // supplies one — new results always will; historical rows read from the DB
+  // simply have it as NULL.
+  const row: Record<string, unknown> = {
     user_id: userId,
     role_id: role.id ?? null,
     role_slug: role.role_slug ?? "",
@@ -141,6 +159,11 @@ export const saveDecision = async (
     input_snapshot: safeAnswers as unknown as Record<string, unknown>,
     result_snapshot: safeResult as unknown as Record<string, unknown>,
   };
+  if (answerSnapshot) {
+    row.answer_schema_version = ANSWER_SCHEMA_VERSION;
+    row.questionnaire_version = answerSnapshot.questionnaireVersion ?? QUESTIONNAIRE_VERSION;
+    row.answer_snapshot = answerSnapshot as unknown as Record<string, unknown>;
+  }
   const { data, error } = await supabase
     .from("saved_decisions")
     .insert(row as never)
@@ -149,6 +172,7 @@ export const saveDecision = async (
   if (error) throw error;
   return data;
 };
+
 
 // In-flight guard to prevent duplicate saves if flush is invoked twice
 // concurrently (e.g. by both an auth effect and a route effect on login).
@@ -165,7 +189,7 @@ export const flushPendingDecision = async (userId: string): Promise<boolean> => 
   clearPendingDecision();
   inFlight = (async () => {
     try {
-      await saveDecision(userId, pending.role, pending.answers, pending.result);
+      await saveDecision(userId, pending.role, pending.answers, pending.result, pending.answerSnapshot);
       return true;
     } catch {
       return false;
@@ -175,6 +199,7 @@ export const flushPendingDecision = async (userId: string): Promise<boolean> => 
   })();
   return inFlight;
 };
+
 
 export const __resetFlushGuard = () => {
   inFlight = null;

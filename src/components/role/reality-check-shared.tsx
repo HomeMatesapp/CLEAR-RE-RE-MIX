@@ -207,39 +207,76 @@ export const clearSessionResult = (slug: string) => {
 // Distinct from the result cache above: preserves the user's un-submitted
 // answers and position in the wizard across a page refresh or in-tab navigation.
 // NOTE: sessionStorage is per-tab and is cleared when the tab closes. This is
-// intentional for Increment 1a — "resume within this session", not "resume
-// tomorrow". Move to localStorage later if a longer-lived resume is required.
+// intentional — "resume within this session", not "resume tomorrow".
 // Wiped on successful submit; retained on failed submit.
+//
+// Increment 1b: the draft now stores a versioned RealityCheckAnswerSnapshotV2
+// (see @/lib/reality-check/answer-snapshot). The legacy `answers` object used
+// by the UI is derived from the snapshot on hydration via the same adapter
+// the engine uses, plus a small helper to recover `startingPointStatus` /
+// `startingPointOtherText` from the unresolved starting-point entry.
 
 const progressKey = (slug: string) => `cr_rc_progress_${slug}`;
 const PROGRESS_TTL_MS = 24 * 60 * 60 * 1000;
-const CURRENT_DRAFT_SCHEMA = 1;
+const CURRENT_DRAFT_SCHEMA = 2 as const;
 
 export type StartingPointStatus =
   | "resolved"
   | "unresolved_not_sure"
   | "unresolved_other";
 
-// Persisted draft. `stepId` is used instead of a numeric index so that
-// changing the question order (e.g. when role modules ship) doesn't restore
-// users onto a different question.
-export interface RealityCheckDraft {
-  schemaVersion: 1;
+import {
+  ANSWER_SCHEMA_VERSION,
+  QUESTIONNAIRE_VERSION,
+  QUESTION_IDS,
+  buildSnapshotFromLegacy,
+  toLegacyRealityCheckAnswers,
+  type RealityCheckAnswerSnapshotV2,
+} from "@/lib/reality-check/answer-snapshot";
+
+export interface RealityCheckDraftV2 {
+  schemaVersion: 2;
+  questionnaireVersion: string;
+  roleSlug: string;
+  stepId: string;
+  answerSnapshot: RealityCheckAnswerSnapshotV2;
+  savedAt: number;
+}
+
+// Back-compat alias for consumers that used the older names.
+export type RealityCheckDraft = RealityCheckDraftV2;
+export type InProgressAnswers = RealityCheckDraftV2;
+
+// Hydrated draft in the shape RealityCheckPage's UI state expects.
+export interface HydratedDraft {
   answers: RealityCheckAnswers;
   stepId: string;
   startingPointStatus: StartingPointStatus | null;
   startingPointOtherText: string;
-  savedAt: number;
 }
 
-// Back-compat alias for consumers that used the older name.
-export type InProgressAnswers = RealityCheckDraft;
+const deriveStartingPointStatus = (
+  snapshot: RealityCheckAnswerSnapshotV2,
+): { status: StartingPointStatus | null; otherText: string } => {
+  const sp = snapshot.answers?.[QUESTION_IDS.startingPoint];
+  if (!sp) return { status: null, otherText: "" };
+  if (sp.resolutionStatus === "resolved") return { status: "resolved", otherText: "" };
+  if (sp.selectedValue === "not_sure") {
+    return { status: "unresolved_not_sure", otherText: "" };
+  }
+  if (sp.selectedValue === "other") {
+    return { status: "unresolved_other", otherText: sp.rawText ?? "" };
+  }
+  return { status: null, otherText: "" };
+};
 
-export const loadInProgressAnswers = (slug: string): RealityCheckDraft | null => {
+export const loadInProgressAnswers = (slug: string): HydratedDraft | null => {
   try {
     const raw = sessionStorage.getItem(progressKey(slug));
     if (!raw) return null;
-    const parsed = JSON.parse(raw) as Partial<RealityCheckDraft>;
+    const parsed = JSON.parse(raw) as Partial<RealityCheckDraftV2>;
+    // Reject unsupported draft versions safely (drops v1 drafts written by
+    // Increment 1a — an acceptable trade-off during rollout).
     if (parsed?.schemaVersion !== CURRENT_DRAFT_SCHEMA) {
       sessionStorage.removeItem(progressKey(slug));
       return null;
@@ -249,7 +286,18 @@ export const loadInProgressAnswers = (slug: string): RealityCheckDraft | null =>
       sessionStorage.removeItem(progressKey(slug));
       return null;
     }
-    return parsed as RealityCheckDraft;
+    if (!parsed.answerSnapshot || parsed.answerSnapshot.schemaVersion !== ANSWER_SCHEMA_VERSION) {
+      sessionStorage.removeItem(progressKey(slug));
+      return null;
+    }
+    const snapshot = parsed.answerSnapshot;
+    const { status, otherText } = deriveStartingPointStatus(snapshot);
+    return {
+      answers: toLegacyRealityCheckAnswers(snapshot),
+      stepId: parsed.stepId ?? "",
+      startingPointStatus: status,
+      startingPointOtherText: otherText,
+    };
   } catch {
     return null;
   }
@@ -257,12 +305,30 @@ export const loadInProgressAnswers = (slug: string): RealityCheckDraft | null =>
 
 export const saveInProgressAnswers = (
   slug: string,
-  entry: Omit<RealityCheckDraft, "savedAt" | "schemaVersion">,
+  entry: {
+    answers: RealityCheckAnswers;
+    stepId: string;
+    startingPointStatus: StartingPointStatus | null;
+    startingPointOtherText: string;
+  },
 ) => {
   try {
-    const draft: RealityCheckDraft = {
+    const unresolved =
+      entry.startingPointStatus === "unresolved_not_sure"
+        ? ({ status: "unresolved_not_sure" } as const)
+        : entry.startingPointStatus === "unresolved_other"
+          ? ({ status: "unresolved_other", rawText: entry.startingPointOtherText } as const)
+          : null;
+    const snapshot = buildSnapshotFromLegacy(entry.answers, {
+      roleSlug: slug,
+      startingPointUnresolved: unresolved,
+    });
+    const draft: RealityCheckDraftV2 = {
       schemaVersion: CURRENT_DRAFT_SCHEMA,
-      ...entry,
+      questionnaireVersion: QUESTIONNAIRE_VERSION,
+      roleSlug: slug,
+      stepId: entry.stepId,
+      answerSnapshot: snapshot,
       savedAt: Date.now(),
     };
     sessionStorage.setItem(progressKey(slug), JSON.stringify(draft));
@@ -278,6 +344,7 @@ export const clearInProgressAnswers = (slug: string) => {
     /* ignore */
   }
 };
+
 
 // ── Wizard helpers (pure, unit-testable) ─────────────────────────────────────
 
