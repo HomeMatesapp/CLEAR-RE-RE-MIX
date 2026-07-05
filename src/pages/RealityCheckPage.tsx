@@ -251,6 +251,7 @@ const RealityCheckPage = () => {
     trackEvent("reality_check_submitted", {
       role: role.role_name,
       starting_point: answers.startingPoint,
+      starting_point_status: answers.startingPoint ? "resolved" : startingPointStatus,
       income_need: answers.incomeNeed,
       weekly_hours: answers.weeklyHours,
       budget: answers.budget,
@@ -269,6 +270,7 @@ const RealityCheckPage = () => {
         result: r,
         savedAt: new Date().toISOString(),
       });
+      clearInProgressAnswers(role.role_slug);
       trackEvent("reality_check_result", { role: role.role_name, verdict: r?.overallVerdict });
     } catch (e) {
       setError((e as Error).message || "Something went wrong. Try again.");
