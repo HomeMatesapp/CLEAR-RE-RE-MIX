@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,6 +14,7 @@ type HubRole = {
   role_name: string;
   role_slug: string;
   short_description: string | null;
+  hub_summary: string | null;
   salary_entry: number | null;
   salary_experienced: number | null;
   salary_senior: number | null;
@@ -67,7 +68,7 @@ const RoleHub = () => {
       const { data, error } = await supabase
         .from("roles")
         .select(
-          "id, role_name, role_slug, short_description, salary_entry, salary_experienced, salary_senior, demand, competition_level, ai_impact_level"
+          "id, role_name, role_slug, short_description, hub_summary, salary_entry, salary_experienced, salary_senior, demand, competition_level, ai_impact_level"
         )
         .eq("role_slug", slug)
         .maybeSingle();
@@ -148,15 +149,15 @@ const RoleHub = () => {
     });
   if (role.ai_impact_level)
     metrics.push({
-      label: "AI impact",
+      label: "AI exposure",
       value: titleCase(role.ai_impact_level),
       tone: levelTone(role.ai_impact_level, true),
     });
 
   const path = `/role/${role.role_slug}`;
   const pageDesc =
-    role.short_description ||
-    `Decide your next step for a career as a ${role.role_name}.`;
+    (role.hub_summary || role.short_description ||
+    `Decide your next step for a career as a ${role.role_name}.`);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -170,7 +171,7 @@ const RoleHub = () => {
       </Helmet>
       <Navbar />
       <main className="flex-1">
-        <div className="container mx-auto px-4 py-10 max-w-5xl">
+        <div className="container mx-auto px-4 py-6 max-w-5xl">
           <Link
             to={backSearch}
             className="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-ink/70 hover:text-ink"
@@ -179,20 +180,20 @@ const RoleHub = () => {
             {stateQuery ? `Back to results for "${stateQuery}"` : "Back to search"}
           </Link>
 
-          <header className="mt-6">
+          <header className="mt-4">
             <h1 className="font-display text-4xl sm:text-5xl text-ink leading-tight">
               {role.role_name}
             </h1>
-            {role.short_description && (
-              <p className="mt-3 text-lg text-ink/80 max-w-3xl">
-                {role.short_description}
+            {(role.hub_summary || role.short_description) && (
+              <p className="mt-3 text-base text-ink/80 max-w-3xl leading-relaxed">
+                {role.hub_summary || role.short_description}
               </p>
             )}
           </header>
 
           {metrics.length > 0 && (
             <div
-              className="mt-8 grid gap-3"
+              className="mt-5 grid gap-3"
               style={{
                 gridTemplateColumns: `repeat(auto-fit, minmax(180px, 1fr))`,
               }}
@@ -203,17 +204,17 @@ const RoleHub = () => {
             </div>
           )}
 
-          <section className="mt-12">
+          <section className="mt-8">
             <h2 className="font-display text-2xl text-ink">
               What do you want to find out?
             </h2>
-            <div className="mt-5 grid gap-4 md:grid-cols-3">
+            <div className="mt-3 grid gap-4 md:grid-cols-3">
               <div className="md:order-2">
                 <RoleDecisionCard
                   primary
-                  badge="Personalised"
+                  badge="START HERE"
                   title="Find my most realistic route"
-                  description="Answer a few questions about your situation and get your strongest route, main barriers and next actions."
+                  description="Answer a few questions about your situation and receive a personalised route, barriers and next actions."
                   cta="Check my route · 3 min"
                   to={`${path}/reality-check`}
                   onClick={() =>
@@ -228,6 +229,7 @@ const RoleHub = () => {
                 <RoleDecisionCard
                   title="Would I like this job?"
                   description="See the real work, daily tasks, environment and whether it may suit you."
+                  badge="COMING NEXT"
                   comingSoon
                 />
               </div>
@@ -235,12 +237,13 @@ const RoleHub = () => {
                 <RoleDecisionCard
                   title="What should I know before committing?"
                   description="Understand the risks, training traps, trade-offs and reasons people leave."
+                  badge="COMING NEXT"
                   comingSoon
                 />
               </div>
             </div>
 
-            <div className="mt-8">
+            <div className="mt-6">
               <Link
                 to={`${path}/profile`}
                 onClick={() =>
@@ -249,9 +252,14 @@ const RoleHub = () => {
                     source_page: "role_hub",
                   })
                 }
-                className="inline-flex items-center gap-1.5 font-medium text-ink underline underline-offset-4 decoration-ink/30 hover:decoration-ink"
+                className="group inline-flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2"
               >
-                View full role profile →
+                <span className="font-medium text-ink underline underline-offset-4 decoration-ink/30 group-hover:decoration-ink">
+                  View the full role profile →
+                </span>
+                <span className="text-sm text-ink/60">
+                  Salary progression, common routes, employers and sources.
+                </span>
               </Link>
             </div>
           </section>
