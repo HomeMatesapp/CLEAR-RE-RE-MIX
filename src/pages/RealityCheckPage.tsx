@@ -272,28 +272,35 @@ const RealityCheckPage = () => {
 
   const submit = async () => {
     if (!role || !canSubmit || submitting) return;
+    // Sanitise for visibility one more time before sending, so any hidden
+    // conditional answer that hasn't been cleared by the state effect yet
+    // can't leak into the submission payload or the saved result.
+    const submissionAnswers = sanitiseAnswersForVisibility(answers, { backgroundRequired });
     setSubmitting(true);
     setError(null);
     setResult(null);
+    // NOTE: we deliberately do NOT include `startingPointOtherText` in
+    // analytics — the raw free text stays on the client until we have an
+    // AI interpretation layer to make it safe to send.
     trackEvent("reality_check_submitted", {
       role: role.role_name,
-      starting_point: answers.startingPoint,
-      starting_point_status: answers.startingPoint ? "resolved" : startingPointStatus,
-      income_need: answers.incomeNeed,
-      weekly_hours: answers.weeklyHours,
-      budget: answers.budget,
-      commute_flex: answers.commuteFlex,
+      starting_point: submissionAnswers.startingPoint,
+      starting_point_status: submissionAnswers.startingPoint ? "resolved" : startingPointStatus,
+      income_need: submissionAnswers.incomeNeed,
+      weekly_hours: submissionAnswers.weeklyHours,
+      budget: submissionAnswers.budget,
+      commute_flex: submissionAnswers.commuteFlex,
     });
     try {
       const { data, error: fnErr } = await supabase.functions.invoke("reality-check", {
-        body: { role, answers },
+        body: { role, answers: submissionAnswers },
       });
       if (fnErr) throw fnErr;
       if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
       const r = (data as { result: RealityCheckResult }).result;
       setResult(r);
       saveSessionResult(role.role_slug, {
-        answers,
+        answers: submissionAnswers,
         result: r,
         savedAt: new Date().toISOString(),
       });
