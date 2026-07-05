@@ -910,8 +910,10 @@ const WizardForm = ({
       {/* Fine-grained progress */}
       <div>
         <div className="flex items-center justify-between text-[11px] text-gray-400 mb-1.5">
-          <span>Question {safeIndex + 1} of {total}</span>
-          {step.optional && (
+          <span>
+            {isReview ? `Review · ${total - 1} questions` : `Question ${safeIndex + 1} of ${total - 1}`}
+          </span>
+          {step.optional && !isReview && (
             <button
               type="button"
               onClick={goNext}
