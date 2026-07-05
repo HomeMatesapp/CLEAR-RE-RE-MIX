@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   title: string;
@@ -29,21 +30,32 @@ export const RoleDecisionCard = ({
         "h-full flex flex-col p-6 rounded-lg border-2 bg-paper transition-colors",
         primary
           ? "border-ink border-l-[6px] border-l-[hsl(var(--path))] shadow-[0_2px_0_hsl(var(--ink))]"
-          : "border-ink/80",
-        !comingSoon && to && "hover:bg-tint"
+          : "border-ink/80"
       )}
     >
       {badge && (
-        <div className="mb-3 inline-flex self-start items-center font-mono text-[10px] uppercase tracking-widest px-2 py-1 border border-[hsl(var(--path))] text-[hsl(var(--path))]">
+        <div
+          className={cn(
+            "mb-3 inline-flex self-start items-center font-mono text-[10px] uppercase tracking-widest px-2 py-1 border",
+            primary
+              ? "border-[hsl(var(--path))] text-[hsl(var(--path))]"
+              : "border-ink/30 text-ink/60"
+          )}
+        >
           {badge}
         </div>
       )}
       <h3 className="font-display text-xl leading-snug text-ink">{title}</h3>
       <p className="mt-2 text-sm text-ink/75 flex-1">{description}</p>
-      {comingSoon ? (
-        <div className="mt-6 font-mono text-[11px] uppercase tracking-wider text-ink/50">
-          Coming in the next release
-        </div>
+      {primary && cta && to ? (
+        <Button
+          asChild
+          className="mt-6 w-full bg-[hsl(var(--path))] text-[hsl(var(--paper))] hover:bg-[hsl(var(--path))]/90"
+        >
+          <Link to={to} onClick={onClick} className="gap-2">
+            {cta} <ArrowRight className="h-4 w-4" />
+          </Link>
+        </Button>
       ) : cta && to ? (
         <div
           className={cn(
