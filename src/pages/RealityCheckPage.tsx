@@ -916,6 +916,18 @@ const WizardForm = ({
                 </div>
               ))}
             </dl>
+            {startingPointUnresolved && (
+              <div className="mt-3 rounded-lg border border-amber-300/30 bg-amber-300/5 px-3 py-2">
+                <p className="text-[11px] text-amber-100 leading-snug">
+                  {UNRESOLVED_STARTING_POINT_NOTICE}
+                </p>
+                {otherActive && startingPointOtherText.trim() && (
+                  <p className="mt-1 text-[11px] text-amber-100/80 leading-snug">
+                    {UNRESOLVED_STARTING_POINT_OTHER_NOTICE}
+                  </p>
+                )}
+              </div>
+            )}
             {!canSubmit && (
               <p className="mt-3 text-[11px] text-amber-200/90 leading-snug">
                 A few earlier questions still need an answer — use Back to complete them.
