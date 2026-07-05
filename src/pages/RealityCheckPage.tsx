@@ -484,6 +484,13 @@ const RealityCheckPage = () => {
 
           {result && (
             <div ref={resultRef}>
+              {startingPointUnresolved && (
+                <div className="mb-3 rounded-lg border border-amber-300/30 bg-amber-300/5 px-3 py-2">
+                  <p className="text-[11px] text-amber-100 leading-snug">
+                    {UNRESOLVED_STARTING_POINT_NOTICE}
+                  </p>
+                </div>
+              )}
               <ResultView
                 result={result}
                 answers={answers}
