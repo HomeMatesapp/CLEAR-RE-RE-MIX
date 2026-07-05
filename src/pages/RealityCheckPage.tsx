@@ -157,7 +157,7 @@ const RealityCheckPage = () => {
         const progress = loadInProgressAnswers(slug);
         if (progress) {
           setAnswers(progress.answers);
-          setStepIndex(progress.stepIndex);
+          setStepId(progress.stepId);
           setStartingPointStatus(progress.startingPointStatus);
           setStartingPointOtherText(progress.startingPointOtherText);
         }
