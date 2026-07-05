@@ -193,7 +193,7 @@ const RoleHub = () => {
 
           {metrics.length > 0 && (
             <div
-              className="mt-8 grid gap-3"
+              className="mt-5 grid gap-3"
               style={{
                 gridTemplateColumns: `repeat(auto-fit, minmax(180px, 1fr))`,
               }}
@@ -204,17 +204,17 @@ const RoleHub = () => {
             </div>
           )}
 
-          <section className="mt-12">
+          <section className="mt-8">
             <h2 className="font-display text-2xl text-ink">
               What do you want to find out?
             </h2>
-            <div className="mt-5 grid gap-4 md:grid-cols-3">
+            <div className="mt-3 grid gap-4 md:grid-cols-3">
               <div className="md:order-2">
                 <RoleDecisionCard
                   primary
-                  badge="Personalised"
+                  badge="START HERE"
                   title="Find my most realistic route"
-                  description="Answer a few questions about your situation and get your strongest route, main barriers and next actions."
+                  description="Answer a few questions about your situation and receive a personalised route, barriers and next actions."
                   cta="Check my route · 3 min"
                   to={`${path}/reality-check`}
                   onClick={() =>
@@ -229,6 +229,7 @@ const RoleHub = () => {
                 <RoleDecisionCard
                   title="Would I like this job?"
                   description="See the real work, daily tasks, environment and whether it may suit you."
+                  badge="COMING NEXT"
                   comingSoon
                 />
               </div>
@@ -236,12 +237,13 @@ const RoleHub = () => {
                 <RoleDecisionCard
                   title="What should I know before committing?"
                   description="Understand the risks, training traps, trade-offs and reasons people leave."
+                  badge="COMING NEXT"
                   comingSoon
                 />
               </div>
             </div>
 
-            <div className="mt-8">
+            <div className="mt-6">
               <Link
                 to={`${path}/profile`}
                 onClick={() =>
@@ -250,9 +252,14 @@ const RoleHub = () => {
                     source_page: "role_hub",
                   })
                 }
-                className="inline-flex items-center gap-1.5 font-medium text-ink underline underline-offset-4 decoration-ink/30 hover:decoration-ink"
+                className="group inline-flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2"
               >
-                View full role profile →
+                <span className="font-medium text-ink underline underline-offset-4 decoration-ink/30 group-hover:decoration-ink">
+                  View the full role profile →
+                </span>
+                <span className="text-sm text-ink/60">
+                  Salary progression, common routes, employers and sources.
+                </span>
               </Link>
             </div>
           </section>
