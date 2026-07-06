@@ -1,8 +1,17 @@
-// Electrician (modular) wizard — renders a resolved questionnaire config
-// against the Field Map visual system, matching the legacy WizardForm shell.
+// Config-driven Reality Check wizard.
 //
-// Only used for role slugs that have a modular questionnaire configuration
-// (currently: electrician). Non-modular roles continue on the legacy wizard.
+// Renders any resolved questionnaire config against the Field Map visual
+// system. Role-specific behaviour lives entirely in the config — the
+// renderer must not know which role it is rendering.
+//
+// Role-specific concerns live in:
+//   - questionnaire config (questions + display copy)
+//   - config.extractSignals (typed signal extraction)
+//   - config.requestBodyKey (edge-function payload shape)
+//   - the role's route engine + adapter
+//
+// The wizard just walks the resolved question list, persists a role-scoped
+// v3 draft, and hands the extracted signals to the edge function.
 
 import { useEffect, useMemo, useState } from "react";
 import { Loader2 } from "lucide-react";
@@ -19,15 +28,13 @@ import {
   sanitiseInlineText,
   toggleMultiSelect,
 } from "@/lib/reality-check/questionnaire/sanitise";
-import { extractElectricianSignals } from "@/lib/reality-check/questionnaire/signals";
 import {
   clearModularDraft,
+  invalidateLegacyDraftForRole,
   loadModularDraft,
   saveModularDraft,
 } from "@/lib/reality-check/questionnaire/draft-v3";
-import {
-  invalidateLegacyDraftForRole,
-} from "@/lib/reality-check/questionnaire/draft-v3";
+
 
 const REVIEW_ID = "__review__";
 
