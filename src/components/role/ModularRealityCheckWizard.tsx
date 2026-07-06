@@ -398,7 +398,13 @@ export function ModularRealityCheckWizard({ role, config, onResult }: ModularRea
         </span>
       </div>
 
-      <div key={currentId} className="p-6 sm:p-10">
+      {config.scopeNote && !isReview && (
+        <p className="px-6 sm:px-10 pt-4 text-[13px] leading-snug text-muted-foreground border-b border-dashed border-[hsl(40_15%_82%)] pb-4">
+          {config.scopeNote}
+        </p>
+      )}
+
+      <div key={currentId} className="p-6 sm:p-10"></div>
         {isReview ? (
           <ReviewCard config={config} answers={answers} inlineText={inlineText} />
         ) : currentQuestion ? (
