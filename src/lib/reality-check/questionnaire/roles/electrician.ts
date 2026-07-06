@@ -73,4 +73,7 @@ export const electricianConfig: RoleConfig = {
     "working_conditions_to_check",
     "route_priorities",
   ],
+  requestBodyKey: "electricianSignals",
+  extractSignals: extractElectricianSignals,
 };
+
