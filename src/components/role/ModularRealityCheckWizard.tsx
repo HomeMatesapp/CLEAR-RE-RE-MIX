@@ -356,17 +356,22 @@ export function ModularRealityCheckWizard({ role, config, onResult }: ModularRea
     // Final sanitisation so nothing hidden leaks through.
     const cleanedAnswers = sanitiseAnswerMap(config.questions, answers);
     const cleanedInline = sanitiseInlineText(config.questions, cleanedAnswers, inlineText);
-    const signals = extractElectricianSignals(cleanedAnswers, cleanedInline);
+    const signals = config.extractSignals(cleanedAnswers, cleanedInline);
+    const startingPointForAnalytics =
+      typeof cleanedAnswers.starting_point === "string" ? cleanedAnswers.starting_point : null;
+    const trainingBudgetForAnalytics =
+      typeof cleanedAnswers.training_budget === "string" ? cleanedAnswers.training_budget : null;
     trackEvent("reality_check_submitted", {
       role: role.role_name,
       questionnaire_version: config.questionnaireVersion,
-      starting_point: signals.startingPoint,
-      training_budget: signals.trainingBudgetBand,
+      starting_point: startingPointForAnalytics,
+      training_budget: trainingBudgetForAnalytics,
     });
     try {
       const { data, error: fnErr } = await supabase.functions.invoke("reality-check", {
-        body: { role, answers: {}, electricianSignals: signals },
+        body: { role, answers: {}, [config.requestBodyKey]: signals },
       });
+
       if (fnErr) throw fnErr;
       if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
       const result = (data as { result: RealityCheckResult }).result;
