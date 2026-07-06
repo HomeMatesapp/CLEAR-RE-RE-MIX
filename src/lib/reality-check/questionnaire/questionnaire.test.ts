@@ -1,7 +1,7 @@
 // Registry, config resolution, sanitisation tests for the modular questionnaire.
 
 import { describe, expect, it } from "vitest";
-import { hasModularConfig, resolveConfig } from "./registry";
+import { hasModularConfig, hasReviewedModularRealityCheck, resolveConfig } from "./registry";
 import { sanitiseAnswer, sanitiseAnswerMap, sanitiseInlineText, toggleMultiSelect } from "./sanitise";
 import type { Question } from "./types";
 
@@ -182,5 +182,26 @@ describe("registry — plumber", () => {
     expect(q.conditionalField!.showWhenValueIn).not.toContain("not_sure");
     expect(q.conditionalField!.showWhenValueIn).toContain("gas_heating");
     expect(q.conditionalField!.showWhenValueIn).toContain("older_unknown");
+  });
+});
+
+describe("reviewed-modular gate naming and semantics", () => {
+  it("hasReviewedModularRealityCheck is true for reviewed roles only", () => {
+    expect(hasReviewedModularRealityCheck("electrician")).toBe(true);
+    expect(hasReviewedModularRealityCheck("plumber")).toBe(true);
+    expect(hasReviewedModularRealityCheck("registered-nurse")).toBe(false);
+    expect(hasReviewedModularRealityCheck("unknown-role-slug")).toBe(false);
+  });
+
+  it("legacy hasModularConfig alias still returns the same values", () => {
+    expect(hasModularConfig("electrician")).toBe(hasReviewedModularRealityCheck("electrician"));
+    expect(hasModularConfig("registered-nurse")).toBe(hasReviewedModularRealityCheck("registered-nurse"));
+  });
+
+  it("gate requires BOTH a questionnaire and a route engine — modular roles always resolve a config", () => {
+    for (const slug of ["electrician", "plumber"]) {
+      expect(hasReviewedModularRealityCheck(slug)).toBe(true);
+      expect(resolveConfig(slug)).not.toBeNull();
+    }
   });
 });

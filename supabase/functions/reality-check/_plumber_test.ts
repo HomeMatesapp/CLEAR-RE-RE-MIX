@@ -49,3 +49,45 @@ for (const c of fixtures) {
     }
   });
 }
+
+Deno.test("plumber deno mirror — gas_heating + plumbing experience emits verification check", () => {
+  const out = runPlumberEngine({
+    signals: {
+      startingPoint: "career_changer",
+      hasPlumbingExperience: true,
+      hasRelatedTradeExperience: true,
+      plumbingQualificationLevel: "gas_heating",
+      mathsEnglishStatus: "both",
+      availableTrainingPatterns: ["full_time_work_based"],
+      trainingBudgetBand: "over_2000",
+      travelRange: "wider_area",
+      workingConditionsToCheck: [],
+      routePriorities: [],
+    },
+  });
+  const ewa = out.routeEvaluations.find((r) => r.id === "experienced_worker_route");
+  assertEquals(ewa?.eligible, true);
+  const hasCheck = (ewa?.blockersAndChecks ?? []).some((c) =>
+    /not automatically equivalent/i.test(c),
+  );
+  assertEquals(hasCheck, true);
+});
+
+Deno.test("plumber deno mirror — gas_heating WITHOUT plumbing experience is not eligible", () => {
+  const out = runPlumberEngine({
+    signals: {
+      startingPoint: "career_changer",
+      hasPlumbingExperience: false,
+      hasRelatedTradeExperience: true,
+      plumbingQualificationLevel: "gas_heating",
+      mathsEnglishStatus: "both",
+      availableTrainingPatterns: ["full_time_work_based"],
+      trainingBudgetBand: "over_2000",
+      travelRange: "wider_area",
+      workingConditionsToCheck: [],
+      routePriorities: [],
+    },
+  });
+  const ewa = out.routeEvaluations.find((r) => r.id === "experienced_worker_route");
+  assertEquals(ewa?.eligible, false);
+});
