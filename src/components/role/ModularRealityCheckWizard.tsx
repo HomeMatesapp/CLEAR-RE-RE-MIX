@@ -264,13 +264,14 @@ function ReviewCard({
 
 // ── Main component ──────────────────────────────────────────────────────────
 
-export interface ElectricianWizardProps {
+export interface ModularRealityCheckWizardProps {
   role: RoleContext & { role_slug: string; role_name: string };
   config: ResolvedConfig;
   onResult: (result: RealityCheckResult, answers: AnswerMap, inlineText: InlineTextMap) => void;
 }
 
-export function ElectricianWizard({ role, config, onResult }: ElectricianWizardProps) {
+export function ModularRealityCheckWizard({ role, config, onResult }: ModularRealityCheckWizardProps) {
+
   const { toast } = useToast();
   const [answers, setAnswers] = useState<AnswerMap>({});
   const [inlineText, setInlineTextState] = useState<InlineTextMap>({});
