@@ -1,0 +1,333 @@
+[
+  {
+    "name": "beginner_school_weekday",
+    "signals": {
+      "startingPoint": "still_at_school",
+      "hasHeatingExperience": false,
+      "hasGasExperience": false,
+      "hasPlumbingExperience": false,
+      "hasBuildingServicesExperience": false,
+      "hasElectricalControlsExperience": false,
+      "hasRelatedTradeExperience": false,
+      "heatingQualificationLevel": "none",
+      "mathsEnglishStatus": "both",
+      "availableTrainingPatterns": ["full_time_work_based", "full_time_college"],
+      "trainingBudgetBand": "free_only",
+      "travelRange": "up_to_30",
+      "workingConditionsToCheck": [],
+      "routePriorities": []
+    },
+    "expected": {
+      "status": "route_recommended",
+      "recommendedRouteId": "apprenticeship"
+    }
+  },
+  {
+    "name": "career_changer_evenings_only",
+    "signals": {
+      "startingPoint": "career_changer",
+      "hasHeatingExperience": false,
+      "hasGasExperience": false,
+      "hasPlumbingExperience": false,
+      "hasBuildingServicesExperience": false,
+      "hasElectricalControlsExperience": false,
+      "hasRelatedTradeExperience": false,
+      "heatingQualificationLevel": "none",
+      "mathsEnglishStatus": "both",
+      "availableTrainingPatterns": ["weekday_evenings"],
+      "trainingBudgetBand": "500_to_2000",
+      "travelRange": "up_to_60",
+      "workingConditionsToCheck": [],
+      "routePriorities": []
+    },
+    "expected": {
+      "status": "route_recommended",
+      "recommendedRouteId": "college_then_workplace_experience"
+    }
+  },
+  {
+    "name": "level_2_holder_with_heating_experience",
+    "signals": {
+      "startingPoint": "career_changer",
+      "hasHeatingExperience": true,
+      "hasGasExperience": false,
+      "hasPlumbingExperience": true,
+      "hasBuildingServicesExperience": false,
+      "hasElectricalControlsExperience": false,
+      "hasRelatedTradeExperience": true,
+      "heatingQualificationLevel": "level_2",
+      "mathsEnglishStatus": "both",
+      "availableTrainingPatterns": ["one_or_two_weekdays"],
+      "trainingBudgetBand": "over_2000",
+      "travelRange": "up_to_60",
+      "workingConditionsToCheck": [],
+      "routePriorities": []
+    },
+    "expected": {
+      "status": "route_recommended",
+      "recommendedRouteId": "apprenticeship",
+      "experiencedWorkerRouteEligible": true
+    }
+  },
+  {
+    "name": "level_3_holder_with_building_services",
+    "signals": {
+      "startingPoint": "career_changer",
+      "hasHeatingExperience": false,
+      "hasGasExperience": false,
+      "hasPlumbingExperience": false,
+      "hasBuildingServicesExperience": true,
+      "hasElectricalControlsExperience": false,
+      "hasRelatedTradeExperience": false,
+      "heatingQualificationLevel": "level_3",
+      "mathsEnglishStatus": "both",
+      "availableTrainingPatterns": ["weekday_evenings"],
+      "trainingBudgetBand": "over_2000",
+      "travelRange": "up_to_60",
+      "workingConditionsToCheck": [],
+      "routePriorities": ["qualify_quickly"]
+    },
+    "expected": {
+      "status": "route_recommended",
+      "recommendedRouteId": "experienced_worker_route",
+      "experiencedWorkerRouteEligible": true
+    }
+  },
+  {
+    "name": "gas_safe_claimed_with_experience_structurally_relevant_with_verification",
+    "signals": {
+      "startingPoint": "career_changer",
+      "hasHeatingExperience": true,
+      "hasGasExperience": true,
+      "hasPlumbingExperience": false,
+      "hasBuildingServicesExperience": false,
+      "hasElectricalControlsExperience": false,
+      "hasRelatedTradeExperience": false,
+      "heatingQualificationLevel": "gas_or_gas_safe_claimed",
+      "mathsEnglishStatus": "both",
+      "availableTrainingPatterns": ["full_time_work_based"],
+      "trainingBudgetBand": "over_2000",
+      "travelRange": "wider_area",
+      "workingConditionsToCheck": [],
+      "routePriorities": ["qualify_quickly"]
+    },
+    "expected": {
+      "status": "route_recommended",
+      "recommendedRouteId": "apprenticeship",
+      "experiencedWorkerRouteEligible": true
+    }
+  },
+  {
+    "name": "gas_experience_without_qualification_not_experienced_worker_eligible",
+    "signals": {
+      "startingPoint": "career_changer",
+      "hasHeatingExperience": false,
+      "hasGasExperience": true,
+      "hasPlumbingExperience": false,
+      "hasBuildingServicesExperience": false,
+      "hasElectricalControlsExperience": false,
+      "hasRelatedTradeExperience": false,
+      "heatingQualificationLevel": "none",
+      "mathsEnglishStatus": "both",
+      "availableTrainingPatterns": ["full_time_work_based"],
+      "trainingBudgetBand": "over_2000",
+      "travelRange": "wider_area",
+      "workingConditionsToCheck": [],
+      "routePriorities": []
+    },
+    "expected": {
+      "status": "route_recommended",
+      "recommendedRouteId": "apprenticeship",
+      "experiencedWorkerRouteEligible": false
+    }
+  },
+  {
+    "name": "heat_pump_low_carbon_structurally_relevant_no_gas_authorisation",
+    "signals": {
+      "startingPoint": "career_changer",
+      "hasHeatingExperience": true,
+      "hasGasExperience": false,
+      "hasPlumbingExperience": false,
+      "hasBuildingServicesExperience": false,
+      "hasElectricalControlsExperience": false,
+      "hasRelatedTradeExperience": false,
+      "heatingQualificationLevel": "heat_pump_or_low_carbon",
+      "mathsEnglishStatus": "both",
+      "availableTrainingPatterns": ["full_time_work_based"],
+      "trainingBudgetBand": "over_2000",
+      "travelRange": "wider_area",
+      "workingConditionsToCheck": [],
+      "routePriorities": []
+    },
+    "expected": {
+      "status": "route_recommended",
+      "recommendedRouteId": "apprenticeship",
+      "experiencedWorkerRouteEligible": true
+    }
+  },
+  {
+    "name": "older_qualification_verification_required",
+    "signals": {
+      "startingPoint": "returning_after_break",
+      "hasHeatingExperience": true,
+      "hasGasExperience": false,
+      "hasPlumbingExperience": false,
+      "hasBuildingServicesExperience": false,
+      "hasElectricalControlsExperience": false,
+      "hasRelatedTradeExperience": false,
+      "heatingQualificationLevel": "older_unknown",
+      "mathsEnglishStatus": "both",
+      "availableTrainingPatterns": ["one_or_two_weekdays"],
+      "trainingBudgetBand": "over_2000",
+      "travelRange": "up_to_60",
+      "workingConditionsToCheck": [],
+      "routePriorities": []
+    },
+    "expected": {
+      "status": "qualification_verification_required",
+      "recommendedRouteId": null
+    }
+  },
+  {
+    "name": "international_qualification_verification_required",
+    "signals": {
+      "startingPoint": "career_changer",
+      "hasHeatingExperience": true,
+      "hasGasExperience": false,
+      "hasPlumbingExperience": false,
+      "hasBuildingServicesExperience": false,
+      "hasElectricalControlsExperience": false,
+      "hasRelatedTradeExperience": false,
+      "heatingQualificationLevel": "international",
+      "mathsEnglishStatus": "international",
+      "availableTrainingPatterns": ["full_time_work_based"],
+      "trainingBudgetBand": "over_2000",
+      "travelRange": "wider_area",
+      "workingConditionsToCheck": [],
+      "routePriorities": []
+    },
+    "expected": {
+      "status": "qualification_verification_required",
+      "recommendedRouteId": null
+    }
+  },
+  {
+    "name": "working_conditions_concerns_do_not_reject",
+    "signals": {
+      "startingPoint": "still_at_school",
+      "hasHeatingExperience": false,
+      "hasGasExperience": false,
+      "hasPlumbingExperience": false,
+      "hasBuildingServicesExperience": false,
+      "hasElectricalControlsExperience": false,
+      "hasRelatedTradeExperience": false,
+      "heatingQualificationLevel": "none",
+      "mathsEnglishStatus": "both",
+      "availableTrainingPatterns": ["full_time_work_based"],
+      "trainingBudgetBand": "free_only",
+      "travelRange": "up_to_30",
+      "workingConditionsToCheck": ["safety_critical_systems", "emergency_callouts"],
+      "routePriorities": []
+    },
+    "expected": {
+      "status": "route_recommended",
+      "recommendedRouteId": "apprenticeship",
+      "considerationsCountAtLeast": 2
+    }
+  },
+  {
+    "name": "budget_low_versus_high_identical_readiness",
+    "note": "See paired case below.",
+    "signals": {
+      "startingPoint": "career_changer",
+      "hasHeatingExperience": false,
+      "hasGasExperience": false,
+      "hasPlumbingExperience": false,
+      "hasBuildingServicesExperience": false,
+      "hasElectricalControlsExperience": false,
+      "hasRelatedTradeExperience": false,
+      "heatingQualificationLevel": "none",
+      "mathsEnglishStatus": "both",
+      "availableTrainingPatterns": ["weekday_evenings"],
+      "trainingBudgetBand": "free_only",
+      "travelRange": "up_to_60",
+      "workingConditionsToCheck": [],
+      "routePriorities": []
+    },
+    "pairedWith": "budget_high_variant",
+    "expected": {
+      "status": "route_recommended",
+      "recommendedRouteId": "college_then_workplace_experience"
+    }
+  },
+  {
+    "name": "budget_high_variant",
+    "signals": {
+      "startingPoint": "career_changer",
+      "hasHeatingExperience": false,
+      "hasGasExperience": false,
+      "hasPlumbingExperience": false,
+      "hasBuildingServicesExperience": false,
+      "hasElectricalControlsExperience": false,
+      "hasRelatedTradeExperience": false,
+      "heatingQualificationLevel": "none",
+      "mathsEnglishStatus": "both",
+      "availableTrainingPatterns": ["weekday_evenings"],
+      "trainingBudgetBand": "over_2000",
+      "travelRange": "up_to_60",
+      "workingConditionsToCheck": [],
+      "routePriorities": []
+    },
+    "expected": {
+      "status": "route_recommended",
+      "recommendedRouteId": "college_then_workplace_experience"
+    }
+  },
+  {
+    "name": "priorities_reorder_two_viable_routes",
+    "signals": {
+      "startingPoint": "career_changer",
+      "hasHeatingExperience": false,
+      "hasGasExperience": false,
+      "hasPlumbingExperience": false,
+      "hasBuildingServicesExperience": false,
+      "hasElectricalControlsExperience": false,
+      "hasRelatedTradeExperience": true,
+      "heatingQualificationLevel": "none",
+      "mathsEnglishStatus": "both",
+      "availableTrainingPatterns": ["one_or_two_weekdays"],
+      "trainingBudgetBand": "over_2000",
+      "travelRange": "up_to_60",
+      "workingConditionsToCheck": [],
+      "routePriorities": ["recognised_qualification", "fit_around_commitments"]
+    },
+    "expected": {
+      "status": "route_recommended",
+      "recommendedRouteId": "college_then_workplace_experience"
+    }
+  },
+  {
+    "name": "priorities_cannot_promote_ineligible_route",
+    "signals": {
+      "startingPoint": "career_changer",
+      "hasHeatingExperience": false,
+      "hasGasExperience": false,
+      "hasPlumbingExperience": false,
+      "hasBuildingServicesExperience": false,
+      "hasElectricalControlsExperience": false,
+      "hasRelatedTradeExperience": false,
+      "heatingQualificationLevel": "none",
+      "mathsEnglishStatus": "both",
+      "availableTrainingPatterns": ["full_time_work_based"],
+      "trainingBudgetBand": "over_2000",
+      "travelRange": "up_to_60",
+      "workingConditionsToCheck": [],
+      "routePriorities": ["qualify_quickly"]
+    },
+    "expected": {
+      "status": "route_recommended",
+      "recommendedRouteId": "apprenticeship",
+      "recommendedRouteMustNotBe": "experienced_worker_route"
+    }
+  }
+]
