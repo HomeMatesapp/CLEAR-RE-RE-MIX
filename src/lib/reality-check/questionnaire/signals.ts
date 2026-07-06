@@ -141,3 +141,61 @@ export const extractPlumberSignals = (
     routePriorities: asArray(answers.route_priorities),
   };
 };
+
+// ── Heating Engineer (slug: hvac-engineer) ───────────────────────────────────
+
+export type HeatingEngineerQualificationLevel =
+  | "none"
+  | "foundation"
+  | "level_2"
+  | "level_3"
+  | "gas_or_gas_safe_claimed"
+  | "heat_pump_or_low_carbon"
+  | "older_unknown"
+  | "international"
+  | "unknown_level"
+  | "not_sure";
+
+export interface HeatingEngineerSignals {
+  startingPoint: ElectricianStartingPoint | null;
+  hasHeatingExperience: boolean;
+  hasGasExperience: boolean;
+  hasPlumbingExperience: boolean;
+  hasBuildingServicesExperience: boolean;
+  hasElectricalControlsExperience: boolean;
+  hasRelatedTradeExperience: boolean;
+  heatingQualificationLevel: HeatingEngineerQualificationLevel | null;
+  mathsEnglishStatus: MathsEnglishStatus | null;
+  availableTrainingPatterns: string[];
+  trainingBudgetBand: TrainingBudgetBand | null;
+  travelRange: TravelRange | null;
+  workingConditionsToCheck: string[];
+  routePriorities: string[];
+}
+
+export const extractHeatingEngineerSignals = (
+  answers: AnswerMap,
+  _inline: InlineTextMap = {},
+): HeatingEngineerSignals => {
+  const experience = asArray(answers.relevant_experience);
+  return {
+    startingPoint: asString(answers.starting_point) as ElectricianStartingPoint | null,
+    hasHeatingExperience: experience.includes("heating_install_service"),
+    hasGasExperience: experience.includes("gas_appliance_or_systems"),
+    hasPlumbingExperience: experience.includes("plumbing_or_domestic_heat"),
+    hasBuildingServicesExperience: experience.includes("building_services_hvac"),
+    hasElectricalControlsExperience: experience.includes("electrical_controls"),
+    hasRelatedTradeExperience:
+      experience.includes("construction_or_trade") ||
+      experience.includes("practical_projects"),
+    heatingQualificationLevel:
+      asString(answers.heating_qualification) as HeatingEngineerQualificationLevel | null,
+    mathsEnglishStatus:
+      asString(answers.maths_english_status) as MathsEnglishStatus | null,
+    availableTrainingPatterns: asArray(answers.training_availability),
+    trainingBudgetBand: asString(answers.training_budget) as TrainingBudgetBand | null,
+    travelRange: asString(answers.travel_range) as TravelRange | null,
+    workingConditionsToCheck: asArray(answers.working_conditions_to_check),
+    routePriorities: asArray(answers.route_priorities),
+  };
+};
