@@ -51,7 +51,7 @@ import {
   type StartingPointStatus,
 } from "@/components/role/reality-check-shared";
 import { ModularRealityCheckWizard } from "@/components/role/ModularRealityCheckWizard";
-import { resolveConfig, hasModularConfig } from "@/lib/reality-check/questionnaire/registry";
+import { resolveConfig, hasReviewedModularRealityCheck } from "@/lib/reality-check/questionnaire/registry";
 import { isSupportedRegion } from "@/lib/reality-check/regions";
 import { isRealityCheckEnabled as isRealityCheckReady } from "@/lib/reality-check/service-levels";
 
@@ -425,10 +425,13 @@ const RealityCheckPage = () => {
   }
 
   // Gate by service_level — info_only roles do not yet have a reviewed
-  // Reality-check. Modular-config roles are reviewed by definition (their
-  // questionnaire + route engine exist), so they bypass the gate regardless
-  // of the DB service_level value.
-  if (!hasModularConfig(role.role_slug) && !isRealityCheckReady(role.service_level)) {
+  // Reality-check. Roles with a reviewed modular Reality-check (see
+  // `hasReviewedModularRealityCheck`) have a reviewed questionnaire AND a
+  // reviewed deterministic route engine, so they bypass the DB-level
+  // service_level gate. This gate ONLY authorises showing the modular
+  // wizard — it does not authorise skipping evidence, coverage or
+  // availability caveats; those remain the engine's responsibility.
+  if (!hasReviewedModularRealityCheck(role.role_slug) && !isRealityCheckReady(role.service_level)) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Helmet>
@@ -513,7 +516,7 @@ const RealityCheckPage = () => {
               aria-live="polite"
               className="mt-8 bg-white border-2 border-ink rounded-[10px] overflow-hidden"
             >
-              {hasModularConfig(role.role_slug) ? (
+              {hasReviewedModularRealityCheck(role.role_slug) ? (
                 <ModularRealityCheckWizard
                   role={role}
                   config={resolveConfig(role.role_slug)!}
