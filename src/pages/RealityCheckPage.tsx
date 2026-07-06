@@ -512,7 +512,7 @@ const RealityCheckPage = () => {
               className="mt-8 bg-white border-2 border-ink rounded-[10px] overflow-hidden"
             >
               {hasModularConfig(role.role_slug) ? (
-                <ElectricianWizard
+                <ModularRealityCheckWizard
                   role={role}
                   config={resolveConfig(role.role_slug)!}
                   onResult={(r) => setResult(r)}
