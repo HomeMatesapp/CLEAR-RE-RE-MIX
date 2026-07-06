@@ -90,8 +90,8 @@ describe("modular draft v3", () => {
   });
 });
 
-describe("plumber vs electrician draft isolation", () => {
-  it("Plumber and Electrician drafts do not collide", () => {
+describe("draft isolation across Electrician, Plumber and Heating Engineer", () => {
+  it("all three role drafts co-exist without collision", () => {
     saveModularDraft({
       roleSlug: "electrician",
       questionnaireVersion: "electrician-v1",
@@ -106,10 +106,35 @@ describe("plumber vs electrician draft isolation", () => {
       inlineText: {},
       stepId: "plumbing_qualification",
     });
+    saveModularDraft({
+      roleSlug: "hvac-engineer",
+      questionnaireVersion: "heating-engineer-v1",
+      answers: { starting_point: "returning_after_break" },
+      inlineText: { heating_qualification: "ACS CCN1" },
+      stepId: "heating_qualification",
+    });
     const e = loadModularDraft("electrician", "electrician-v1");
     const p = loadModularDraft("plumber", "plumber-v1");
+    const h = loadModularDraft("hvac-engineer", "heating-engineer-v1");
     expect(e?.answers.starting_point).toBe("still_at_school");
     expect(p?.answers.starting_point).toBe("career_changer");
     expect(p?.stepId).toBe("plumbing_qualification");
+    expect(h?.answers.starting_point).toBe("returning_after_break");
+    expect(h?.inlineText.heating_qualification).toBe("ACS CCN1");
+    expect(h?.stepId).toBe("heating_qualification");
+  });
+
+  it("starting Heating Engineer does not read or overwrite Electrician or Plumber drafts", () => {
+    saveModularDraft({
+      roleSlug: "electrician",
+      questionnaireVersion: "electrician-v1",
+      answers: { starting_point: "still_at_school" },
+      inlineText: {},
+      stepId: "starting_point",
+    });
+    // Loading Heating Engineer with a fresh session returns null,
+    // preserving the Electrician draft untouched.
+    expect(loadModularDraft("hvac-engineer", "heating-engineer-v1")).toBeNull();
+    expect(loadModularDraft("electrician", "electrician-v1")?.answers.starting_point).toBe("still_at_school");
   });
 });
