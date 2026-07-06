@@ -81,7 +81,7 @@
       "hasRelatedTradeExperience": false,
       "heatingQualificationLevel": "level_3",
       "mathsEnglishStatus": "both",
-      "availableTrainingPatterns": ["one_or_two_weekdays"],
+      "availableTrainingPatterns": ["weekday_evenings"],
       "trainingBudgetBand": "over_2000",
       "travelRange": "up_to_60",
       "workingConditionsToCheck": [],
