@@ -404,7 +404,7 @@ export function ModularRealityCheckWizard({ role, config, onResult }: ModularRea
         </p>
       )}
 
-      <div key={currentId} className="p-6 sm:p-10"></div>
+      <div key={currentId} className="p-6 sm:p-10">
         {isReview ? (
           <ReviewCard config={config} answers={answers} inlineText={inlineText} />
         ) : currentQuestion ? (
