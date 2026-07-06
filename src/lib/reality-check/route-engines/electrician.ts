@@ -459,7 +459,10 @@ export const runElectricianEngine = (
     blockersAndChecks: best.blockersAndChecks,
     immediateAction: best.immediateAction,
     evidenceNotes,
-    routeEvaluations: ranked,
+    // Include every evaluated route (eligible + ineligible) so tests and the
+    // UI can inspect why routes were dropped. Ranked ordering places eligible
+    // routes first.
+    routeEvaluations: [...ranked, ...evaluations.filter((e) => !e.eligible)],
     missingSignals: [],
   };
 };
