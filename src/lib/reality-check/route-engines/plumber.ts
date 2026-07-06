@@ -215,11 +215,22 @@ const routeBlockersAndChecks = (routeId: PlumberRouteId, s: PlumberSignals): str
     );
   }
   if (routeId === "experienced_worker_route") {
+    if (s.plumbingQualificationLevel === "gas_heating") {
+      // Gas/heating/building-services qualifications are adjacent to
+      // plumbing but are NOT automatically treated as equivalent to a
+      // plumbing qualification. The engine already requires evidenced
+      // plumbing experience to consider this route eligible; here we
+      // surface the verification step explicitly.
+      out.push(
+        "Your gas, heating or building-services qualification may be relevant to the experienced-worker route but is not automatically equivalent to a plumbing qualification — confirm with an approved plumbing assessment centre how it maps to the current requirements.",
+      );
+    }
     out.push(
       "You will need to evidence substantial recent plumbing work — check the current assessment portfolio requirements with an approved centre.",
     );
   }
   return out;
+}
 };
 
 const routeImmediateAction = (routeId: PlumberRouteId): string => {
