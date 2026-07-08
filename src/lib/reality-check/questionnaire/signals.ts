@@ -626,3 +626,148 @@ export const extractPoliceOfficerSignals = (
   ) as PoliceOfficerChecksBeforeApplying[],
   priority: asString(answers.police_priority) as PoliceOfficerPriority | null,
 });
+
+// ── Actor (slug: actor) ──────────────────────────────────────────────────────
+//
+// Creative / portfolio / gig-led route family. Signals contain no
+// protected-characteristic, appearance, body, gender, ethnicity, disability,
+// accent, casting-type or precise-age fields.
+//
+// `budgetForTrainingOrMaterials` NEVER gates eligibility. `checksBeforeCommitting`
+// NEVER gates eligibility or removes a safety caution.
+
+export type ActorPerformerScope =
+  | "adult_professional_route"
+  | "under_18_or_child_performer"
+  | "not_sure";
+
+export type ActorHighestQualification =
+  | "none"
+  | "gcse"
+  | "a_level_or_level_3"
+  | "performing_arts_level_3"
+  | "bachelors_drama_or_acting"
+  | "bachelors_other"
+  | "masters_plus"
+  | "unknown";
+
+export type ActorQualificationOrigin =
+  | "uk"
+  | "international"
+  | "unknown"
+  | "not_applicable";
+
+export type ActorTrainingBackground =
+  | "no_formal_training"
+  | "school_or_youth_drama"
+  | "short_courses_or_workshops"
+  | "private_acting_course"
+  | "accredited_conservatoire_or_drama_school"
+  | "university_drama_degree"
+  | "international_training"
+  | "unknown_training";
+
+export type ActorExistingCredits =
+  | "none"
+  | "student_or_amateur_only"
+  | "unpaid_short_or_student_films"
+  | "some_paid_credits"
+  | "regular_paid_credits";
+
+export type ActorAuditionMaterial =
+  | "headshot"
+  | "showreel"
+  | "spotlight_or_equivalent_profile"
+  | "cv"
+  | "none_yet";
+
+export type ActorRepresentationStatus =
+  | "no_agent"
+  | "seeking_agent"
+  | "has_agent"
+  | "unsure_what_agent_means";
+
+export type ActorRoutePriority =
+  | "formal_training"
+  | "stage_work"
+  | "screen_work"
+  | "agent_and_profile"
+  | "build_credits"
+  | "unsure";
+
+export type ActorIncomeExpectation =
+  | "main_income_soon"
+  | "mixed_income_expected"
+  | "side_income_only"
+  | "unsure";
+
+export type ActorTimeAvailability =
+  | "full_time"
+  | "part_time_flexible"
+  | "evenings_weekends_only"
+  | "very_limited";
+
+export type ActorBudget =
+  | "none"
+  | "under_500"
+  | "500_to_2000"
+  | "2000_plus";
+
+export type ActorCheckBeforeCommitting =
+  | "course_accreditation"
+  | "agent_terms_and_fees"
+  | "casting_platform_fees"
+  | "unpaid_work_terms"
+  | "income_variability"
+  | "none_of_these";
+
+export interface ActorSignals {
+  performerScope: ActorPerformerScope | null;
+  highestQualification: ActorHighestQualification | null;
+  qualificationOrigin: ActorQualificationOrigin | null;
+  trainingBackground: ActorTrainingBackground | null;
+  existingCredits: ActorExistingCredits | null;
+  auditionMaterials: readonly ActorAuditionMaterial[];
+  representationStatus: ActorRepresentationStatus | null;
+  routePriorities: readonly ActorRoutePriority[];
+  incomeExpectation: ActorIncomeExpectation | null;
+  timeAvailability: ActorTimeAvailability | null;
+  budgetForTrainingOrMaterials: ActorBudget | null;
+  checksBeforeCommitting: readonly ActorCheckBeforeCommitting[];
+}
+
+export const extractActorSignals = (
+  answers: AnswerMap,
+  _inline: InlineTextMap = {},
+): ActorSignals => ({
+  performerScope: asString(answers.performer_scope) as ActorPerformerScope | null,
+  highestQualification: asString(answers.highest_qualification) as
+    | ActorHighestQualification
+    | null,
+  qualificationOrigin: asString(answers.qualification_origin) as
+    | ActorQualificationOrigin
+    | null,
+  trainingBackground: asString(answers.training_background) as
+    | ActorTrainingBackground
+    | null,
+  existingCredits: asString(answers.existing_credits) as
+    | ActorExistingCredits
+    | null,
+  auditionMaterials: asArray(answers.audition_materials) as ActorAuditionMaterial[],
+  representationStatus: asString(answers.representation_status) as
+    | ActorRepresentationStatus
+    | null,
+  routePriorities: asArray(answers.route_priorities) as ActorRoutePriority[],
+  incomeExpectation: asString(answers.income_expectation) as
+    | ActorIncomeExpectation
+    | null,
+  timeAvailability: asString(answers.time_availability) as
+    | ActorTimeAvailability
+    | null,
+  budgetForTrainingOrMaterials: asString(
+    answers.budget_for_training_or_materials,
+  ) as ActorBudget | null,
+  checksBeforeCommitting: asArray(
+    answers.checks_before_committing,
+  ) as ActorCheckBeforeCommitting[],
+});
