@@ -133,9 +133,20 @@ export const RealityCheckCTA = ({
         className="absolute left-0 top-0 bottom-0 w-[6px] border-l-2 border-dashed border-primary"
       />
 
-      <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-ink/60 mb-2">
-        Reality-check · 3 min
-      </p>
+      <div className="flex flex-wrap items-center gap-2 mb-2">
+        <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-ink/60">
+          Reality-check · 3 min
+        </p>
+        {reviewedDeep && (
+          <span
+            data-testid="reviewed-deep-badge"
+            className="inline-flex items-center rounded-sm border-2 border-ink bg-tint px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-ink"
+            title="Route logic for this role has been reviewed in depth by the Clear Routes team."
+          >
+            Reviewed route logic
+          </span>
+        )}
+      </div>
       <h2 className="font-display text-2xl leading-[1.15] text-ink mb-3">
         Find your most realistic route into {roleName}.
       </h2>
