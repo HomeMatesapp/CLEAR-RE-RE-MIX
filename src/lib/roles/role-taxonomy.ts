@@ -17,8 +17,7 @@ import raw from "./role-taxonomy.json";
 export const ROUTE_FAMILIES = [
   "skilled_trades",
   "construction_built_environment",
-  "digital_product_technology",
-  "data_ai_analytics",
+  "digital_data_technology",
   "healthcare_clinical",
   "care_social_support",
   "education_training",
@@ -29,8 +28,7 @@ export const ROUTE_FAMILIES = [
   "science_research_environment",
   "transport_aviation_logistics",
   "business_operations_commercial",
-  "hospitality_retail_service",
-  "beauty_wellness_personal_services",
+  "hospitality_retail_personal_service",
   "agriculture_land_animal",
   "elite_competitive_long_route",
 ] as const;
