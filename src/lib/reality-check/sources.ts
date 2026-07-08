@@ -313,6 +313,61 @@ export const SOURCES: Readonly<Record<string, SourceEntry>> = Object.freeze({
       "Public explainer for UK police constable entry routes referenced in the Police Officer reality-check methodology.",
     category: "pathway",
   },
+  national_careers_actor: {
+    id: "national_careers_actor",
+    organisation: "National Careers Service",
+    title: "Job profile: Actor",
+    period: "Current",
+    lastChecked: "2026-07-08",
+    url: "https://nationalcareers.service.gov.uk/job-profiles/actor",
+    usage:
+      "Public explainer for acting work — irregular hours, variable earnings, and the expectation of other paid work between acting jobs.",
+    category: "pathway",
+  },
+  equity_casting_and_auditions: {
+    id: "equity_casting_and_auditions",
+    organisation: "Equity",
+    title: "Casting, auditions and unpaid-work guidance",
+    period: "Current",
+    lastChecked: "2026-07-08",
+    url: "https://www.equity.org.uk/",
+    usage:
+      "Union guidance on agent contract terms, casting/audition safety and unpaid-work terms, cited whenever agent, credits or casting-platform routes appear.",
+    category: "pathway",
+  },
+  spotlight_profile_guidance: {
+    id: "spotlight_profile_guidance",
+    organisation: "Spotlight",
+    title: "Casting profile guidance",
+    period: "Current",
+    lastChecked: "2026-07-08",
+    url: "https://www.spotlight.com/",
+    usage:
+      "Best-practice guidance on casting profiles — treated as evidence guidance, not proof of outcomes.",
+    category: "pathway",
+  },
+  spotlight_headshot_guidance: {
+    id: "spotlight_headshot_guidance",
+    organisation: "Spotlight",
+    title: "Headshot guidance",
+    period: "Current",
+    lastChecked: "2026-07-08",
+    url: "https://www.spotlight.com/news-and-advice/tips-and-advice/actor-headshots-a-comprehensive-guide/",
+    usage:
+      "Best-practice guidance on actor headshots — evidence guidance only.",
+    category: "pathway",
+  },
+  cdmt_accredited_training: {
+    id: "cdmt_accredited_training",
+    organisation: "Council for Dance, Drama and Musical Theatre (CDMT)",
+    title: "Accredited performing-arts training",
+    period: "Current",
+    lastChecked: "2026-07-08",
+    url: "https://cdmt.org.uk/",
+    usage:
+      "CDMT is an accreditation / quality-assurance source for performing-arts training, not a statutory regulator. Cited whenever a formal-training or private-course caution is triggered.",
+    category: "pathway",
+  },
 });
 
 // ── Selection logic ─────────────────────────────────────────────────────────
