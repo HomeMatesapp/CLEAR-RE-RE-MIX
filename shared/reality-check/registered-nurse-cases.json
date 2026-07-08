@@ -1,0 +1,203 @@
+[
+  {
+    "name": "a_level_direct_degree",
+    "signals": {
+      "startingPoint": "recently_left_education",
+      "targetNursingField": "adult",
+      "highestQualification": "a_level",
+      "mathsEnglishScienceStatus": "english_maths_science_gcse_met",
+      "currentHealthcareEmployment": "not_currently_employed_in_healthcare",
+      "studyPatternAvailable": "full_time_university_possible",
+      "routePriorities": ["university_route"]
+    },
+    "expected": {
+      "status": "route_recommended",
+      "recommendedRouteId": "pre_registration_nursing_degree"
+    }
+  },
+  {
+    "name": "hcsw_with_employer_support_rnda",
+    "signals": {
+      "startingPoint": "currently_healthcare_support_worker",
+      "targetNursingField": "adult",
+      "highestQualification": "a_level",
+      "mathsEnglishScienceStatus": "english_maths_science_gcse_met",
+      "currentHealthcareEmployment": "employed_healthcare_support_role",
+      "employerSupport": "employer_support_confirmed",
+      "studyPatternAvailable": "employer_led_only",
+      "routePriorities": ["employer_supported", "keep_earning"]
+    },
+    "expected": {
+      "status": "route_recommended",
+      "recommendedRouteId": "registered_nurse_degree_apprenticeship"
+    }
+  },
+  {
+    "name": "nursing_associate_progression",
+    "signals": {
+      "startingPoint": "nursing_associate_or_assistant_practitioner",
+      "targetNursingField": "adult",
+      "highestQualification": "nursing_associate_foundation_degree",
+      "mathsEnglishScienceStatus": "english_maths_science_gcse_met",
+      "currentHealthcareEmployment": "employed_nursing_associate",
+      "employerSupport": "employer_support_confirmed",
+      "studyPatternAvailable": "employer_led_only",
+      "routePriorities": ["fastest_route"]
+    },
+    "expected": {
+      "status": "route_recommended",
+      "recommendedRouteId": "nursing_associate_to_registered_nurse"
+    }
+  },
+  {
+    "name": "graduate_health_related_shortened",
+    "signals": {
+      "startingPoint": "graduate_non_nursing",
+      "targetNursingField": "adult",
+      "highestQualification": "bachelors_health_related",
+      "degreeBackgroundSubject": "health_related",
+      "mathsEnglishScienceStatus": "english_maths_science_gcse_met",
+      "currentHealthcareEmployment": "not_currently_employed_in_healthcare",
+      "studyPatternAvailable": "full_time_university_possible",
+      "routePriorities": ["fastest_route"]
+    },
+    "expected": {
+      "status": "route_recommended",
+      "recommendedRouteId": "graduate_shortened_nursing_degree"
+    }
+  },
+  {
+    "name": "overseas_trained_verification_primary",
+    "signals": {
+      "startingPoint": "trained_as_nurse_outside_uk",
+      "targetNursingField": "adult",
+      "highestQualification": "overseas_nursing_qualification",
+      "mathsEnglishScienceStatus": "english_maths_science_gcse_met",
+      "currentHealthcareEmployment": "not_currently_employed_in_healthcare",
+      "registrationBackground": "overseas_trained_not_on_nmc_register",
+      "studyPatternAvailable": "full_time_university_possible",
+      "routePriorities": []
+    },
+    "expected": {
+      "status": "qualification_verification_required",
+      "recommendedRouteId": null,
+      "verificationPrimaryRouteId": "overseas_trained_nurse_registration"
+    }
+  },
+  {
+    "name": "previously_registered_return_to_practice",
+    "signals": {
+      "startingPoint": "previously_registered_nurse",
+      "targetNursingField": "adult",
+      "highestQualification": "bachelors_health_related",
+      "degreeBackgroundSubject": "health_related",
+      "mathsEnglishScienceStatus": "english_maths_science_gcse_met",
+      "currentHealthcareEmployment": "not_currently_employed_in_healthcare",
+      "registrationBackground": "previous_nmc_registration_lapsed",
+      "studyPatternAvailable": "part_time_only",
+      "routePriorities": []
+    },
+    "expected": {
+      "status": "qualification_verification_required",
+      "recommendedRouteId": null,
+      "verificationPrimaryRouteId": "return_to_practice"
+    }
+  },
+  {
+    "name": "gcse_only_beginner_bridges",
+    "signals": {
+      "startingPoint": "complete_beginner",
+      "targetNursingField": "adult",
+      "highestQualification": "gcse",
+      "mathsEnglishScienceStatus": "english_maths_science_gcse_met",
+      "currentHealthcareEmployment": "not_currently_employed_in_healthcare",
+      "studyPatternAvailable": "full_time_university_possible",
+      "routePriorities": []
+    },
+    "expected": {
+      "status": "bridging_required",
+      "recommendedRouteId": null
+    }
+  },
+  {
+    "name": "unknown_qualification_insufficient",
+    "signals": {
+      "startingPoint": "complete_beginner",
+      "targetNursingField": "adult",
+      "highestQualification": "unknown",
+      "mathsEnglishScienceStatus": "english_maths_science_gcse_met",
+      "currentHealthcareEmployment": "not_currently_employed_in_healthcare",
+      "studyPatternAvailable": "full_time_university_possible",
+      "routePriorities": []
+    },
+    "expected": {
+      "status": "insufficient_information",
+      "recommendedRouteId": null
+    }
+  },
+  {
+    "name": "unknown_qual_with_overseas_still_verifies",
+    "signals": {
+      "startingPoint": "trained_as_nurse_outside_uk",
+      "targetNursingField": "adult",
+      "highestQualification": "unknown",
+      "mathsEnglishScienceStatus": "english_maths_science_gcse_met",
+      "currentHealthcareEmployment": "not_currently_employed_in_healthcare",
+      "registrationBackground": "overseas_trained_not_on_nmc_register",
+      "studyPatternAvailable": "full_time_university_possible",
+      "routePriorities": []
+    },
+    "expected": {
+      "status": "qualification_verification_required",
+      "verificationPrimaryRouteId": "overseas_trained_nurse_registration"
+    }
+  },
+  {
+    "name": "unsure_maths_english_science_not_direct_rnda",
+    "signals": {
+      "startingPoint": "currently_healthcare_support_worker",
+      "targetNursingField": "adult",
+      "highestQualification": "a_level",
+      "mathsEnglishScienceStatus": "unsure",
+      "currentHealthcareEmployment": "employed_healthcare_support_role",
+      "employerSupport": "employer_support_confirmed",
+      "studyPatternAvailable": "employer_led_only",
+      "routePriorities": ["employer_supported"]
+    },
+    "expected": {
+      "recommendedRouteMustNotBe": "registered_nurse_degree_apprenticeship"
+    }
+  },
+  {
+    "name": "overseas_qualification_alone_not_level3",
+    "signals": {
+      "startingPoint": "complete_beginner",
+      "targetNursingField": "adult",
+      "highestQualification": "overseas_nursing_qualification",
+      "mathsEnglishScienceStatus": "english_maths_science_gcse_met",
+      "currentHealthcareEmployment": "not_currently_employed_in_healthcare",
+      "studyPatternAvailable": "full_time_university_possible",
+      "routePriorities": []
+    },
+    "expected": {
+      "status": "qualification_verification_required",
+      "verificationPrimaryRouteId": "overseas_trained_nurse_registration"
+    }
+  },
+  {
+    "name": "missing_starting_point_insufficient",
+    "signals": {
+      "startingPoint": null,
+      "targetNursingField": "adult",
+      "highestQualification": "a_level",
+      "mathsEnglishScienceStatus": "english_maths_science_gcse_met",
+      "currentHealthcareEmployment": "not_currently_employed_in_healthcare",
+      "studyPatternAvailable": "full_time_university_possible",
+      "routePriorities": []
+    },
+    "expected": {
+      "status": "insufficient_information",
+      "recommendedRouteId": null
+    }
+  }
+]

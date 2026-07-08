@@ -16262,7 +16262,8 @@
     "roleName": "Registered Nurse",
     "primaryFamily": "healthcare_clinical",
     "routeArchetype": "regulated_registration_led",
-    "recommendedRealityCheckDepth": "light_route_checker",
+    "secondaryArchetype": "mixed_route",
+    "recommendedRealityCheckDepth": "deep_reviewed_reality_check",
     "deepCheckRubric": {
       "regulated": true,
       "expensiveWrongTurn": false,
@@ -16272,7 +16273,8 @@
       "productProofValue": 2
     },
     "deepCheckPriority": "top_candidate",
-    "confidence": "high"
+    "confidence": "high",
+    "notes": "Deep reviewed Reality Check v1 — regulated NMC registration; degree, apprenticeship, nursing-associate progression and verification-led routes. Never claims eligibility to register."
   },
   {
     "roleSlug": "registrar",
