@@ -30,6 +30,7 @@ def phrase(*ps):
 PROOF_2_NAME = phrase(
     "software engineer","software developer","full stack","web developer",
     "data scientist","data analyst","product manager","ux designer",
+    "cybersecurity analyst","cyber security analyst","penetration tester",
     "registered nurse","midwife","paramedic","clinical psychologist",
     "physiotherapist","pharmacist","dentist","veterinary surgeon",
     "police officer","firefighter","prison officer","border force officer",
