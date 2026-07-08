@@ -19,6 +19,7 @@ import { buildHeatingEngineerResult } from "./_heating_engineer.ts";
 import { buildSoftwareEngineerResult } from "./_software_engineer.ts";
 import { buildRegisteredNurseResult } from "./_registered_nurse.ts";
 import { buildPoliceOfficerResult } from "./_police_officer.ts";
+import { buildActorResult } from "./_actor.ts";
 import { getCorsHeaders } from "../_shared/cors.ts";
 
 
@@ -30,7 +31,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
-    const { role, answers, electricianSignals, plumberSignals, heatingEngineerSignals, softwareEngineerSignals, registeredNurseSignals, policeOfficerSignals } = await req.json();
+    const { role, answers, electricianSignals, plumberSignals, heatingEngineerSignals, softwareEngineerSignals, registeredNurseSignals, policeOfficerSignals, actorSignals } = await req.json();
     if (!role?.role_name) {
       return new Response(JSON.stringify({ error: "role required" }), {
         status: 400,
@@ -50,6 +51,8 @@ serve(async (req) => {
       result = buildRegisteredNurseResult({ signals: registeredNurseSignals });
     } else if (role.role_slug === "police-officer" && policeOfficerSignals) {
       result = buildPoliceOfficerResult({ signals: policeOfficerSignals });
+    } else if (role.role_slug === "actor" && actorSignals) {
+      result = buildActorResult({ signals: actorSignals });
     } else {
       result = buildResult(answers, role);
     }
