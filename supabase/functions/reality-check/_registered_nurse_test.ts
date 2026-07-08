@@ -10,6 +10,7 @@ const FIXTURE_PATH = new URL(
 );
 
 // deno-lint-ignore no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const fixtures: any[] = JSON.parse(await Deno.readTextFile(FIXTURE_PATH));
 
 for (const c of fixtures) {

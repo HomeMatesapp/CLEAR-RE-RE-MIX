@@ -237,9 +237,9 @@ const firstMovesFor = (out: RegisteredNurseEngineOutput): string[] => {
 
 export const buildRegisteredNurseResult = (
   input: RegisteredNurseEngineInput,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _answers?: unknown,
 ): RealityCheckResult => {
+  void _answers;
   const out = runRegisteredNurseEngine(input);
   const readiness = readinessForStatus(out.status);
   const reason =
