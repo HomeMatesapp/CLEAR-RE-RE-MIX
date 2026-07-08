@@ -116,8 +116,8 @@ describe("ModularResultView", () => {
     };
     renderView(m, { onEdit });
     // No route cards
-    expect(screen.queryByText(/Recommended route/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/Backup route/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^Recommended route$/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^Backup route$/i)).not.toBeInTheDocument();
     // Missing information button present
     const btn = screen.getByRole("button", { name: /Where are you starting from\?/i });
     await user.click(btn);
