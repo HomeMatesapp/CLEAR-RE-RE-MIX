@@ -68,9 +68,9 @@ describe("ModularResultView", () => {
     expect(screen.getAllByRole("heading", { name: "Recommended-A" }).length).toBeGreaterThanOrEqual(1);
     expect(screen.getByRole("heading", { name: "Backup-B" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Caution-C" })).toBeInTheDocument();
-    expect(screen.getByText(/Recommended route/i)).toBeInTheDocument();
-    expect(screen.getByText(/Backup route/i)).toBeInTheDocument();
-    expect(screen.getByText(/Be careful with/i)).toBeInTheDocument();
+    expect(screen.getByText(/^Recommended route$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^Backup route$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^Be careful with$/i)).toBeInTheDocument();
   });
 
 
@@ -116,8 +116,8 @@ describe("ModularResultView", () => {
     };
     renderView(m, { onEdit });
     // No route cards
-    expect(screen.queryByText(/Recommended route/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/Backup route/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^Recommended route$/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^Backup route$/i)).not.toBeInTheDocument();
     // Missing information button present
     const btn = screen.getByRole("button", { name: /Where are you starting from\?/i });
     await user.click(btn);
@@ -177,5 +177,49 @@ describe("ModularResultView", () => {
     const rec2 = eyebrows[0].closest("article");
     expect(rec2).toBeTruthy();
     expect(within(rec2 as HTMLElement).getByRole("heading", { name: "Recommended-A" })).toBeInTheDocument();
+  });
+
+  // ── Sources panel wiring (release-blocker fix) ───────────────────────────
+  describe("SourcesPanel wiring", () => {
+    it("renders the Sources panel on a modular result", () => {
+      renderView(rec);
+      expect(screen.getByText(/Sources used/i)).toBeInTheDocument();
+    });
+
+    it("Registered Nurse modular result includes the patched NMC + Careers sources", () => {
+      const nurseRole: RoleContext = {
+        role_slug: "registered-nurse",
+        role_name: "Registered Nurse",
+      };
+      const m: ModularRealityCheckPayload = {
+        status: "route_recommended",
+        headline: "…",
+        routes: [
+          { kind: "recommended", title: "NMC-approved nursing degree", fit: "f", constraint: "c", checks: [], nextAction: "a" },
+        ],
+        checksBeforeCommitting: [],
+      };
+      render(
+        <MemoryRouter>
+          <ModularResultView result={baseResult(m)} role={nurseRole} />
+        </MemoryRouter>,
+      );
+      // Two patched sources plus supporting NMC/Skills England/NHS entries.
+      expect(screen.getByRole("link", { name: /Approved programmes/i })).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: /Job profile: Registered nurse/i })).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: /Becoming a nurse or midwife/i })).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: /Trained outside the UK/i })).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: /Returning to practice/i })).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: /Registered Nurse Degree Apprenticeship/i })).toBeInTheDocument();
+    });
+
+    it("saved mode (no answers prop) still renders the Sources panel", () => {
+      render(
+        <MemoryRouter>
+          <ModularResultView result={baseResult(rec)} role={role} mode="saved" />
+        </MemoryRouter>,
+      );
+      expect(screen.getByText(/Sources used/i)).toBeInTheDocument();
+    });
   });
 });

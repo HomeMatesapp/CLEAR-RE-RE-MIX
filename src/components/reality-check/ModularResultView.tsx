@@ -31,6 +31,8 @@ import type {
   RoleContext,
 } from "@/lib/reality-check/types";
 import { SavePrompt } from "@/components/role/reality-check-shared";
+import { SourcesPanel } from "@/components/reality-check/SourcesPanel";
+import { getSourcesForResult } from "@/lib/reality-check/sources";
 
 export interface ModularResultViewProps {
   result: RealityCheckResult & { modular: ModularRealityCheckPayload };
@@ -327,6 +329,17 @@ export function ModularResultView({
           </ol>
         </PaperCard>
       )}
+
+      {/* F′. Sources — same source-selection path as legacy ResultView.
+          Presentation-only wiring so modular results (Registered Nurse and
+          every other modular role) surface their citations. */}
+      <SourcesPanel
+        sources={getSourcesForResult(
+          role,
+          (answers ?? {}) as RealityCheckAnswers,
+          result,
+        )}
+      />
 
       {/* F. Save this route check — reuses existing SavePrompt in live mode */}
       {mode === "live" && answers && (
