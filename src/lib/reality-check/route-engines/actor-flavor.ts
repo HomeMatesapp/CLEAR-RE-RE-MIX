@@ -16,10 +16,10 @@ export const COURSE_CAUTION_CARD = {
     "Check the provider's accreditation (e.g. CDMT for performing-arts training) — treat it as quality assurance, not a guarantee.",
     "Check named tutor credits and recent graduate outcomes independently, not just the provider's own marketing.",
     "Check refund and cancellation terms before paying any deposit.",
-  ],
+  ] as string[],
   nextAction:
     "Confirm accreditation, tutor credits and graduate outcomes for any paid course before committing.",
-} as const;
+};
 
 export const AGENT_CAUTION_CARD = {
   title: "Agents, casting platforms and unpaid work",
@@ -30,10 +30,10 @@ export const AGENT_CAUTION_CARD = {
     "Check agent contract terms, commission rates and notice periods — Equity provides guidance.",
     "Check casting-platform subscription fees against the value you'll realistically get from them.",
     "Check unpaid-work terms, travel, subsistence and safety arrangements before agreeing.",
-  ],
+  ] as string[],
   nextAction:
     "Read Equity guidance on agents and unpaid work before signing anything.",
-} as const;
+};
 
 export const actorFlavor: ModularPayloadFlavor<ActorRouteId> = {
   questionLabels: {
