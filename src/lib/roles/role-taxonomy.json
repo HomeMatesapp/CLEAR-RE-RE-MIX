@@ -17990,7 +17990,7 @@
       "highConsequenceAdvice": false,
       "productProofValue": 2
     },
-    "deepCheckPriority": "top_candidate",
+    "deepCheckPriority": "strong_candidate",
     "confidence": "high",
     "secondaryArchetype": "degree_led",
     "notes": "Frozen: v1 reviewed modular Reality Check ships this release; proves the digital/portfolio route family (self-taught, bootcamp, degree, conversion MSc, apprenticeship, junior-role progression)."
