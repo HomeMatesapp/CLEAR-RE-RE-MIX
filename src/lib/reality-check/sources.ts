@@ -236,6 +236,28 @@ export const SOURCES: Readonly<Record<string, SourceEntry>> = Object.freeze({
     usage: "Structure and end-point assessment for the Registered Nurse Degree Apprenticeship.",
     category: "apprenticeship",
   },
+  nmc_approved_programmes: {
+    id: "nmc_approved_programmes",
+    organisation: "Nursing and Midwifery Council",
+    title: "Approved programmes",
+    period: "Current",
+    lastChecked: "2026-07-08",
+    url: "https://www.nmc.org.uk/education/approved-programmes/",
+    usage:
+      "Load-bearing source for the NMC-approved-programme requirement, the approved-programmes list/check copy, and the non-approved nursing diploma warning.",
+    category: "regulation",
+  },
+  national_careers_registered_nurse: {
+    id: "national_careers_registered_nurse",
+    organisation: "National Careers Service",
+    title: "Job profile: Registered nurse",
+    period: "Current",
+    lastChecked: "2026-07-08",
+    url: "https://nationalcareers.service.gov.uk/job-profiles/registered-nurse",
+    usage:
+      "Public explainer for UK nursing routes: degree, degree apprenticeship, nursing associate / assistant practitioner progression, and graduate conversion.",
+    category: "pathway",
+  },
 });
 
 // ── Selection logic ─────────────────────────────────────────────────────────
