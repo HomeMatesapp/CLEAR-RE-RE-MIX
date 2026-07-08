@@ -17,6 +17,7 @@ import { buildElectricianResult } from "./_electrician.ts";
 import { buildPlumberResult } from "./_plumber.ts";
 import { buildHeatingEngineerResult } from "./_heating_engineer.ts";
 import { buildSoftwareEngineerResult } from "./_software_engineer.ts";
+import { buildRegisteredNurseResult } from "./_registered_nurse.ts";
 import { getCorsHeaders } from "../_shared/cors.ts";
 
 
@@ -28,16 +29,13 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
-    const { role, answers, electricianSignals, plumberSignals, heatingEngineerSignals, softwareEngineerSignals } = await req.json();
+    const { role, answers, electricianSignals, plumberSignals, heatingEngineerSignals, softwareEngineerSignals, registeredNurseSignals } = await req.json();
     if (!role?.role_name) {
       return new Response(JSON.stringify({ error: "role required" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-    // Slug-based dispatch: each modular role has its own deterministic
-    // engine driven by structured signals extracted client-side.
-    // Everything else stays on the legacy readiness engine.
     let result;
     if (role.role_slug === "electrician" && electricianSignals) {
       result = buildElectricianResult({ signals: electricianSignals });
@@ -47,6 +45,8 @@ serve(async (req) => {
       result = buildHeatingEngineerResult({ signals: heatingEngineerSignals });
     } else if (role.role_slug === "software-engineer" && softwareEngineerSignals) {
       result = buildSoftwareEngineerResult({ signals: softwareEngineerSignals });
+    } else if (role.role_slug === "registered-nurse" && registeredNurseSignals) {
+      result = buildRegisteredNurseResult({ signals: registeredNurseSignals });
     } else {
       result = buildResult(answers, role);
     }

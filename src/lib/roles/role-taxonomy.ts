@@ -135,6 +135,7 @@ export const FROZEN_DEEP_ROLES: readonly string[] = [
   "plumber",
   "hvac-engineer",
   "software-engineer",
+  "registered-nurse",
 ] as const;
 
 export function getTaxonomyEntry(slug: string): RoleTaxonomyEntry | undefined {

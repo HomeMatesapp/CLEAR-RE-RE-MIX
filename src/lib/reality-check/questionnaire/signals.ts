@@ -345,3 +345,168 @@ export const extractSoftwareEngineerSignals = (
     routePriorities: priorities,
   };
 };
+
+// ── Registered Nurse (slug: registered-nurse) ────────────────────────────────
+//
+// Regulated-healthcare route family. Signals contain no health-condition,
+// disability, pregnancy, criminal-record, DBS, occupational-health or
+// immigration/visa fields. Those items belong to the employer/provider/NMC.
+// No free text is captured that could reach the engine; there is no
+// budget field (nursing degrees are student-loan funded and apprenticeships
+// are employer-paid, so budget is caveat-only in copy).
+
+export type RegisteredNurseStartingPoint =
+  | "complete_beginner"
+  | "some_health_or_care_experience"
+  | "currently_healthcare_support_worker"
+  | "nursing_associate_or_assistant_practitioner"
+  | "graduate_non_nursing"
+  | "trained_as_nurse_outside_uk"
+  | "previously_registered_nurse"
+  | "already_registered_nurse_other_field"
+  | "not_sure";
+
+export type RegisteredNurseTargetField =
+  | "adult"
+  | "child"
+  | "mental_health"
+  | "learning_disability"
+  | "not_sure";
+
+export type RegisteredNurseHighestQualification =
+  | "none"
+  | "gcse"
+  | "a_level"
+  | "l3_vocational"
+  | "access_to_he_health_science"
+  | "bachelors_health_related"
+  | "bachelors_other"
+  | "nursing_associate_foundation_degree"
+  | "overseas_nursing_qualification"
+  | "unknown";
+
+export type RegisteredNurseMathsEnglishScienceStatus =
+  | "english_maths_science_gcse_met"
+  | "english_maths_met_science_missing"
+  | "maths_or_english_missing"
+  | "unsure";
+
+export type RegisteredNurseCurrentHealthcareEmployment =
+  | "not_currently_employed_in_healthcare"
+  | "employed_healthcare_support_role"
+  | "employed_nursing_associate"
+  | "employed_assistant_practitioner"
+  | "employed_other_healthcare"
+  | "not_sure";
+
+export type RegisteredNurseEmployerSupport =
+  | "employer_support_confirmed"
+  | "employer_support_possible"
+  | "no_employer_support"
+  | "not_discussed_yet";
+
+export type RegisteredNurseDegreeBackgroundSubject =
+  | "health_related"
+  | "psychology"
+  | "life_sciences"
+  | "social_work"
+  | "other_subject"
+  | "unsure";
+
+export type RegisteredNurseRegistrationBackground =
+  | "overseas_trained_not_on_nmc_register"
+  | "previous_nmc_registration_lapsed"
+  | "current_nmc_registration_other_field"
+  | "unsure";
+
+export type RegisteredNurseStudyPattern =
+  | "full_time_university_possible"
+  | "part_time_only"
+  | "employer_led_only"
+  | "need_to_keep_earning"
+  | "not_sure";
+
+export interface RegisteredNurseSignals {
+  startingPoint: RegisteredNurseStartingPoint | null;
+  targetNursingField: RegisteredNurseTargetField | null;
+  highestQualification: RegisteredNurseHighestQualification | null;
+  mathsEnglishScienceStatus: RegisteredNurseMathsEnglishScienceStatus | null;
+  currentHealthcareEmployment: RegisteredNurseCurrentHealthcareEmployment | null;
+  employerSupport?: RegisteredNurseEmployerSupport;
+  degreeBackgroundSubject?: RegisteredNurseDegreeBackgroundSubject;
+  registrationBackground?: RegisteredNurseRegistrationBackground;
+  studyPatternAvailable: RegisteredNurseStudyPattern | null;
+  routePriorities: string[];
+}
+
+const EMPLOYED_HEALTHCARE = new Set<RegisteredNurseCurrentHealthcareEmployment>([
+  "employed_healthcare_support_role",
+  "employed_nursing_associate",
+  "employed_assistant_practitioner",
+  "employed_other_healthcare",
+]);
+
+export const extractRegisteredNurseSignals = (
+  answers: AnswerMap,
+  _inline: InlineTextMap = {},
+): RegisteredNurseSignals => {
+  const startingPoint = asString(answers.starting_point) as
+    | RegisteredNurseStartingPoint
+    | null;
+  const highestQualification = asString(answers.highest_qualification) as
+    | RegisteredNurseHighestQualification
+    | null;
+  const currentHealthcareEmployment = asString(
+    answers.current_healthcare_employment,
+  ) as RegisteredNurseCurrentHealthcareEmployment | null;
+  const employerSupportRaw = asString(answers.employer_support) as
+    | RegisteredNurseEmployerSupport
+    | null;
+  const degreeBackgroundSubjectRaw = asString(answers.degree_background_subject) as
+    | RegisteredNurseDegreeBackgroundSubject
+    | null;
+  const registrationBackgroundRaw = asString(answers.registration_background) as
+    | RegisteredNurseRegistrationBackground
+    | null;
+
+  // Enforce visibleWhen invariants defensively — drop optional signals whose
+  // gate condition is not met so the engine never sees stale values.
+  const employerSupport =
+    currentHealthcareEmployment &&
+    EMPLOYED_HEALTHCARE.has(currentHealthcareEmployment) &&
+    employerSupportRaw
+      ? employerSupportRaw
+      : undefined;
+  const degreeBackgroundSubject =
+    (highestQualification === "bachelors_health_related" ||
+      highestQualification === "bachelors_other") &&
+    degreeBackgroundSubjectRaw
+      ? degreeBackgroundSubjectRaw
+      : undefined;
+  const registrationBackground =
+    (startingPoint === "trained_as_nurse_outside_uk" ||
+      startingPoint === "previously_registered_nurse" ||
+      startingPoint === "already_registered_nurse_other_field") &&
+    registrationBackgroundRaw
+      ? registrationBackgroundRaw
+      : undefined;
+
+  return {
+    startingPoint,
+    targetNursingField: asString(answers.target_nursing_field) as
+      | RegisteredNurseTargetField
+      | null,
+    highestQualification,
+    mathsEnglishScienceStatus: asString(
+      answers.maths_english_science_status,
+    ) as RegisteredNurseMathsEnglishScienceStatus | null,
+    currentHealthcareEmployment,
+    ...(employerSupport !== undefined ? { employerSupport } : {}),
+    ...(degreeBackgroundSubject !== undefined ? { degreeBackgroundSubject } : {}),
+    ...(registrationBackground !== undefined ? { registrationBackground } : {}),
+    studyPatternAvailable: asString(answers.study_pattern_available) as
+      | RegisteredNurseStudyPattern
+      | null,
+    routePriorities: asArray(answers.nursing_route_priorities),
+  };
+};

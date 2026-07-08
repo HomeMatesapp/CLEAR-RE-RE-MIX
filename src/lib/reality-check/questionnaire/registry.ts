@@ -6,12 +6,14 @@ import { electricianConfig } from "./roles/electrician";
 import { plumberConfig } from "./roles/plumber";
 import { heatingEngineerConfig } from "./roles/heating-engineer";
 import { softwareEngineerConfig } from "./roles/software-engineer";
+import { registeredNurseConfig } from "./roles/registered-nurse";
 
 const ROLE_CONFIGS: Record<string, RoleConfig> = {
   [electricianConfig.roleSlug]: electricianConfig,
   [plumberConfig.roleSlug]: plumberConfig,
   [heatingEngineerConfig.roleSlug]: heatingEngineerConfig,
   [softwareEngineerConfig.roleSlug]: softwareEngineerConfig,
+  [registeredNurseConfig.roleSlug]: registeredNurseConfig,
 };
 
 /**
