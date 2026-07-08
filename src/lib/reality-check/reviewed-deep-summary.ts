@@ -64,7 +64,11 @@ export function buildReviewedDeepSummary(): ReviewedDeepRoleSummary[] {
     }
     const taxonomy = getTaxonomyEntry(slug);
     const roleName = taxonomy?.roleName ?? slug;
-    const sources = getSourcesForResult(stubRoleContext(slug, roleName), {}, null);
+    const sources = getSourcesForResult(
+      stubRoleContext(slug, roleName),
+      {} as Parameters<typeof getSourcesForResult>[1],
+      null,
+    );
     return {
       roleSlug: slug,
       roleName,
