@@ -31,6 +31,8 @@ import type {
   RoleContext,
 } from "@/lib/reality-check/types";
 import { SavePrompt } from "@/components/role/reality-check-shared";
+import { SourcesPanel } from "@/components/reality-check/SourcesPanel";
+import { getSourcesForResult } from "@/lib/reality-check/sources";
 
 export interface ModularResultViewProps {
   result: RealityCheckResult & { modular: ModularRealityCheckPayload };
