@@ -236,6 +236,28 @@ export const SOURCES: Readonly<Record<string, SourceEntry>> = Object.freeze({
     usage: "Structure and end-point assessment for the Registered Nurse Degree Apprenticeship.",
     category: "apprenticeship",
   },
+  nmc_approved_programmes: {
+    id: "nmc_approved_programmes",
+    organisation: "Nursing and Midwifery Council",
+    title: "Approved programmes",
+    period: "Current",
+    lastChecked: "2026-07-08",
+    url: "https://www.nmc.org.uk/education/approved-programmes/",
+    usage:
+      "Load-bearing source for the NMC-approved-programme requirement, the approved-programmes list/check copy, and the non-approved nursing diploma warning.",
+    category: "regulation",
+  },
+  national_careers_registered_nurse: {
+    id: "national_careers_registered_nurse",
+    organisation: "National Careers Service",
+    title: "Job profile: Registered nurse",
+    period: "Current",
+    lastChecked: "2026-07-08",
+    url: "https://nationalcareers.service.gov.uk/job-profiles/registered-nurse",
+    usage:
+      "Public explainer for UK nursing routes: degree, degree apprenticeship, nursing associate / assistant practitioner progression, and graduate conversion.",
+    category: "pathway",
+  },
 });
 
 // ── Selection logic ─────────────────────────────────────────────────────────
@@ -245,7 +267,16 @@ function roleRegulationSources(role: RoleContext): SourceEntry[] {
   const name = (role.role_name ?? "").toLowerCase();
   const out: SourceEntry[] = [];
   if (/(nurse|midwif)/.test(name)) {
-    out.push(SOURCES.nhs_careers, SOURCES.nmc);
+    out.push(
+      SOURCES.nhs_careers,
+      SOURCES.nmc,
+      SOURCES.nmc_becoming_a_nurse,
+      SOURCES.nmc_approved_programmes,
+      SOURCES.nmc_overseas,
+      SOURCES.nmc_return_to_practice,
+      SOURCES.skills_england_rnda,
+      SOURCES.national_careers_registered_nurse,
+    );
   } else if (/(paramedic|therapist|radiograph|pharmacist|dentist|doctor|gp|midwif)/.test(name)) {
     out.push(SOURCES.nhs_careers);
   }
