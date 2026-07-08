@@ -2,7 +2,7 @@
 // Parity is enforced by shared/reality-check/police-officer-cases.json.
 
 import { policeOfficerFlavor } from "./_police_officer_flavor.ts";
-import type { ModularRealityCheckPayload, ModularRouteCard } from "./_modular_payload.ts";
+import type { ModularPayload, ModularRouteCard } from "./_modular_payload.ts";
 import { buildModularPayload } from "./_modular_payload.ts";
 
 type RouteId =
@@ -430,7 +430,7 @@ function card(ev: RouteEval, kind: ModularRouteCard["kind"], fit: string): Modul
   };
 }
 
-function buildVerificationPayload(out: EngineOutput): ModularRealityCheckPayload {
+function buildVerificationPayload(out: EngineOutput): ModularPayload {
   const routes: ModularRouteCard[] = [];
   if (!out.isInternationalVerification && out.verificationPrimaryRouteId) {
     const primary = out.routeEvaluations.find((r) => r.id === out.verificationPrimaryRouteId);
@@ -450,7 +450,7 @@ function buildVerificationPayload(out: EngineOutput): ModularRealityCheckPayload
   };
 }
 
-function buildModularForPolice(out: EngineOutput): ModularRealityCheckPayload {
+function buildModularForPolice(out: EngineOutput): ModularPayload {
   if (out.status === "qualification_verification_required") return buildVerificationPayload(out);
   const base = buildModularPayload(out, policeOfficerFlavor);
   if (out.status === "insufficient_information") return base;
