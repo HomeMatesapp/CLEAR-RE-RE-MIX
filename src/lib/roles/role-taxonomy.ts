@@ -308,22 +308,43 @@ export function summarise(
 
   // C. Strategic proof shortlist — 10–15 roles proving distinct route logic.
   //    Priority: productProofValue == 2, then one entry per (family, archetype)
-  //    pair so each pick unlocks a different Reality Check module. Falls back
-  //    to productProofValue == 1 if we don't reach 10.
-  const seenPair = new Set<string>();
-  const strategicProofShortlist: ShortlistEntry[] = [];
-  const proofRanked = [...eligible].sort((a, b) => {
+  //    pair so each pick unlocks a different Reality Check module. Within each
+  //    bucket we prefer curated exemplar names (Software Engineer, Registered
+  //    Nurse, Police Officer, Actor, Commercial Pilot, Solicitor, Data Analyst,
+  //    Cybersecurity Analyst, etc.) so the shortlist reads as product proof
+  //    cases rather than the alphabetically-earliest role in a bucket.
+  const EXEMPLAR_NAMES = new Set(
+    [
+      "Software Engineer","Software Developer","Web Developer","Full Stack Developer",
+      "Data Analyst","Data Scientist","Cybersecurity Analyst","AI Product Manager",
+      "Registered Nurse","Midwife","Paramedic","Clinical Psychologist",
+      "Physiotherapist","Pharmacist","Dentist","Veterinary Surgeon",
+      "Police Officer","Firefighter","Prison Officer","Border Force Officer",
+      "Actor","Musician","Photographer","Journalist","Fashion Designer",
+      "Film Director","Screenwriter","Graphic Designer",
+      "Commercial Pilot","Airline Pilot","Air Traffic Controller",
+      "Solicitor","Barrister","Chartered Accountant","Architect",
+      "Primary School Teacher","Secondary School Teacher",
+      "Social Worker","Adult Social Worker","Children's Social Worker",
+      "Chef","Personal Trainer","Counsellor / Psychotherapist",
+      "Astronaut","Professional Footballer",
+    ],
+  );
+  const proofCompare = (a: RoleTaxonomyEntry, b: RoleTaxonomyEntry) => {
     const pp = b.deepCheckRubric.productProofValue - a.deepCheckRubric.productProofValue;
     if (pp !== 0) return pp;
+    const ex = Number(EXEMPLAR_NAMES.has(b.roleName)) - Number(EXEMPLAR_NAMES.has(a.roleName));
+    if (ex !== 0) return ex;
     return shortlistCompare(a, b);
-  });
+  };
+  const seenPair = new Set<string>();
+  const strategicProofShortlist: ShortlistEntry[] = [];
+  const proofRanked = [...eligible].sort(proofCompare);
   for (const e of proofRanked) {
     if (e.deepCheckRubric.productProofValue < 1) break;
     if (strategicProofShortlist.length >= 15) break;
     const key = `${e.primaryFamily}::${e.routeArchetype}`;
     if (seenPair.has(key)) continue;
-    // In the first pass require productProofValue == 2. Second pass (below)
-    // fills gaps from productProofValue == 1.
     if (
       strategicProofShortlist.length < 10 &&
       e.deepCheckRubric.productProofValue < 2
