@@ -9,6 +9,7 @@ import {
   isRealityCheckEnabled,
   type RoleServiceLevel,
 } from "@/lib/reality-check/service-levels";
+import { isReviewedDeepRole } from "@/lib/reality-check/reviewed-deep-summary";
 import { READINESS_LABEL } from "@/lib/reality-check/types";
 
 /**
