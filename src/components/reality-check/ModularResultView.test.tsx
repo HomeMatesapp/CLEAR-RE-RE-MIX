@@ -68,9 +68,9 @@ describe("ModularResultView", () => {
     expect(screen.getAllByRole("heading", { name: "Recommended-A" }).length).toBeGreaterThanOrEqual(1);
     expect(screen.getByRole("heading", { name: "Backup-B" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Caution-C" })).toBeInTheDocument();
-    expect(screen.getByText(/Recommended route/i)).toBeInTheDocument();
-    expect(screen.getByText(/Backup route/i)).toBeInTheDocument();
-    expect(screen.getByText(/Be careful with/i)).toBeInTheDocument();
+    expect(screen.getByText(/^Recommended route$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^Backup route$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^Be careful with$/i)).toBeInTheDocument();
   });
 
 
