@@ -401,6 +401,15 @@ function roleRegulationSources(role: RoleContext): SourceEntry[] {
       SOURCES.uk_enic,
     );
   }
+  if (slug === "actor" || /\bactor\b/.test(name)) {
+    out.push(
+      SOURCES.national_careers_actor,
+      SOURCES.equity_casting_and_auditions,
+      SOURCES.spotlight_profile_guidance,
+      SOURCES.spotlight_headshot_guidance,
+      SOURCES.cdmt_accredited_training,
+    );
+  }
   return out;
 }
 
