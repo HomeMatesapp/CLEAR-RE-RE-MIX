@@ -22,7 +22,9 @@ import type { RealityCheckResult, RoleContext } from "@/lib/reality-check/types"
 import type { ResolvedConfig } from "@/lib/reality-check/questionnaire/types";
 import type { AnswerMap, InlineTextMap, Question } from "@/lib/reality-check/questionnaire/types";
 import {
+  getVisibleQuestions,
   isAnswered,
+  isQuestionVisible,
   sanitiseAnswer,
   sanitiseAnswerMap,
   sanitiseInlineText,
