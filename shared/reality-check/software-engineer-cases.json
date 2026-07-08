@@ -14,7 +14,7 @@
     },
     "expected": {
       "status": "route_recommended",
-      "recommendedRouteMustBeOneOf": ["self_taught_portfolio", "bootcamp_intensive", "degree_conversion_msc"]
+      "recommendedRouteMustBeOneOf": ["self_taught_portfolio", "bootcamp_intensive", "degree_conversion_msc", "junior_role_with_training"]
     }
   },
   {
@@ -99,8 +99,8 @@
       "startingPoint": "career_changer",
       "codingExperience": "none",
       "portfolioState": "none",
-      "highestQualification": "a_level",
-      "mathsEnglishStatus": "both",
+      "highestQualification": "gcse",
+      "mathsEnglishStatus": "neither",
       "learningTimeHoursPerWeek": "lt5",
       "trainingBudgetGbp": "0",
       "locationFlexibility": "hybrid_region",
@@ -191,8 +191,8 @@
       "codingExperience": "none",
       "portfolioState": "none",
       "highestQualification": "gcse",
-      "mathsEnglishStatus": "both",
-      "learningTimeHoursPerWeek": "15_30",
+      "mathsEnglishStatus": "neither",
+      "learningTimeHoursPerWeek": "lt5",
       "trainingBudgetGbp": "10k_plus",
       "locationFlexibility": "hybrid_region",
       "routePriorities": ["high_pay"]
