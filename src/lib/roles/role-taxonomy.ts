@@ -231,7 +231,12 @@ export function summarise(
       return b.deepCheckRubric.routeConfusion - a.deepCheckRubric.routeConfusion;
     });
 
-  const shortlist = topCandidates.slice(0, 25);
+  const shortlist: ShortlistEntry[] = topCandidates.slice(0, 25).map((e) => ({
+    ...e,
+    score: rubricScore(e.deepCheckRubric),
+    whyCandidate: explainRubric(e),
+    differentFromTradesModule: differsFromTradesModule(e),
+  }));
   const needsReview = entries.filter((e) => e.confidence === "needs_review");
 
   return {
