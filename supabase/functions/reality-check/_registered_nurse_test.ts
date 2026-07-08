@@ -9,9 +9,20 @@ const FIXTURE_PATH = new URL(
   import.meta.url,
 );
 
-// deno-lint-ignore no-explicit-any
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const fixtures: any[] = JSON.parse(await Deno.readTextFile(FIXTURE_PATH));
+interface FixtureCase {
+  name: string;
+  signals: Parameters<typeof runRegisteredNurseEngine>[0]["signals"];
+  expected: {
+    status?: string;
+    recommendedRouteId?: string | null;
+    recommendedRouteMustNotBe?: string;
+    verificationPrimaryRouteId?: string;
+  };
+}
+
+const fixtures: FixtureCase[] = JSON.parse(
+  await Deno.readTextFile(FIXTURE_PATH),
+);
 
 for (const c of fixtures) {
   Deno.test(`registered-nurse deno mirror — ${c.name}`, () => {
