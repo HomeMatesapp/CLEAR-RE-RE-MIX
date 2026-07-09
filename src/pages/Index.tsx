@@ -6,6 +6,8 @@ import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/posthog";
 import { matchRoleAliases } from "@/lib/role-aliases";
+import { ReviewedShowcase } from "@/components/ReviewedShowcase";
+
 
 // Featured surveyed roles for the map-sheet grid. Kept small on purpose —
 // this is a legend, not an index. Full list lives on /search.
