@@ -368,6 +368,81 @@ export const SOURCES: Readonly<Record<string, SourceEntry>> = Object.freeze({
       "CDMT is an accreditation / quality-assurance source for performing-arts training, not a statutory regulator. Cited whenever a formal-training or private-course caution is triggered.",
     category: "pathway",
   },
+  sra_sqe_route: {
+    id: "sra_sqe_route",
+    organisation: "Solicitors Regulation Authority",
+    title: "How to become a solicitor via SQE",
+    period: "Current",
+    lastChecked: "2026-07-09",
+    url: "https://www.sra.org.uk/become-solicitor/sqe/",
+    usage: "Load-bearing source for the SQE admission route into UK solicitor qualification.",
+    category: "regulation",
+  },
+  sqe_official_requirements: {
+    id: "sqe_official_requirements",
+    organisation: "Solicitors Qualifying Examination (SQE)",
+    title: "About the SQE assessments",
+    period: "Current",
+    lastChecked: "2026-07-09",
+    url: "https://sqe.sra.org.uk/",
+    usage: "Referenced when describing SQE1 and SQE2 assessments and current requirements.",
+    category: "regulation",
+  },
+  sra_qualifying_work_experience: {
+    id: "sra_qualifying_work_experience",
+    organisation: "Solicitors Regulation Authority",
+    title: "Qualifying Work Experience (QWE) guidance",
+    period: "Current",
+    lastChecked: "2026-07-09",
+    url: "https://www.sra.org.uk/become-solicitor/sqe/qualifying-work-experience/",
+    usage:
+      "Load-bearing source for QWE rules — two years full-time or equivalent, appropriate sign-off, breadth of legal work.",
+    category: "regulation",
+  },
+  sra_solicitor_apprenticeship: {
+    id: "sra_solicitor_apprenticeship",
+    organisation: "Institute for Apprenticeships & Technical Education / Skills England",
+    title: "Solicitor apprenticeship (Level 7) standard",
+    period: "Current",
+    lastChecked: "2026-07-09",
+    url: "https://www.instituteforapprenticeships.org/apprenticeship-standards/solicitor-v1-0",
+    usage:
+      "Referenced when describing the solicitor apprenticeship route — employer-led, SQE assessment still required.",
+    category: "regulation",
+  },
+  sra_qualified_lawyers: {
+    id: "sra_qualified_lawyers",
+    organisation: "Solicitors Regulation Authority",
+    title: "Qualified lawyers — admission and exemptions",
+    period: "Current",
+    lastChecked: "2026-07-09",
+    url: "https://www.sra.org.uk/become-solicitor/qualified-lawyers/",
+    usage:
+      "Load-bearing source for the already-qualified / overseas-qualified lawyer admission route.",
+    category: "regulation",
+  },
+  sra_lpc_transitional_arrangements: {
+    id: "sra_lpc_transitional_arrangements",
+    organisation: "Solicitors Regulation Authority",
+    title: "LPC / transitional arrangements",
+    period: "Current",
+    lastChecked: "2026-07-09",
+    url: "https://www.sra.org.uk/become-solicitor/sqe/transitional-arrangements/",
+    usage:
+      "Load-bearing source for the LPC transitional-route rules. The LPC route is transitional and time-limited.",
+    category: "regulation",
+  },
+  national_careers_solicitor: {
+    id: "national_careers_solicitor",
+    organisation: "National Careers Service",
+    title: "Job profile: Solicitor",
+    period: "Current",
+    lastChecked: "2026-07-09",
+    url: "https://nationalcareers.service.gov.uk/job-profiles/solicitor",
+    usage:
+      "Public plain-English explainer for the UK solicitor route (SQE, apprenticeship, conversion, transfer).",
+    category: "pathway",
+  },
 });
 
 // ── Selection logic ─────────────────────────────────────────────────────────
@@ -408,6 +483,17 @@ function roleRegulationSources(role: RoleContext): SourceEntry[] {
       SOURCES.spotlight_profile_guidance,
       SOURCES.spotlight_headshot_guidance,
       SOURCES.cdmt_accredited_training,
+    );
+  }
+  if (slug === "solicitor" || /\bsolicitor\b/.test(name)) {
+    out.push(
+      SOURCES.sra_sqe_route,
+      SOURCES.sqe_official_requirements,
+      SOURCES.sra_qualifying_work_experience,
+      SOURCES.sra_solicitor_apprenticeship,
+      SOURCES.sra_qualified_lawyers,
+      SOURCES.sra_lpc_transitional_arrangements,
+      SOURCES.national_careers_solicitor,
     );
   }
   return out;

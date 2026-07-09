@@ -771,3 +771,169 @@ export const extractActorSignals = (
     answers.checks_before_committing,
   ) as ActorCheckBeforeCommitting[],
 });
+
+// ── Solicitor (slug: solicitor) ──────────────────────────────────────────────
+//
+// Regulated-professional route family. Signals contain no criminal-record,
+// caution, disciplinary, health, disability, immigration, visa or nationality
+// fields. Character/suitability is a check TOPIC only, never a disclosure.
+// `budgetForTrainingAndExams` NEVER gates eligibility. `checksBeforeCommitting`
+// NEVER gates eligibility. `qweSignal` may shape routes but never asserts QWE
+// is accepted. `lpcOrLegacyStatus` is always visible so legacy learners are
+// never silently routed to the standard SQE beginner path.
+
+export type SolicitorStartingPoint =
+  | "school_leaver"
+  | "current_student"
+  | "graduate_law"
+  | "graduate_non_law"
+  | "paralegal_or_legal_support"
+  | "apprentice_or_legal_admin"
+  | "qualified_lawyer_overseas_or_other_jurisdiction"
+  | "career_changer"
+  | "not_sure";
+
+export type SolicitorHighestQualification =
+  | "none"
+  | "gcse"
+  | "a_level_or_level_3"
+  | "bachelors_law"
+  | "bachelors_non_law"
+  | "masters_or_postgraduate"
+  | "international_degree_or_qualification"
+  | "professional_legal_qualification"
+  | "unknown";
+
+export type SolicitorLegalExperience =
+  | "none"
+  | "school_or_virtual_work_experience"
+  | "legal_admin"
+  | "paralegal"
+  | "trainee_or_apprentice_legal_role"
+  | "qualified_lawyer_outside_england_wales"
+  | "other_professional_client_work"
+  | "not_sure";
+
+export type SolicitorDegreeStatus =
+  | "no_degree"
+  | "studying_law_degree"
+  | "studying_non_law_degree"
+  | "completed_law_degree"
+  | "completed_non_law_degree"
+  | "international_degree"
+  | "unknown";
+
+export type SolicitorLpcOrLegacyStatus =
+  | "not_started_legal_training"
+  | "started_or_completed_law_degree_before_sqe_transition"
+  | "completed_gdl_or_pgdl"
+  | "completed_lpc"
+  | "started_period_of_recognised_training"
+  | "not_sure";
+
+export type SolicitorSqeAwareness =
+  | "understand_sqe_and_qwe"
+  | "heard_of_sqe_not_qwe"
+  | "heard_of_qwe_not_sqe"
+  | "not_sure";
+
+export type SolicitorQweSignal =
+  | "none"
+  | "may_have_some_legal_work"
+  | "employer_can_confirm_qwe"
+  | "already_confirmed_qwe"
+  | "not_sure";
+
+export type SolicitorTrainingPreference =
+  | "earn_while_training"
+  | "university_first"
+  | "shortest_structural_route"
+  | "build_legal_experience_first"
+  | "not_sure";
+
+export type SolicitorStudyTimeAvailable =
+  | "full_time_study_possible"
+  | "part_time_study_possible"
+  | "evenings_weekends_only"
+  | "need_to_keep_earning"
+  | "not_sure";
+
+export type SolicitorBudget =
+  | "no_budget"
+  | "under_1000"
+  | "1000_to_5000"
+  | "5000_plus"
+  | "employer_or_sponsor_may_pay"
+  | "not_sure";
+
+export type SolicitorJurisdictionOrTransferStatus =
+  | "england_wales_beginner"
+  | "already_qualified_outside_england_wales"
+  | "international_qualification_not_sure"
+  | "not_sure";
+
+export type SolicitorRoutePriority =
+  | "avoid_debt"
+  | "earn_while_training"
+  | "qualify_as_fast_as_possible"
+  | "build_legal_experience"
+  | "academic_law_route"
+  | "flexible_part_time_route"
+  | "not_sure";
+
+export type SolicitorCheckTopic =
+  | "sqe_costs_and_exam_requirements"
+  | "qwe_confirmation"
+  | "apprenticeship_availability"
+  | "course_provider_claims"
+  | "qualified_lawyer_transfer_requirements"
+  | "lpc_transitional_rules"
+  | "character_and_suitability_process"
+  | "none_of_these";
+
+export interface SolicitorSignals {
+  startingPoint: SolicitorStartingPoint | null;
+  highestQualification: SolicitorHighestQualification | null;
+  legalExperience: SolicitorLegalExperience | null;
+  degreeStatus: SolicitorDegreeStatus | null;
+  lpcOrLegacyStatus: SolicitorLpcOrLegacyStatus | null;
+  sqeAwareness: SolicitorSqeAwareness | null;
+  qweSignal: SolicitorQweSignal | null;
+  trainingPreference: SolicitorTrainingPreference | null;
+  studyTimeAvailable: SolicitorStudyTimeAvailable | null;
+  budgetForTrainingAndExams: SolicitorBudget | null;
+  jurisdictionOrTransferStatus: SolicitorJurisdictionOrTransferStatus | null;
+  routePriorities: readonly SolicitorRoutePriority[];
+  checksBeforeCommitting: readonly SolicitorCheckTopic[];
+}
+
+export const extractSolicitorSignals = (
+  answers: AnswerMap,
+  _inline: InlineTextMap = {},
+): SolicitorSignals => ({
+  startingPoint: asString(answers.starting_point) as SolicitorStartingPoint | null,
+  highestQualification: asString(answers.highest_qualification) as
+    | SolicitorHighestQualification
+    | null,
+  legalExperience: asString(answers.legal_experience) as SolicitorLegalExperience | null,
+  degreeStatus: asString(answers.degree_status) as SolicitorDegreeStatus | null,
+  lpcOrLegacyStatus: asString(answers.lpc_or_legacy_status) as
+    | SolicitorLpcOrLegacyStatus
+    | null,
+  sqeAwareness: asString(answers.sqe_awareness) as SolicitorSqeAwareness | null,
+  qweSignal: asString(answers.qwe_signal) as SolicitorQweSignal | null,
+  trainingPreference: asString(answers.training_preference) as
+    | SolicitorTrainingPreference
+    | null,
+  studyTimeAvailable: asString(answers.study_time_available) as
+    | SolicitorStudyTimeAvailable
+    | null,
+  budgetForTrainingAndExams: asString(answers.budget_for_training_and_exams) as
+    | SolicitorBudget
+    | null,
+  jurisdictionOrTransferStatus: asString(answers.jurisdiction_or_transfer_status) as
+    | SolicitorJurisdictionOrTransferStatus
+    | null,
+  routePriorities: asArray(answers.route_priorities) as SolicitorRoutePriority[],
+  checksBeforeCommitting: asArray(answers.checks_before_committing) as SolicitorCheckTopic[],
+});

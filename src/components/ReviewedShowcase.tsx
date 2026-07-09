@@ -10,7 +10,8 @@ export type RouteProblemType =
   | "digital_portfolio_led"
   | "regulated_healthcare"
   | "public_service_selection"
-  | "creative_gig_uncertainty";
+  | "creative_gig_uncertainty"
+  | "regulated_professional_multi_route";
 
 export interface ReviewedShowcaseRole {
   slug: string;
@@ -71,6 +72,13 @@ export const REVIEWED_SHOWCASE_ROLES: ReviewedShowcaseRole[] = [
     routeProblemLabel: "Creative / gig uncertainty",
     note: "Evidence-and-risk checker — no route guarantees auditions or income.",
   },
+  {
+    slug: "solicitor",
+    name: "Solicitor",
+    routeProblem: "regulated_professional_multi_route",
+    routeProblemLabel: "Regulated professional (multi-route)",
+    note: "SQE, apprenticeship, conversion, QWE and LPC transitional routes — SRA decides admission.",
+  },
 ];
 
 export const ROUTE_PROBLEM_TYPES: {
@@ -83,10 +91,11 @@ export const ROUTE_PROBLEM_TYPES: {
   { id: "regulated_healthcare", label: "Regulated healthcare", description: "Registered nurse" },
   { id: "public_service_selection", label: "Public-service selection", description: "Police officer" },
   { id: "creative_gig_uncertainty", label: "Creative / gig uncertainty", description: "Actor" },
+  { id: "regulated_professional_multi_route", label: "Regulated professional (multi-route)", description: "Solicitor" },
 ];
 
 export const REVIEWED_PROOF_COPY =
-  "Clear Routes now supports deterministic, source-backed route checks across regulated, apprenticeship-led, portfolio-led, selection-led and gig/creative careers.";
+  "Clear Routes now supports deterministic, source-backed route checks across regulated, apprenticeship-led, portfolio-led, selection-led, gig/creative and regulated-professional multi-route careers.";
 
 // Guardrail: keep the showcase list one-to-one with the frozen role set.
 // Any drift is caught by the accompanying test — do not silently diverge.
@@ -111,7 +120,7 @@ export function ReviewedShowcase() {
           Deep Reality Checks
         </p>
         <h2 className="font-display font-extrabold text-[clamp(1.75rem,4vw,2.75rem)] mt-2.5 text-foreground max-w-[22ch]">
-          Seven careers, five different route problems.
+          Eight careers, six different route problems.
         </h2>
         <p className="mt-4 text-[15.5px] text-foreground/80 max-w-[62ch] leading-relaxed">
           {REVIEWED_PROOF_COPY}
