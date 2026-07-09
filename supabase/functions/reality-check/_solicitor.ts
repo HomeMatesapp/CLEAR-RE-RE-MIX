@@ -293,7 +293,7 @@ export function runSolicitorEngine(input: { signals: Signals }): EngineOutput {
       status: "qualification_verification_required",
       recommendedRouteId: null, alternativeRouteIds: [],
       affordabilityNotes: [],
-      considerations: ["The LPC route is transitional and time-limited. This checker does not assert your LPC counts — the SRA decides."],
+      considerations: ["The LPC route is transitional and time-limited. This checker does not decide whether previous LPC study still fits the route — the SRA does."],
       blockersAndChecks: ["The LPC route is transitional and time-limited. Check SRA rules before assuming previous legal study still fits the route."],
       immediateAction: "Read the SRA LPC transitional-arrangements guidance to check whether your existing legal study still fits the route before choosing next steps.",
       evidenceNotes: ["The SRA sets LPC transitional-arrangements rules. Previous legal study does not automatically map onto a current SQE beginner route."],
@@ -344,7 +344,7 @@ export function runSolicitorEngine(input: { signals: Signals }): EngineOutput {
   const alt = ranked.slice(1);
 
   const considerations: string[] = [];
-  if (hasQwe(s)) considerations.push("QWE must meet SRA requirements and be confirmed by an appropriate person or organisation — this checker does not assert your QWE is accepted.");
+  if (hasQwe(s)) considerations.push("QWE must meet SRA requirements and be confirmed by an appropriate person or organisation — this checker does not confirm your QWE meets SRA requirements.");
   if (s.checksBeforeCommitting.includes("character_and_suitability_process")) {
     considerations.push("The SRA assesses character and suitability as part of admission. This checker does not ask for or assess those details.");
   }

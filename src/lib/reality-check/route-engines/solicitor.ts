@@ -515,7 +515,7 @@ export const runSolicitorEngine = (
       alternativeRouteIds: [],
       affordabilityNotes: [],
       considerations: [
-        "The LPC route is transitional and time-limited. This checker does not assert your LPC counts — the SRA decides.",
+        "The LPC route is transitional and time-limited. This checker does not decide whether previous LPC study still fits the route — the SRA does.",
       ],
       blockersAndChecks: [
         "The LPC route is transitional and time-limited. Check SRA rules before assuming previous legal study still fits the route.",
@@ -615,7 +615,7 @@ export const runSolicitorEngine = (
   const considerations: string[] = [];
   if (hasQweSignal(s)) {
     considerations.push(
-      "QWE must meet SRA requirements and be confirmed by an appropriate person or organisation — this checker does not assert your QWE is accepted.",
+      "QWE must meet SRA requirements and be confirmed by an appropriate person or organisation — this checker does not confirm your QWE meets SRA requirements.",
     );
   }
   if (s.checksBeforeCommitting.includes("character_and_suitability_process")) {
