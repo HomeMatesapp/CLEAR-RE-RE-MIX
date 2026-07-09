@@ -18088,7 +18088,7 @@
     "roleName": "Solicitor",
     "primaryFamily": "legal_finance_professional",
     "routeArchetype": "regulated_registration_led",
-    "recommendedRealityCheckDepth": "light_route_checker",
+    "recommendedRealityCheckDepth": "deep_reviewed_reality_check",
     "deepCheckRubric": {
       "regulated": true,
       "expensiveWrongTurn": true,

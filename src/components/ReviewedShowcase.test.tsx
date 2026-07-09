@@ -32,9 +32,9 @@ describe("ReviewedShowcase", () => {
     }
   });
 
-  it("declares five distinct route-problem types", () => {
+  it("declares six distinct route-problem types (one per proven category)", () => {
     const uniqueProblems = new Set(REVIEWED_SHOWCASE_ROLES.map((r) => r.routeProblem));
-    expect(uniqueProblems.size).toBe(5);
+    expect(uniqueProblems.size).toBe(6);
     expect(ROUTE_PROBLEM_TYPES.map((p) => p.id).sort()).toEqual(
       [...uniqueProblems].sort(),
     );

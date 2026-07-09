@@ -1,0 +1,154 @@
+[
+  {
+    "name": "no_level3_no_experience_bridging",
+    "signals": {
+      "startingPoint": "school_leaver",
+      "highestQualification": "gcse",
+      "legalExperience": "none",
+      "degreeStatus": "no_degree",
+      "lpcOrLegacyStatus": "not_started_legal_training",
+      "sqeAwareness": "not_sure",
+      "qweSignal": "none",
+      "trainingPreference": "not_sure",
+      "studyTimeAvailable": "evenings_weekends_only",
+      "budgetForTrainingAndExams": "no_budget",
+      "jurisdictionOrTransferStatus": "england_wales_beginner",
+      "routePriorities": ["not_sure"],
+      "checksBeforeCommitting": []
+    },
+    "expected": { "status": "bridging_required", "recommendedRouteId": null }
+  },
+  {
+    "name": "completed_law_degree_sqe_degree_route",
+    "signals": {
+      "startingPoint": "graduate_law",
+      "highestQualification": "bachelors_law",
+      "legalExperience": "none",
+      "degreeStatus": "completed_law_degree",
+      "lpcOrLegacyStatus": "not_started_legal_training",
+      "sqeAwareness": "understand_sqe_and_qwe",
+      "qweSignal": "none",
+      "trainingPreference": "shortest_structural_route",
+      "studyTimeAvailable": "full_time_study_possible",
+      "budgetForTrainingAndExams": "1000_to_5000",
+      "jurisdictionOrTransferStatus": "england_wales_beginner",
+      "routePriorities": ["qualify_as_fast_as_possible"],
+      "checksBeforeCommitting": ["sqe_costs_and_exam_requirements"]
+    },
+    "expected": { "status": "route_recommended", "recommendedRouteId": "sqe_degree_route" }
+  },
+  {
+    "name": "level3_earn_while_training_apprenticeship",
+    "signals": {
+      "startingPoint": "school_leaver",
+      "highestQualification": "a_level_or_level_3",
+      "legalExperience": "none",
+      "degreeStatus": "no_degree",
+      "lpcOrLegacyStatus": "not_started_legal_training",
+      "sqeAwareness": "heard_of_sqe_not_qwe",
+      "qweSignal": "none",
+      "trainingPreference": "earn_while_training",
+      "studyTimeAvailable": "need_to_keep_earning",
+      "budgetForTrainingAndExams": "no_budget",
+      "jurisdictionOrTransferStatus": "england_wales_beginner",
+      "routePriorities": ["avoid_debt", "earn_while_training"],
+      "checksBeforeCommitting": ["apprenticeship_availability"]
+    },
+    "expected": { "status": "route_recommended", "recommendedRouteId": "solicitor_apprenticeship_route" }
+  },
+  {
+    "name": "completed_non_law_degree_conversion_route",
+    "signals": {
+      "startingPoint": "graduate_non_law",
+      "highestQualification": "bachelors_non_law",
+      "legalExperience": "none",
+      "degreeStatus": "completed_non_law_degree",
+      "lpcOrLegacyStatus": "not_started_legal_training",
+      "sqeAwareness": "understand_sqe_and_qwe",
+      "qweSignal": "none",
+      "trainingPreference": "university_first",
+      "studyTimeAvailable": "full_time_study_possible",
+      "budgetForTrainingAndExams": "5000_plus",
+      "jurisdictionOrTransferStatus": "england_wales_beginner",
+      "routePriorities": ["academic_law_route"],
+      "checksBeforeCommitting": ["course_provider_claims"]
+    },
+    "expected": { "status": "route_recommended" }
+  },
+  {
+    "name": "paralegal_experience_qwe_route",
+    "signals": {
+      "startingPoint": "paralegal_or_legal_support",
+      "highestQualification": "bachelors_non_law",
+      "legalExperience": "paralegal",
+      "degreeStatus": "completed_non_law_degree",
+      "lpcOrLegacyStatus": "not_started_legal_training",
+      "sqeAwareness": "understand_sqe_and_qwe",
+      "qweSignal": "employer_can_confirm_qwe",
+      "trainingPreference": "build_legal_experience_first",
+      "studyTimeAvailable": "part_time_study_possible",
+      "budgetForTrainingAndExams": "employer_or_sponsor_may_pay",
+      "jurisdictionOrTransferStatus": "england_wales_beginner",
+      "routePriorities": ["build_legal_experience", "avoid_debt"],
+      "checksBeforeCommitting": ["qwe_confirmation"]
+    },
+    "expected": { "status": "route_recommended", "recommendedRouteId": "paralegal_qwe_then_sqe_route" }
+  },
+  {
+    "name": "overseas_qualified_lawyer_transfer",
+    "signals": {
+      "startingPoint": "qualified_lawyer_overseas_or_other_jurisdiction",
+      "highestQualification": "professional_legal_qualification",
+      "legalExperience": "qualified_lawyer_outside_england_wales",
+      "degreeStatus": "international_degree",
+      "lpcOrLegacyStatus": "not_started_legal_training",
+      "sqeAwareness": "understand_sqe_and_qwe",
+      "qweSignal": "none",
+      "trainingPreference": "shortest_structural_route",
+      "studyTimeAvailable": "part_time_study_possible",
+      "budgetForTrainingAndExams": "5000_plus",
+      "jurisdictionOrTransferStatus": "already_qualified_outside_england_wales",
+      "routePriorities": ["qualify_as_fast_as_possible"],
+      "checksBeforeCommitting": ["qualified_lawyer_transfer_requirements"]
+    },
+    "expected": { "status": "qualification_verification_required", "recommendedRouteId": null }
+  },
+  {
+    "name": "completed_lpc_investigation_led",
+    "signals": {
+      "startingPoint": "career_changer",
+      "highestQualification": "bachelors_law",
+      "legalExperience": "legal_admin",
+      "degreeStatus": "completed_law_degree",
+      "lpcOrLegacyStatus": "completed_lpc",
+      "sqeAwareness": "understand_sqe_and_qwe",
+      "qweSignal": "may_have_some_legal_work",
+      "trainingPreference": "shortest_structural_route",
+      "studyTimeAvailable": "part_time_study_possible",
+      "budgetForTrainingAndExams": "1000_to_5000",
+      "jurisdictionOrTransferStatus": "england_wales_beginner",
+      "routePriorities": ["qualify_as_fast_as_possible"],
+      "checksBeforeCommitting": ["lpc_transitional_rules"]
+    },
+    "expected": { "status": "qualification_verification_required", "recommendedRouteMustNotBe": "sqe_degree_route" }
+  },
+  {
+    "name": "period_of_recognised_training_investigation_led",
+    "signals": {
+      "startingPoint": "career_changer",
+      "highestQualification": "bachelors_law",
+      "legalExperience": "trainee_or_apprentice_legal_role",
+      "degreeStatus": "completed_law_degree",
+      "lpcOrLegacyStatus": "started_period_of_recognised_training",
+      "sqeAwareness": "understand_sqe_and_qwe",
+      "qweSignal": "already_confirmed_qwe",
+      "trainingPreference": "shortest_structural_route",
+      "studyTimeAvailable": "part_time_study_possible",
+      "budgetForTrainingAndExams": "1000_to_5000",
+      "jurisdictionOrTransferStatus": "england_wales_beginner",
+      "routePriorities": ["qualify_as_fast_as_possible"],
+      "checksBeforeCommitting": ["lpc_transitional_rules"]
+    },
+    "expected": { "status": "qualification_verification_required", "recommendedRouteMustNotBe": "sqe_degree_route" }
+  }
+]
