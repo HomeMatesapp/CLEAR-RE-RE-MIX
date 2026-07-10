@@ -202,10 +202,20 @@ const RealityCheckPage = () => {
   const [startingPointStatus, setStartingPointStatus] = useState<StartingPointStatus | null>(null);
   const [startingPointOtherText, setStartingPointOtherText] = useState("");
   const [hydratedProgress, setHydratedProgress] = useState(false);
+  // Increment 1: start-screen gate. Any pre-existing progress (legacy
+  // in-progress answers or a modular draft) bypasses the start screen so
+  // save/resume behaviour is unchanged.
+  const [hadSavedProgress, setHadSavedProgress] = useState(false);
+  const [startAcknowledged, setStartAcknowledged] = useState(false);
 
   // Load role
   useEffect(() => {
     let cancelled = false;
+    // Reset the start-screen gate on every slug change so flags cannot leak
+    // between roles in the same SPA session.
+    setHydratedProgress(false);
+    setHadSavedProgress(false);
+    setStartAcknowledged(false);
     (async () => {
       setLoading(true);
       const { data } = await supabase
@@ -235,6 +245,13 @@ const RealityCheckPage = () => {
           setStepId(progress.stepId);
           setStartingPointStatus(progress.startingPointStatus);
           setStartingPointOtherText(progress.startingPointOtherText);
+          setHadSavedProgress(true);
+        }
+        // A modular draft also counts as existing progress: the wizard
+        // self-hydrates it, so the start screen must not sit in front of it.
+        const cfg = resolveConfig(slug);
+        if (cfg && loadModularDraft(slug, cfg.questionnaireVersion)) {
+          setHadSavedProgress(true);
         }
         setHydratedProgress(true);
       }
