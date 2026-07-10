@@ -52,7 +52,9 @@ import {
 } from "@/components/role/reality-check-shared";
 import { ModularRealityCheckWizard } from "@/components/role/ModularRealityCheckWizard";
 import { resolveConfig, hasReviewedModularRealityCheck } from "@/lib/reality-check/questionnaire/registry";
-import { updateModularDraftStepId } from "@/lib/reality-check/questionnaire/draft-v3";
+import { loadModularDraft, updateModularDraftStepId } from "@/lib/reality-check/questionnaire/draft-v3";
+import { RealityCheckStart } from "@/components/reality-check/RealityCheckStart";
+import { shouldShowStartScreen } from "@/lib/reality-check/start-screen";
 import { ModularResultView } from "@/components/reality-check/ModularResultView";
 import { isSupportedRegion } from "@/lib/reality-check/regions";
 import { isRealityCheckEnabled as isRealityCheckReady } from "@/lib/reality-check/service-levels";
@@ -183,6 +185,9 @@ const RealityCheckPage = () => {
   const [initialProfile, setInitialProfile] = useState<DecisionProfileFields | null>(null);
   const [prefilled, setPrefilled] = useState(false);
   const resultRef = useRef<HTMLDivElement | null>(null);
+  // Increment 1: focus target so keyboard and screen-reader users land in
+  // the questionnaire after clicking Start.
+  const wizardSectionRef = useRef<HTMLElement | null>(null);
 
   // Wizard state is persisted across refresh (per-tab, sessionStorage) so
   // partially-completed answers survive an accidental reload.
