@@ -296,32 +296,33 @@ Deno.test("PR 2 hardening — full proof matrix", async (t) => {
     });
 
     await t.step("9 saved_decisions consistency check", async () => {
-      // Partial V1 → rejected
+      const base = {
+        user_id: crypto.randomUUID(),
+        role_id: ids.roleA, role_slug: `proof-a-${uniq()}`, role_name: "TestRole A",
+        input_snapshot: {}, result_snapshot: {}, answer_snapshot: {},
+      };
+      // Partial V1 (missing hash/schema/result_v1) → rejected
       const { error: partErr } = await sb.from("saved_decisions").insert({
-        share_token: `proof-partial-${uniq()}`,
-        role_id: ids.roleA, role_snapshot: { role_name: "x" },
-        answers: {}, result: {},
-        pack_id: ids.packA2, pack_version: "1.0.1",
+        ...base, pack_id: ids.packA2, pack_version: "1.0.1",
       });
       assert(partErr !== null, "expected constraint violation");
+      assert(/saved_decisions_v1_all_or_nothing/.test(partErr!.message),
+        `unexpected error: ${partErr!.message}`);
+
       // Full V1 → accepted
       const { error: fullErr } = await sb.from("saved_decisions").insert({
-        share_token: `proof-full-${uniq()}`,
-        role_id: ids.roleA, role_snapshot: { role_name: "x" },
-        answers: {}, result: {},
+        ...base,
         pack_id: ids.packA2, pack_version: "1.0.1",
         pack_content_hash: randHash(), evaluator_schema_version: "reality-check-result/v1",
         result_v1: { ok: true },
       });
       assertEquals(fullErr, null, `full V1 should be accepted: ${fullErr?.message}`);
+
       // Legacy null V1 → accepted
-      const { error: legacyErr } = await sb.from("saved_decisions").insert({
-        share_token: `proof-legacy-${uniq()}`,
-        role_id: ids.roleA, role_snapshot: { role_name: "x" },
-        answers: {}, result: {},
-      });
-      assertEquals(legacyErr, null);
+      const { error: legacyErr } = await sb.from("saved_decisions").insert({ ...base });
+      assertEquals(legacyErr, null, `legacy should be accepted: ${legacyErr?.message}`);
     });
+
 
     await t.step("10 RLS: anon cannot read any of the pack tables", async () => {
       if (!sbAnon) { console.warn("skipped: no anon key in env"); return; }
