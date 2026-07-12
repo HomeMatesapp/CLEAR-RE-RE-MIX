@@ -19,7 +19,86 @@ import { buildActorResult } from "./_actor.ts";
 import { buildSolicitorResult } from "./_solicitor.ts";
 import { getCorsHeaders } from "../_shared/cors.ts";
 import { evaluateGenericPack } from "./_generic_pack.ts";
-import { canonicalHash } from "../_shared/career-evaluator/v1/hash.ts";
+import { canonicalHash, sha256Hex } from "../_shared/career-evaluator/v1/hash.ts";
+
+const EVALUATOR_SCHEMA_VERSION = "reality-check-result/v1";
+const DEFAULT_RECEIPT_TTL_MINUTES = 30;
+
+const base64UrlEncode = (bytes: Uint8Array): string => {
+  let s = "";
+  for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+  return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+};
+
+const generateReceipt = (): string => {
+  // 256-bit random token, base64url-encoded (43 chars, no padding).
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  return base64UrlEncode(bytes);
+};
+
+export interface ReceiptIssuer {
+  (input: {
+    roleId: string;
+    roleSlug: string;
+    packId: string;
+    packVersion: string;
+    packContentHash: string;
+    resultV1: unknown;
+    resultCanonicalHash: string;
+    issuedUserId: string | null;
+    expiresAt: string;
+    receiptHash: string;
+  }): Promise<void>;
+}
+
+const defaultReceiptIssuer: ReceiptIssuer = async (r) => {
+  const url = Deno.env.get("SUPABASE_URL"); const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if (!url || !key) return;
+  const sb = createClient(url, key, { auth: { persistSession: false } });
+  const { error } = await sb.from("assessment_receipts").insert({
+    receipt_hash: r.receiptHash,
+    role_id: r.roleId,
+    role_slug: r.roleSlug,
+    pack_id: r.packId,
+    pack_version: r.packVersion,
+    pack_content_hash: r.packContentHash,
+    evaluator_schema_version: EVALUATOR_SCHEMA_VERSION,
+    evaluation_source: "generic_pack_v1",
+    result_v1: r.resultV1,
+    result_canonical_hash: r.resultCanonicalHash,
+    issued_user_id: r.issuedUserId,
+    expires_at: r.expiresAt,
+  });
+  if (error) throw new Error(`receipt_issue_failed: ${error.message}`);
+};
+
+const fetchReceiptTtlMinutes = async (): Promise<number> => {
+  const url = Deno.env.get("SUPABASE_URL"); const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if (!url || !key) return DEFAULT_RECEIPT_TTL_MINUTES;
+  try {
+    const sb = createClient(url, key, { auth: { persistSession: false } });
+    const { data } = await sb.from("career_pack_config").select("receipt_ttl_minutes").maybeSingle();
+    const n = (data as { receipt_ttl_minutes?: number } | null)?.receipt_ttl_minutes;
+    return typeof n === "number" && n > 0 ? n : DEFAULT_RECEIPT_TTL_MINUTES;
+  } catch { return DEFAULT_RECEIPT_TTL_MINUTES; }
+};
+
+const resolveIssuedUserId = async (req: Request): Promise<string | null> => {
+  const url = Deno.env.get("SUPABASE_URL");
+  const anon = Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_PUBLISHABLE_KEY");
+  const auth = req.headers.get("Authorization") ?? req.headers.get("authorization") ?? "";
+  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+  if (!url || !anon || !token) return null;
+  try {
+    const c = createClient(url, anon, {
+      auth: { persistSession: false, autoRefreshToken: false },
+      global: { headers: { Authorization: `Bearer ${token}` } },
+    });
+    const { data } = await c.auth.getUser();
+    return data?.user?.id ?? null;
+  } catch { return null; }
+};
 
 export { answersToLabels } from "./_labels.ts";
 
