@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import midwife from "../../../content/career-packs/midwife/1.0.0.json";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, resolve } from "node:path";
+const __dirname_local = dirname(fileURLToPath(import.meta.url));
+const midwife = JSON.parse(readFileSync(resolve(__dirname_local, "../../../../content/career-packs/midwife/1.0.0.json"), "utf-8"));
 import { careerDecisionPackV1, validatePackCrossRefs } from "../schema";
 import { evaluate } from "../evaluate";
 import { FORBIDDEN_LANGUAGE } from "../phrases";
