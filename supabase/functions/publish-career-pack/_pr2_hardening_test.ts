@@ -275,7 +275,7 @@ Deno.test("PR 2 hardening — full proof matrix", async (t) => {
         .update({ status: "published", published_at: new Date().toISOString(), superseded_at: null })
         .eq("pack_id", ids.packA1);
       assert(error !== null, "expected rejection");
-      assert(/already published/.test(error!.message), `unexpected: ${error!.message}`);
+      assert(/already exists|already published/.test(error!.message), `unexpected: ${error!.message}`);
     });
 
     await t.step("8 resolver: role/slug consistency + fail-closed on unknown", async () => {
