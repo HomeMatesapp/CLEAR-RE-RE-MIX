@@ -8,11 +8,11 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
-import { evaluate } from "../evaluate";
-import type { CareerDecisionPackV1 } from "../types";
+import { evaluate } from "@shared/career-evaluator/v1/evaluate";
+import type { CareerDecisionPackV1 } from "@shared/career-evaluator/v1/types";
 
 const __dirname_local = dirname(fileURLToPath(import.meta.url));
-const midwife = JSON.parse(readFileSync(resolve(__dirname_local, "../../../../../../content/career-packs/midwife/1.0.0.json"), "utf-8")) as CareerDecisionPackV1;
+const midwife = JSON.parse(readFileSync(resolve(__dirname_local, "../../../content/career-packs/midwife/1.0.0.json"), "utf-8")) as CareerDecisionPackV1;
 const fixture = JSON.parse(readFileSync(resolve(__dirname_local, "fixtures/midwife-v1-prerefactor.json"), "utf-8")) as Record<string, unknown>;
 
 const NOW = "2026-07-12T12:00:00.000Z";

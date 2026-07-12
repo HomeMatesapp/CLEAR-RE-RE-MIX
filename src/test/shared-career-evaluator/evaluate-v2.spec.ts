@@ -8,15 +8,15 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
-import { evaluate, evaluateV2, matchesCondition } from "../evaluate";
-import { realityCheckResultV2 } from "../result-v2";
-import { validatePackCrossRefs } from "../schema";
-import { canonicalHash } from "../hash";
-import { FORBIDDEN_LANGUAGE } from "../phrases";
-import type { AnswerMap, CareerDecisionPackV1 } from "../types";
+import { evaluate, evaluateV2, matchesCondition } from "@shared/career-evaluator/v1/evaluate";
+import { realityCheckResultV2 } from "@shared/career-evaluator/v1/result-v2";
+import { validatePackCrossRefs } from "@shared/career-evaluator/v1/schema";
+import { canonicalHash } from "@shared/career-evaluator/v1/hash";
+import { FORBIDDEN_LANGUAGE } from "@shared/career-evaluator/v1/phrases";
+import type { AnswerMap, CareerDecisionPackV1 } from "@shared/career-evaluator/v1/types";
 
 const __dirname_local = dirname(fileURLToPath(import.meta.url));
-const midwife = JSON.parse(readFileSync(resolve(__dirname_local, "../../../../../../content/career-packs/midwife/1.0.0.json"), "utf-8")) as CareerDecisionPackV1;
+const midwife = JSON.parse(readFileSync(resolve(__dirname_local, "../../../content/career-packs/midwife/1.0.0.json"), "utf-8")) as CareerDecisionPackV1;
 
 const NOW = "2026-07-12T12:00:00.000Z";
 const AID = "test-assessment-0001";

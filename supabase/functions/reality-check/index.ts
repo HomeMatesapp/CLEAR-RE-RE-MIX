@@ -18,10 +18,13 @@ import { buildPoliceOfficerResult } from "./_police_officer.ts";
 import { buildActorResult } from "./_actor.ts";
 import { buildSolicitorResult } from "./_solicitor.ts";
 import { getCorsHeaders } from "../_shared/cors.ts";
-import { evaluateGenericPack } from "./_generic_pack.ts";
+import { evaluateGenericPack, evaluateGenericPackV2 } from "./_generic_pack.ts";
 import { canonicalHash, sha256Hex } from "../_shared/career-evaluator/v1/hash.ts";
 
 const EVALUATOR_SCHEMA_VERSION = "reality-check-result/v1";
+// Increment 2: the standard contract is evaluated alongside V1 and travels
+// with the receipt. V1 remains what the current UI renders.
+const RESULT_V2_SCHEMA_VERSION = "reality-check-result/v2";
 const DEFAULT_RECEIPT_TTL_MINUTES = 30;
 
 const base64UrlEncode = (bytes: Uint8Array): string => {
@@ -46,6 +49,8 @@ export interface ReceiptIssuer {
     packContentHash: string;
     resultV1: unknown;
     resultCanonicalHash: string;
+    resultV2: unknown;
+    resultV2CanonicalHash: string;
     issuedUserId: string | null;
     expiresAt: string;
     receiptHash: string;
@@ -67,6 +72,8 @@ const defaultReceiptIssuer: ReceiptIssuer = async (r) => {
     evaluation_source: "generic_pack_v1",
     result_v1: r.resultV1,
     result_canonical_hash: r.resultCanonicalHash,
+    result_v2: r.resultV2,
+    result_v2_canonical_hash: r.resultV2CanonicalHash,
     issued_user_id: r.issuedUserId,
     expires_at: r.expiresAt,
   });
@@ -214,12 +221,16 @@ export const handleRealityCheck = async (req: Request, deps: HandlerDeps = {}): 
       }
 
       const result = evaluateGenericPack(binding.content, answers ?? {});
+      // Increment 2: standard contract, same pack + answers, single evaluation
+      // authority (the shared evaluator). Never re-derived client-side.
+      const resultV2 = evaluateGenericPackV2(binding.content, answers ?? {});
 
       // Issue an assessment receipt. The opaque token is returned to the
       // browser; only its SHA-256 hash is stored server-side.
       const receipt = generateReceipt();
       const receiptHash = await sha256Hex(receipt);
       const resultCanonicalHash = await canonicalHash(result);
+      const resultV2CanonicalHash = await canonicalHash(resultV2);
       const ttl = deps.ttlMinutes ?? await fetchReceiptTtlMinutes();
       const nowFn = deps.now ?? (() => new Date());
       const expiresAt = new Date(nowFn().getTime() + ttl * 60_000).toISOString();
@@ -235,6 +246,8 @@ export const handleRealityCheck = async (req: Request, deps: HandlerDeps = {}): 
         packContentHash: binding.content_hash,
         resultV1: result,
         resultCanonicalHash,
+        resultV2,
+        resultV2CanonicalHash,
         issuedUserId,
         expiresAt,
         receiptHash,
@@ -242,6 +255,7 @@ export const handleRealityCheck = async (req: Request, deps: HandlerDeps = {}): 
 
       return new Response(JSON.stringify({
         result,
+        resultV2,
         assessmentReceipt: receipt,
         assessmentReceiptExpiresAt: expiresAt,
         packMetadata: {
@@ -252,6 +266,7 @@ export const handleRealityCheck = async (req: Request, deps: HandlerDeps = {}): 
           reviewDueAt: binding.review_due_at,
           geographicScope: binding.geographic_scope,
           evaluatorSchemaVersion: EVALUATOR_SCHEMA_VERSION,
+          resultV2SchemaVersion: RESULT_V2_SCHEMA_VERSION,
         },
       }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }

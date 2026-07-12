@@ -26,7 +26,7 @@ import { handleSaveDecision } from "./index.ts";
 // Instead we insert receipts directly through the same code path the
 // production issuer uses (service-role insert into assessment_receipts).
 import { canonicalHash, sha256Hex } from "../_shared/career-evaluator/v1/hash.ts";
-import { evaluate } from "../_shared/career-evaluator/v1/evaluate.ts";
+import { evaluate, evaluateV2 } from "../_shared/career-evaluator/v1/evaluate.ts";
 import { careerDecisionPackV1 } from "../_shared/career-evaluator/v1/schema.ts";
 import type { CareerDecisionPackV1 } from "../_shared/career-evaluator/v1/types.ts";
 import midwifePack from "../../../content/career-packs/midwife/1.0.0.json" with { type: "json" };
@@ -141,15 +141,18 @@ const base64Url = (bytes: Uint8Array): string => {
 
 const issueReceiptViaHandler = async (
   fx: Fx, opts: { userToken?: string } = {},
-): Promise<{ receipt: string; expiresAt: string; result: unknown }> => {
+): Promise<{ receipt: string; expiresAt: string; result: unknown; resultV2: unknown }> => {
   const packRow = await svc.from("career_packs").select("content").eq("id", fx.packId).single();
   const content = packRow.data!.content;
   const parsed = careerDecisionPackV1.parse(content);
   const result = evaluate(parsed as CareerDecisionPackV1, {});
+  // Increment 2: the standard contract travels with the receipt.
+  const resultV2 = evaluateV2(parsed as CareerDecisionPackV1, {});
   const receiptBytes = new Uint8Array(32); crypto.getRandomValues(receiptBytes);
   const receipt = base64Url(receiptBytes);
   const receiptHash = await sha256Hex(receipt);
   const resultCanonicalHash = await canonicalHash(result);
+  const resultV2CanonicalHash = await canonicalHash(resultV2);
   const expiresAt = new Date(Date.now() + 30 * 60_000).toISOString();
 
   let issuedUserId: string | null = null;
@@ -167,11 +170,13 @@ const issueReceiptViaHandler = async (
     evaluation_source: "generic_pack_v1",
     result_v1: result,
     result_canonical_hash: resultCanonicalHash,
+    result_v2: resultV2,
+    result_v2_canonical_hash: resultV2CanonicalHash,
     issued_user_id: issuedUserId,
     expires_at: expiresAt,
   });
   if (error) throw new Error(`receipt insert failed: ${error.message}`);
-  return { receipt, expiresAt, result };
+  return { receipt, expiresAt, result, resultV2 };
 };
 
 // ============================================================================
@@ -421,4 +426,32 @@ Deno.test({ name: "3a-10: assessment_receipts is invisible to authenticated user
   const { data, error } = await client.from("assessment_receipts").select("*").limit(1);
   const denied = !!error || (Array.isArray(data) && data.length === 0);
   assert(denied, "assessment_receipts must be invisible to signed-in users");
+}});
+
+// ============================================================================
+// Increment 2: the V2 snapshot travels through the claim untouched.
+Deno.test({ name: "3a-11: claim copies result_v2 verbatim and stamps result_schema_version",
+  sanitizeOps: false, sanitizeResources: false, async fn() {
+  const fx = await setupFixture();
+  const user = await createUser();
+  const token = await signIn(user.email, user.password);
+  const { receipt, resultV2 } = await issueReceiptViaHandler(fx, { userToken: token });
+
+  const res = await invokeSave({ receipt }, token);
+  assertEquals(res.status, 201);
+  const body = await res.json();
+  const savedId: string = body.savedDecisionId;
+
+  const { data: row } = await svc.from("saved_decisions").select("*").eq("id", savedId).single();
+  // V2 snapshot byte-equivalent to the server-held receipt copy.
+  assertEquals(
+    await canonicalHash(row!.result_v2),
+    await canonicalHash(resultV2),
+    "saved result_v2 must be byte-equivalent to the receipt snapshot",
+  );
+  // Increment 1's versioning column now records the richest stored contract.
+  assertEquals(row!.result_schema_version, "reality-check-result/v2");
+  // V1 remains present and untouched alongside.
+  assertEquals(row!.evaluator_schema_version, "reality-check-result/v1");
+  assert(row!.result_v1, "result_v1 must still be present");
 }});

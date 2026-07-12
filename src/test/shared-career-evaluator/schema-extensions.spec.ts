@@ -8,11 +8,11 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
-import { careerDecisionPackV1, validatePackCrossRefs, validatePublicationGates, collectPredicates } from "../schema";
-import type { CareerDecisionPackV1 } from "../types";
+import { careerDecisionPackV1, validatePackCrossRefs, validatePublicationGates, collectPredicates } from "@shared/career-evaluator/v1/schema";
+import type { CareerDecisionPackV1 } from "@shared/career-evaluator/v1/types";
 
 const __dirname_local = dirname(fileURLToPath(import.meta.url));
-const midwife = JSON.parse(readFileSync(resolve(__dirname_local, "../../../../../../content/career-packs/midwife/1.0.0.json"), "utf-8")) as CareerDecisionPackV1;
+const midwife = JSON.parse(readFileSync(resolve(__dirname_local, "../../../content/career-packs/midwife/1.0.0.json"), "utf-8")) as CareerDecisionPackV1;
 
 const clone = <T,>(x: T): T => JSON.parse(JSON.stringify(x)) as T;
 
@@ -81,16 +81,14 @@ describe("extended schema stays additive", () => {
   });
 
   it("flags mark_requirement / machineRule references to unknown ids", () => {
-    const p = clone(midwife) as CareerDecisionPackV1 & { rules: unknown[]; requirements: unknown[] };
+    const p = clone(midwife) as unknown as { rules: unknown[]; requirements: unknown[] } & Omit<CareerDecisionPackV1, "rules" | "requirements">;
     p.rules = [
       ...midwife.rules,
       { id: "bad_mark", when: { all: [] }, then: [{ kind: "mark_requirement", requirementId: "ghost_req", status: "met", evidenceRefs: [] }] },
     ];
-    p.requirements = [
-      ...midwife.requirements.map((r, i) => i === 0
-        ? { ...r, machineRule: { all: [{ questionId: "ghost_question", op: "present" }] } }
-        : r),
-    ];
+    p.requirements = midwife.requirements.map((r, i) => i === 0
+      ? { ...r, machineRule: { all: [{ questionId: "ghost_question", op: "present" as const }] } }
+      : r);
     const errs = validatePackCrossRefs(p).join("\n");
     expect(errs).toContain("unknown requirement ghost_req");
     expect(errs).toContain("machineRule references unknown question ghost_question");
@@ -110,10 +108,10 @@ describe("collectPredicates", () => {
 describe("publication gates", () => {
   const gateReady = (): CareerDecisionPackV1 => {
     const p = clone(midwife);
-    for (const req of p.requirements as Array<{ requirementType?: string }>) {
+    for (const req of p.requirements as unknown as Array<{ requirementType?: string }>) {
       req.requirementType = "participant_verification";
     }
-    for (const q of p.questionRefs as Array<{ id: string; contextOnly?: boolean }>) {
+    for (const q of p.questionRefs as unknown as Array<{ id: string; contextOnly?: boolean }>) {
       if (q.id === "starting_point") q.contextOnly = true;
     }
     return p;
@@ -131,21 +129,21 @@ describe("publication gates", () => {
 
   it("flags routes without evidence", () => {
     const p = gateReady();
-    (p.routes[0] as { evidenceRefs: string[] }).evidenceRefs = [];
+    (p.routes[0] as unknown as { evidenceRefs: string[] }).evidenceRefs = [];
     expect(validatePublicationGates(p).join("\n")).toContain(`route ${p.routes[0].id} has no evidence`);
   });
 
   it("flags references to withdrawn evidence", () => {
     const p = gateReady();
     const usedEvidenceId = p.routes[0].evidenceRefs[0];
-    const rec = (p.evidenceRecords as Array<{ id: string; withdrawn?: boolean }>).find((e) => e.id === usedEvidenceId)!;
+    const rec = (p.evidenceRecords as unknown as Array<{ id: string; withdrawn?: boolean }>).find((e) => e.id === usedEvidenceId)!;
     rec.withdrawn = true;
     expect(validatePublicationGates(p).join("\n")).toContain(`references withdrawn evidence ${usedEvidenceId}`);
   });
 
   it("a machineRule or a mark_requirement rule also satisfies assessability", () => {
     const p = gateReady();
-    const reqs = p.requirements as Array<{ id: string; requirementType?: string; machineRule?: unknown }>;
+    const reqs = p.requirements as unknown as Array<{ id: string; requirementType?: string; machineRule?: unknown }>;
     delete reqs[0].requirementType;
     reqs[0].machineRule = { all: [{ questionId: midwife.questionRefs[0].id, op: "present" }] };
     if (reqs.length > 1) {

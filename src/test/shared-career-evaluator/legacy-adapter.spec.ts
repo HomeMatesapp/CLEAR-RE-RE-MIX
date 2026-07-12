@@ -5,9 +5,9 @@
 // the exact participant-facing payload unchanged so rendering is
 // bit-identical during migration.
 import { describe, expect, it } from "vitest";
-import { legacyEngineOutputToResultV2, type LegacyEngineOutput } from "../legacy-adapter";
-import { realityCheckResultV2 } from "../result-v2";
-import { FORBIDDEN_LANGUAGE } from "../phrases";
+import { legacyEngineOutputToResultV2, type LegacyEngineOutput } from "@shared/career-evaluator/v1/legacy-adapter";
+import { realityCheckResultV2 } from "@shared/career-evaluator/v1/result-v2";
+import { FORBIDDEN_LANGUAGE } from "@shared/career-evaluator/v1/phrases";
 
 const NOW = "2026-07-12T12:00:00.000Z";
 const AID = "legacy-assessment-0001";
