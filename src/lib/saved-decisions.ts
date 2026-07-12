@@ -196,12 +196,30 @@ export const saveDecision = async (
   return data;
 };
 
+/** PR 3a — trusted persistence for generic-pack results.
+ *
+ *  The browser NEVER submits the authoritative result. It hands the opaque
+ *  assessment receipt (returned by reality-check) to the `save-decision`
+ *  edge function, which claims the receipt and writes the row from the
+ *  server-held snapshot. RLS blocks any client-side insert of a
+ *  `generic_pack_v1` row.
+ */
+export const saveGenericPackDecision = async (
+  receipt: string,
+  label?: string,
+): Promise<{ savedDecisionId: string; status: string }> => {
+  const { data, error } = await supabase.functions.invoke("save-decision", {
+    body: { receipt, label },
+  });
+  if (error) throw error;
+  return data as { savedDecisionId: string; status: string };
+};
 
 // In-flight guard to prevent duplicate saves if flush is invoked twice
 // concurrently (e.g. by both an auth effect and a route effect on login).
 let inFlight: Promise<boolean> | null = null;
 
-export const flushPendingDecision = async (userId: string): Promise<boolean> => {
+export const flushPendingDecision = async (_userId: string): Promise<boolean> => {
   if (inFlight) return inFlight;
   const pending = readPendingDecision();
   if (!pending) return false;
@@ -212,7 +230,12 @@ export const flushPendingDecision = async (userId: string): Promise<boolean> => 
   clearPendingDecision();
   inFlight = (async () => {
     try {
-      await saveDecision(userId, pending.role, pending.answers, pending.result, pending.answerSnapshot);
+      if (pending.assessmentReceipt) {
+        // Trusted-save path: the server has the authoritative snapshot.
+        await saveGenericPackDecision(pending.assessmentReceipt, pending.label);
+      } else {
+        await saveDecision(_userId, pending.role, pending.answers, pending.result, pending.answerSnapshot);
+      }
       return true;
     } catch {
       return false;
