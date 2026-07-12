@@ -23,10 +23,10 @@
 
 import { readFileSync } from "node:fs";
 import { z } from "zod";
-import { careerDecisionPackV1, validatePackCrossRefs } from "../shared/career-evaluator/v1/schema";
-import { evaluate } from "../shared/career-evaluator/v1/evaluate";
-import { canonicalHash } from "../shared/career-evaluator/v1/hash";
-import type { CareerDecisionPackV1 } from "../shared/career-evaluator/v1/types";
+import { careerDecisionPackV1, validatePackCrossRefs } from "../supabase/functions/_shared/career-evaluator/v1/schema";
+import { evaluate } from "../supabase/functions/_shared/career-evaluator/v1/evaluate";
+import { canonicalHash } from "../supabase/functions/_shared/career-evaluator/v1/hash";
+import type { CareerDecisionPackV1 } from "../supabase/functions/_shared/career-evaluator/v1/types";
 
 interface CliArgs {
   packPath: string;

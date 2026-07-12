@@ -24,7 +24,7 @@ import { buildActorResult } from "./_actor.ts";
 import { buildSolicitorResult } from "./_solicitor.ts";
 import { getCorsHeaders } from "../_shared/cors.ts";
 import { evaluateGenericPack } from "./_generic_pack.ts";
-import { canonicalHash } from "../../../shared/career-evaluator/v1/hash.ts";
+import { canonicalHash } from "../_shared/career-evaluator/v1/hash.ts";
 
 
 // Re-exported so existing tests against answersToLabels keep passing.
