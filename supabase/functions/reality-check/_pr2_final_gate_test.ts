@@ -41,7 +41,10 @@ const makeReq = (body: unknown) =>
 // ============================================================================
 // 1. Authenticated-user RLS matrix
 // ============================================================================
-Deno.test("gate-1: ordinary authenticated user cannot access admin tables or RPCs", async () => {
+Deno.test({
+  name: "gate-1: ordinary authenticated user cannot access admin tables or RPCs",
+  sanitizeOps: false, sanitizeResources: false,
+  fn: async () => {
   const email = `gate-user-${uniq()}@example.test`;
   const password = `Pw!${crypto.randomUUID()}`;
   const { data: created, error: cErr } = await svc.auth.admin.createUser({
