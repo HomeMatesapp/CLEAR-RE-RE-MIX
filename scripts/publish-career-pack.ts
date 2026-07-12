@@ -98,15 +98,15 @@ export const runCli = async (args: CliArgs, opts: { fetchImpl?: typeof fetch } =
   }
 
   const supabaseUrl = process.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const publishSecret = process.env.CAREER_PACK_PUBLISH_SECRET;
   if (!supabaseUrl) throw new Error("VITE_SUPABASE_URL or SUPABASE_URL must be set in the environment");
-  if (!serviceKey) throw new Error("SUPABASE_SERVICE_ROLE_KEY must be set in the environment");
+  if (!publishSecret) throw new Error("CAREER_PACK_PUBLISH_SECRET must be set in the environment");
 
   const fetchImpl = opts.fetchImpl ?? fetch;
   const res = await fetchImpl(`${supabaseUrl}/functions/v1/publish-career-pack`, {
     method: "POST",
     headers: {
-      "Authorization": `Bearer ${serviceKey}`,
+      "Authorization": `Bearer ${publishSecret}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
