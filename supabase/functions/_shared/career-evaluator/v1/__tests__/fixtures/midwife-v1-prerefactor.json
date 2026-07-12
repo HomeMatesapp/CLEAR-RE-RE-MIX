@@ -1,0 +1,982 @@
+{
+  "school_leaver_a_levels_science": {
+    "schemaVersion": "reality-check-result/v1",
+    "packVersion": "1.0.0",
+    "roleId": "f2e9c333-c373-4cca-add2-3b7bd1cd50d7",
+    "slug": "midwife",
+    "evaluatedAt": "2026-07-12T12:00:00.000Z",
+    "geographicScope": [
+      "England"
+    ],
+    "regulatoryStatus": "statutory_registration",
+    "routes": [
+      {
+        "routeId": "bsc_midwifery",
+        "routeTitle": "BSc (Hons) Midwifery",
+        "classification": "currently_looks_most_workable",
+        "supportingReasons": [
+          "Three-year full-time undergraduate degree approved by the NMC, with clinical placements throughout."
+        ],
+        "concerns": [],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nhs_lsf",
+          "nmc_standards",
+          "ucas_midwifery"
+        ]
+      },
+      {
+        "routeId": "msc_pre_reg_midwifery",
+        "routeTitle": "MSc pre-registration Midwifery (shortened)",
+        "classification": "not_currently_available_to_you",
+        "supportingReasons": [
+          "Postgraduate pre-registration programme for graduates in a relevant health or science subject, typically two years full time."
+        ],
+        "concerns": [
+          "The MSc pre-registration route requires a completed degree in a relevant health or science subject at 2:1 or above."
+        ],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nhs_lsf",
+          "nmc_standards"
+        ]
+      },
+      {
+        "routeId": "nurse_to_midwife",
+        "routeTitle": "Registered adult nurse converting to midwifery",
+        "classification": "not_currently_available_to_you",
+        "supportingReasons": [
+          "Shortened midwifery programme for registered adult nurses on the NMC register."
+        ],
+        "concerns": [
+          "The shortened nurse-to-midwife route is only open to nurses already on the NMC adult-nursing part of the register."
+        ],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nmc_standards"
+        ]
+      }
+    ],
+    "considerations": [],
+    "immediateActions": [],
+    "evidenceCoverage": {
+      "level": "comprehensive",
+      "completedAnswerCount": 9,
+      "totalAnswerCount": 9,
+      "note": "Evidence coverage: comprehensive. This describes how much of the pack's evidence was drawn on to reach this result — it is not a prediction of the outcome."
+    },
+    "limitations": [
+      "This Reality Check has been researched for England only. Rules, funding and regulators differ elsewhere in the UK."
+    ],
+    "participantLanguage": {
+      "topRoutePhrase": "Strongest supported route from your answers.",
+      "confidencePhrase": "Evidence coverage: comprehensive. This describes how much of the pack's evidence was drawn on to reach this result — it is not a prediction of the outcome."
+    }
+  },
+  "school_leaver_missing_science_alevel": {
+    "schemaVersion": "reality-check-result/v1",
+    "packVersion": "1.0.0",
+    "roleId": "f2e9c333-c373-4cca-add2-3b7bd1cd50d7",
+    "slug": "midwife",
+    "evaluatedAt": "2026-07-12T12:00:00.000Z",
+    "geographicScope": [
+      "England"
+    ],
+    "regulatoryStatus": "statutory_registration",
+    "routes": [
+      {
+        "routeId": "bsc_midwifery",
+        "routeTitle": "BSc (Hons) Midwifery",
+        "classification": "requires_further_verification",
+        "supportingReasons": [
+          "Three-year full-time undergraduate degree approved by the NMC, with clinical placements throughout."
+        ],
+        "concerns": [],
+        "verificationsRequired": [
+          "Confirm with the university whether your A-level combination is accepted without a science subject; several courses will require Biology or an Access to HE Diploma in place of it."
+        ],
+        "evidenceRefs": [
+          "nhs_lsf",
+          "nmc_standards",
+          "ucas_midwifery"
+        ]
+      },
+      {
+        "routeId": "msc_pre_reg_midwifery",
+        "routeTitle": "MSc pre-registration Midwifery (shortened)",
+        "classification": "not_currently_available_to_you",
+        "supportingReasons": [
+          "Postgraduate pre-registration programme for graduates in a relevant health or science subject, typically two years full time."
+        ],
+        "concerns": [
+          "The MSc pre-registration route requires a completed degree in a relevant health or science subject at 2:1 or above."
+        ],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nhs_lsf",
+          "nmc_standards"
+        ]
+      },
+      {
+        "routeId": "nurse_to_midwife",
+        "routeTitle": "Registered adult nurse converting to midwifery",
+        "classification": "not_currently_available_to_you",
+        "supportingReasons": [
+          "Shortened midwifery programme for registered adult nurses on the NMC register."
+        ],
+        "concerns": [
+          "The shortened nurse-to-midwife route is only open to nurses already on the NMC adult-nursing part of the register."
+        ],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nmc_standards"
+        ]
+      }
+    ],
+    "considerations": [],
+    "immediateActions": [],
+    "evidenceCoverage": {
+      "level": "comprehensive",
+      "completedAnswerCount": 9,
+      "totalAnswerCount": 9,
+      "note": "Evidence coverage: comprehensive. This describes how much of the pack's evidence was drawn on to reach this result — it is not a prediction of the outcome."
+    },
+    "limitations": [
+      "This Reality Check has been researched for England only. Rules, funding and regulators differ elsewhere in the UK."
+    ],
+    "participantLanguage": {
+      "topRoutePhrase": "Currently looks workable, but requires further verification.",
+      "confidencePhrase": "Evidence coverage: comprehensive. This describes how much of the pack's evidence was drawn on to reach this result — it is not a prediction of the outcome."
+    }
+  },
+  "no_gcses": {
+    "schemaVersion": "reality-check-result/v1",
+    "packVersion": "1.0.0",
+    "roleId": "f2e9c333-c373-4cca-add2-3b7bd1cd50d7",
+    "slug": "midwife",
+    "evaluatedAt": "2026-07-12T12:00:00.000Z",
+    "geographicScope": [
+      "England"
+    ],
+    "regulatoryStatus": "statutory_registration",
+    "routes": [
+      {
+        "routeId": "nurse_to_midwife",
+        "routeTitle": "Registered adult nurse converting to midwifery",
+        "classification": "not_currently_available_to_you",
+        "supportingReasons": [
+          "Shortened midwifery programme for registered adult nurses on the NMC register."
+        ],
+        "concerns": [
+          "The shortened nurse-to-midwife route is only open to nurses already on the NMC adult-nursing part of the register."
+        ],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nmc_standards"
+        ]
+      },
+      {
+        "routeId": "msc_pre_reg_midwifery",
+        "routeTitle": "MSc pre-registration Midwifery (shortened)",
+        "classification": "not_currently_available_to_you",
+        "supportingReasons": [
+          "Postgraduate pre-registration programme for graduates in a relevant health or science subject, typically two years full time."
+        ],
+        "concerns": [
+          "The MSc pre-registration route requires a completed degree in a relevant health or science subject at 2:1 or above.",
+          "Full-time placements make paid work alongside the course difficult. The NHS Learning Support Fund grant is also available on eligible pre-registration MSc programmes in England."
+        ],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nhs_lsf",
+          "nmc_standards"
+        ]
+      },
+      {
+        "routeId": "bsc_midwifery",
+        "routeTitle": "BSc (Hons) Midwifery",
+        "classification": "not_currently_available_to_you",
+        "supportingReasons": [
+          "Three-year full-time undergraduate degree approved by the NMC, with clinical placements throughout."
+        ],
+        "concerns": [
+          "Most BSc Midwifery courses require GCSE 4/C in maths, English and a science. You will typically need to gain these before applying.",
+          "BSc Midwifery requires a Level 3 qualification such as A-levels, a relevant T Level, or an Access to Higher Education Diploma (Nursing/Midwifery/Health).",
+          "Full-time placements (including nights and weekends) make paid work alongside the course difficult. The NHS Learning Support Fund provides a non-repayable grant of at least £5,000 per academic year for eligible students in England."
+        ],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nhs_lsf",
+          "nmc_standards",
+          "ucas_midwifery"
+        ]
+      }
+    ],
+    "considerations": [],
+    "immediateActions": [
+      {
+        "actionTemplateId": "action_check_gcse_options",
+        "title": "Look into how to gain the required GCSEs",
+        "description": "Contact a local further education college about GCSE resit options in maths, English and a science, or a Functional Skills Level 2 route. Ask each shortlisted midwifery provider which they accept.",
+        "evidenceRefs": [
+          "ucas_midwifery"
+        ]
+      },
+      {
+        "actionTemplateId": "action_explore_access_courses",
+        "title": "Explore Access to Higher Education Diplomas in Nursing/Midwifery",
+        "description": "Look up Access to HE Diplomas (Nursing, Midwifery or Health) at local FE colleges. These are widely accepted in place of A-levels for midwifery programmes.",
+        "evidenceRefs": [
+          "ucas_midwifery"
+        ]
+      },
+      {
+        "actionTemplateId": "action_check_lsf_eligibility",
+        "title": "Check NHS Learning Support Fund eligibility",
+        "description": "Read the NHS Business Services Authority page on the Learning Support Fund and check whether your circumstances would qualify you for the training grant, parental support and specialist subject payment.",
+        "evidenceRefs": [
+          "nhs_lsf"
+        ]
+      }
+    ],
+    "evidenceCoverage": {
+      "level": "comprehensive",
+      "completedAnswerCount": 9,
+      "totalAnswerCount": 9,
+      "note": "Evidence coverage: comprehensive. This describes how much of the pack's evidence was drawn on to reach this result — it is not a prediction of the outcome."
+    },
+    "limitations": [
+      "This Reality Check has been researched for England only. Rules, funding and regulators differ elsewhere in the UK."
+    ],
+    "participantLanguage": {
+      "topRoutePhrase": "Does not currently look available to you.",
+      "confidencePhrase": "Evidence coverage: comprehensive. This describes how much of the pack's evidence was drawn on to reach this result — it is not a prediction of the outcome."
+    }
+  },
+  "graduate_relevant_degree": {
+    "schemaVersion": "reality-check-result/v1",
+    "packVersion": "1.0.0",
+    "roleId": "f2e9c333-c373-4cca-add2-3b7bd1cd50d7",
+    "slug": "midwife",
+    "evaluatedAt": "2026-07-12T12:00:00.000Z",
+    "geographicScope": [
+      "England"
+    ],
+    "regulatoryStatus": "statutory_registration",
+    "routes": [
+      {
+        "routeId": "bsc_midwifery",
+        "routeTitle": "BSc (Hons) Midwifery",
+        "classification": "currently_looks_most_workable",
+        "supportingReasons": [
+          "Three-year full-time undergraduate degree approved by the NMC, with clinical placements throughout."
+        ],
+        "concerns": [],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nhs_lsf",
+          "nmc_standards",
+          "ucas_midwifery"
+        ]
+      },
+      {
+        "routeId": "msc_pre_reg_midwifery",
+        "routeTitle": "MSc pre-registration Midwifery (shortened)",
+        "classification": "possible_with_trade_offs",
+        "supportingReasons": [
+          "Postgraduate pre-registration programme for graduates in a relevant health or science subject, typically two years full time."
+        ],
+        "concerns": [],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nhs_lsf",
+          "nmc_standards"
+        ]
+      },
+      {
+        "routeId": "nurse_to_midwife",
+        "routeTitle": "Registered adult nurse converting to midwifery",
+        "classification": "not_currently_available_to_you",
+        "supportingReasons": [
+          "Shortened midwifery programme for registered adult nurses on the NMC register."
+        ],
+        "concerns": [
+          "The shortened nurse-to-midwife route is only open to nurses already on the NMC adult-nursing part of the register."
+        ],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nmc_standards"
+        ]
+      }
+    ],
+    "considerations": [],
+    "immediateActions": [],
+    "evidenceCoverage": {
+      "level": "comprehensive",
+      "completedAnswerCount": 9,
+      "totalAnswerCount": 9,
+      "note": "Evidence coverage: comprehensive. This describes how much of the pack's evidence was drawn on to reach this result — it is not a prediction of the outcome."
+    },
+    "limitations": [
+      "This Reality Check has been researched for England only. Rules, funding and regulators differ elsewhere in the UK."
+    ],
+    "participantLanguage": {
+      "topRoutePhrase": "Strongest supported route from your answers.",
+      "confidencePhrase": "Evidence coverage: comprehensive. This describes how much of the pack's evidence was drawn on to reach this result — it is not a prediction of the outcome."
+    }
+  },
+  "graduate_unrelated_degree": {
+    "schemaVersion": "reality-check-result/v1",
+    "packVersion": "1.0.0",
+    "roleId": "f2e9c333-c373-4cca-add2-3b7bd1cd50d7",
+    "slug": "midwife",
+    "evaluatedAt": "2026-07-12T12:00:00.000Z",
+    "geographicScope": [
+      "England"
+    ],
+    "regulatoryStatus": "statutory_registration",
+    "routes": [
+      {
+        "routeId": "bsc_midwifery",
+        "routeTitle": "BSc (Hons) Midwifery",
+        "classification": "possible_with_trade_offs",
+        "supportingReasons": [
+          "Three-year full-time undergraduate degree approved by the NMC, with clinical placements throughout."
+        ],
+        "concerns": [
+          "Full-time placements (including nights and weekends) make paid work alongside the course difficult. The NHS Learning Support Fund provides a non-repayable grant of at least £5,000 per academic year for eligible students in England."
+        ],
+        "verificationsRequired": [
+          "Confirm with the university whether your A-level combination is accepted without a science subject; several courses will require Biology or an Access to HE Diploma in place of it."
+        ],
+        "evidenceRefs": [
+          "nhs_lsf",
+          "nmc_standards",
+          "ucas_midwifery"
+        ]
+      },
+      {
+        "routeId": "msc_pre_reg_midwifery",
+        "routeTitle": "MSc pre-registration Midwifery (shortened)",
+        "classification": "possible_with_trade_offs",
+        "supportingReasons": [
+          "Postgraduate pre-registration programme for graduates in a relevant health or science subject, typically two years full time."
+        ],
+        "concerns": [
+          "Full-time placements make paid work alongside the course difficult. The NHS Learning Support Fund grant is also available on eligible pre-registration MSc programmes in England."
+        ],
+        "verificationsRequired": [
+          "Check with each MSc provider whether your degree subject is accepted, or whether a top-up module in life sciences is needed first."
+        ],
+        "evidenceRefs": [
+          "nhs_lsf",
+          "nmc_standards"
+        ]
+      },
+      {
+        "routeId": "nurse_to_midwife",
+        "routeTitle": "Registered adult nurse converting to midwifery",
+        "classification": "not_currently_available_to_you",
+        "supportingReasons": [
+          "Shortened midwifery programme for registered adult nurses on the NMC register."
+        ],
+        "concerns": [
+          "The shortened nurse-to-midwife route is only open to nurses already on the NMC adult-nursing part of the register."
+        ],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nmc_standards"
+        ]
+      }
+    ],
+    "considerations": [],
+    "immediateActions": [
+      {
+        "actionTemplateId": "action_check_lsf_eligibility",
+        "title": "Check NHS Learning Support Fund eligibility",
+        "description": "Read the NHS Business Services Authority page on the Learning Support Fund and check whether your circumstances would qualify you for the training grant, parental support and specialist subject payment.",
+        "evidenceRefs": [
+          "nhs_lsf"
+        ]
+      }
+    ],
+    "evidenceCoverage": {
+      "level": "comprehensive",
+      "completedAnswerCount": 9,
+      "totalAnswerCount": 9,
+      "note": "Evidence coverage: comprehensive. This describes how much of the pack's evidence was drawn on to reach this result — it is not a prediction of the outcome."
+    },
+    "limitations": [
+      "This Reality Check has been researched for England only. Rules, funding and regulators differ elsewhere in the UK."
+    ],
+    "participantLanguage": {
+      "topRoutePhrase": "Possible, with these trade-offs.",
+      "confidencePhrase": "Evidence coverage: comprehensive. This describes how much of the pack's evidence was drawn on to reach this result — it is not a prediction of the outcome."
+    }
+  },
+  "registered_adult_nurse_head_start": {
+    "schemaVersion": "reality-check-result/v1",
+    "packVersion": "1.0.0",
+    "roleId": "f2e9c333-c373-4cca-add2-3b7bd1cd50d7",
+    "slug": "midwife",
+    "evaluatedAt": "2026-07-12T12:00:00.000Z",
+    "geographicScope": [
+      "England"
+    ],
+    "regulatoryStatus": "statutory_registration",
+    "routes": [
+      {
+        "routeId": "nurse_to_midwife",
+        "routeTitle": "Registered adult nurse converting to midwifery",
+        "classification": "currently_looks_most_workable",
+        "supportingReasons": [
+          "Shortened midwifery programme for registered adult nurses on the NMC register."
+        ],
+        "concerns": [],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nmc_standards"
+        ]
+      },
+      {
+        "routeId": "bsc_midwifery",
+        "routeTitle": "BSc (Hons) Midwifery",
+        "classification": "possible_with_trade_offs",
+        "supportingReasons": [
+          "Three-year full-time undergraduate degree approved by the NMC, with clinical placements throughout."
+        ],
+        "concerns": [
+          "Since you are already on the NMC adult-nursing register, the three-year BSc route would take longer than a shortened conversion programme."
+        ],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nhs_lsf",
+          "nmc_standards",
+          "ucas_midwifery"
+        ]
+      },
+      {
+        "routeId": "msc_pre_reg_midwifery",
+        "routeTitle": "MSc pre-registration Midwifery (shortened)",
+        "classification": "possible_with_trade_offs",
+        "supportingReasons": [
+          "Postgraduate pre-registration programme for graduates in a relevant health or science subject, typically two years full time."
+        ],
+        "concerns": [
+          "The MSc pre-registration route is designed for graduates who are not already registered nurses; the shortened conversion route is typically faster in your case."
+        ],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nhs_lsf",
+          "nmc_standards"
+        ]
+      }
+    ],
+    "considerations": [
+      "As an NMC-registered adult nurse, the shortened conversion route is likely to be the fastest path onto the midwives part of the register."
+    ],
+    "immediateActions": [],
+    "evidenceCoverage": {
+      "level": "comprehensive",
+      "completedAnswerCount": 9,
+      "totalAnswerCount": 9,
+      "note": "Evidence coverage: comprehensive. This describes how much of the pack's evidence was drawn on to reach this result — it is not a prediction of the outcome."
+    },
+    "limitations": [
+      "This Reality Check has been researched for England only. Rules, funding and regulators differ elsewhere in the UK."
+    ],
+    "participantLanguage": {
+      "topRoutePhrase": "Strongest supported route from your answers.",
+      "confidencePhrase": "Evidence coverage: comprehensive. This describes how much of the pack's evidence was drawn on to reach this result — it is not a prediction of the outcome."
+    }
+  },
+  "cannot_commit_placements": {
+    "schemaVersion": "reality-check-result/v1",
+    "packVersion": "1.0.0",
+    "roleId": "f2e9c333-c373-4cca-add2-3b7bd1cd50d7",
+    "slug": "midwife",
+    "evaluatedAt": "2026-07-12T12:00:00.000Z",
+    "geographicScope": [
+      "England"
+    ],
+    "regulatoryStatus": "statutory_registration",
+    "routes": [
+      {
+        "routeId": "nurse_to_midwife",
+        "routeTitle": "Registered adult nurse converting to midwifery",
+        "classification": "not_currently_available_to_you",
+        "supportingReasons": [
+          "Shortened midwifery programme for registered adult nurses on the NMC register."
+        ],
+        "concerns": [
+          "Placement patterns are set by the NMC and cannot be reduced below full time."
+        ],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nmc_standards"
+        ]
+      },
+      {
+        "routeId": "bsc_midwifery",
+        "routeTitle": "BSc (Hons) Midwifery",
+        "classification": "not_currently_available_to_you",
+        "supportingReasons": [
+          "Three-year full-time undergraduate degree approved by the NMC, with clinical placements throughout."
+        ],
+        "concerns": [
+          "Since you are already on the NMC adult-nursing register, the three-year BSc route would take longer than a shortened conversion programme.",
+          "Full-time placements (including nights and weekends) make paid work alongside the course difficult. The NHS Learning Support Fund provides a non-repayable grant of at least £5,000 per academic year for eligible students in England.",
+          "NMC-approved programmes require full-time clinical placements including night and weekend shifts. This is a regulator requirement, not a provider choice."
+        ],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nhs_lsf",
+          "nmc_standards",
+          "ucas_midwifery"
+        ]
+      },
+      {
+        "routeId": "msc_pre_reg_midwifery",
+        "routeTitle": "MSc pre-registration Midwifery (shortened)",
+        "classification": "not_currently_available_to_you",
+        "supportingReasons": [
+          "Postgraduate pre-registration programme for graduates in a relevant health or science subject, typically two years full time."
+        ],
+        "concerns": [
+          "The MSc pre-registration route is designed for graduates who are not already registered nurses; the shortened conversion route is typically faster in your case.",
+          "Full-time placements make paid work alongside the course difficult. The NHS Learning Support Fund grant is also available on eligible pre-registration MSc programmes in England.",
+          "Placement patterns are set by the NMC and cannot be reduced below full time."
+        ],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nhs_lsf",
+          "nmc_standards"
+        ]
+      }
+    ],
+    "considerations": [
+      "As an NMC-registered adult nurse, the shortened conversion route is likely to be the fastest path onto the midwives part of the register."
+    ],
+    "immediateActions": [
+      {
+        "actionTemplateId": "action_check_lsf_eligibility",
+        "title": "Check NHS Learning Support Fund eligibility",
+        "description": "Read the NHS Business Services Authority page on the Learning Support Fund and check whether your circumstances would qualify you for the training grant, parental support and specialist subject payment.",
+        "evidenceRefs": [
+          "nhs_lsf"
+        ]
+      }
+    ],
+    "evidenceCoverage": {
+      "level": "comprehensive",
+      "completedAnswerCount": 9,
+      "totalAnswerCount": 9,
+      "note": "Evidence coverage: comprehensive. This describes how much of the pack's evidence was drawn on to reach this result — it is not a prediction of the outcome."
+    },
+    "limitations": [
+      "This Reality Check has been researched for England only. Rules, funding and regulators differ elsewhere in the UK."
+    ],
+    "participantLanguage": {
+      "topRoutePhrase": "Does not currently look available to you.",
+      "confidencePhrase": "Evidence coverage: comprehensive. This describes how much of the pack's evidence was drawn on to reach this result — it is not a prediction of the outcome."
+    }
+  },
+  "partial_gcses": {
+    "schemaVersion": "reality-check-result/v1",
+    "packVersion": "1.0.0",
+    "roleId": "f2e9c333-c373-4cca-add2-3b7bd1cd50d7",
+    "slug": "midwife",
+    "evaluatedAt": "2026-07-12T12:00:00.000Z",
+    "geographicScope": [
+      "England"
+    ],
+    "regulatoryStatus": "statutory_registration",
+    "routes": [
+      {
+        "routeId": "bsc_midwifery",
+        "routeTitle": "BSc (Hons) Midwifery",
+        "classification": "requires_further_verification",
+        "supportingReasons": [
+          "Three-year full-time undergraduate degree approved by the NMC, with clinical placements throughout."
+        ],
+        "concerns": [],
+        "verificationsRequired": [
+          "Confirm the specific GCSE grades each shortlisted university will accept, and whether Functional Skills Level 2 is accepted in place of any missing GCSE."
+        ],
+        "evidenceRefs": [
+          "nhs_lsf",
+          "nmc_standards",
+          "ucas_midwifery"
+        ]
+      },
+      {
+        "routeId": "msc_pre_reg_midwifery",
+        "routeTitle": "MSc pre-registration Midwifery (shortened)",
+        "classification": "not_currently_available_to_you",
+        "supportingReasons": [
+          "Postgraduate pre-registration programme for graduates in a relevant health or science subject, typically two years full time."
+        ],
+        "concerns": [
+          "The MSc pre-registration route requires a completed degree in a relevant health or science subject at 2:1 or above."
+        ],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nhs_lsf",
+          "nmc_standards"
+        ]
+      },
+      {
+        "routeId": "nurse_to_midwife",
+        "routeTitle": "Registered adult nurse converting to midwifery",
+        "classification": "not_currently_available_to_you",
+        "supportingReasons": [
+          "Shortened midwifery programme for registered adult nurses on the NMC register."
+        ],
+        "concerns": [
+          "The shortened nurse-to-midwife route is only open to nurses already on the NMC adult-nursing part of the register."
+        ],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nmc_standards"
+        ]
+      }
+    ],
+    "considerations": [],
+    "immediateActions": [],
+    "evidenceCoverage": {
+      "level": "comprehensive",
+      "completedAnswerCount": 9,
+      "totalAnswerCount": 9,
+      "note": "Evidence coverage: comprehensive. This describes how much of the pack's evidence was drawn on to reach this result — it is not a prediction of the outcome."
+    },
+    "limitations": [
+      "This Reality Check has been researched for England only. Rules, funding and regulators differ elsewhere in the UK."
+    ],
+    "participantLanguage": {
+      "topRoutePhrase": "Currently looks workable, but requires further verification.",
+      "confidencePhrase": "Evidence coverage: comprehensive. This describes how much of the pack's evidence was drawn on to reach this result — it is not a prediction of the outcome."
+    }
+  },
+  "international_qualifications": {
+    "schemaVersion": "reality-check-result/v1",
+    "packVersion": "1.0.0",
+    "roleId": "f2e9c333-c373-4cca-add2-3b7bd1cd50d7",
+    "slug": "midwife",
+    "evaluatedAt": "2026-07-12T12:00:00.000Z",
+    "geographicScope": [
+      "England"
+    ],
+    "regulatoryStatus": "statutory_registration",
+    "routes": [
+      {
+        "routeId": "bsc_midwifery",
+        "routeTitle": "BSc (Hons) Midwifery",
+        "classification": "requires_further_verification",
+        "supportingReasons": [
+          "Three-year full-time undergraduate degree approved by the NMC, with clinical placements throughout."
+        ],
+        "concerns": [],
+        "verificationsRequired": [
+          "Ask the university's admissions team which international qualifications they accept in place of GCSEs and whether IELTS or equivalent English-language evidence is required."
+        ],
+        "evidenceRefs": [
+          "nhs_lsf",
+          "nmc_standards",
+          "ucas_midwifery"
+        ]
+      },
+      {
+        "routeId": "msc_pre_reg_midwifery",
+        "routeTitle": "MSc pre-registration Midwifery (shortened)",
+        "classification": "not_currently_available_to_you",
+        "supportingReasons": [
+          "Postgraduate pre-registration programme for graduates in a relevant health or science subject, typically two years full time."
+        ],
+        "concerns": [
+          "The MSc pre-registration route requires a completed degree in a relevant health or science subject at 2:1 or above."
+        ],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nhs_lsf",
+          "nmc_standards"
+        ]
+      },
+      {
+        "routeId": "nurse_to_midwife",
+        "routeTitle": "Registered adult nurse converting to midwifery",
+        "classification": "not_currently_available_to_you",
+        "supportingReasons": [
+          "Shortened midwifery programme for registered adult nurses on the NMC register."
+        ],
+        "concerns": [
+          "The shortened nurse-to-midwife route is only open to nurses already on the NMC adult-nursing part of the register."
+        ],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nmc_standards"
+        ]
+      }
+    ],
+    "considerations": [],
+    "immediateActions": [
+      {
+        "actionTemplateId": "action_check_ielts",
+        "title": "Check the English-language evidence requirement",
+        "description": "Ask two universities that offer midwifery whether they accept your international qualifications, and what IELTS score (or equivalent) they require.",
+        "evidenceRefs": [
+          "nmc_standards"
+        ]
+      }
+    ],
+    "evidenceCoverage": {
+      "level": "comprehensive",
+      "completedAnswerCount": 9,
+      "totalAnswerCount": 9,
+      "note": "Evidence coverage: comprehensive. This describes how much of the pack's evidence was drawn on to reach this result — it is not a prediction of the outcome."
+    },
+    "limitations": [
+      "This Reality Check has been researched for England only. Rules, funding and regulators differ elsewhere in the UK."
+    ],
+    "participantLanguage": {
+      "topRoutePhrase": "Currently looks workable, but requires further verification.",
+      "confidencePhrase": "Evidence coverage: comprehensive. This describes how much of the pack's evidence was drawn on to reach this result — it is not a prediction of the outcome."
+    }
+  },
+  "dbs_concerns": {
+    "schemaVersion": "reality-check-result/v1",
+    "packVersion": "1.0.0",
+    "roleId": "f2e9c333-c373-4cca-add2-3b7bd1cd50d7",
+    "slug": "midwife",
+    "evaluatedAt": "2026-07-12T12:00:00.000Z",
+    "geographicScope": [
+      "England"
+    ],
+    "regulatoryStatus": "statutory_registration",
+    "routes": [
+      {
+        "routeId": "bsc_midwifery",
+        "routeTitle": "BSc (Hons) Midwifery",
+        "classification": "requires_further_verification",
+        "supportingReasons": [
+          "Three-year full-time undergraduate degree approved by the NMC, with clinical placements throughout."
+        ],
+        "concerns": [],
+        "verificationsRequired": [
+          "Speak with the university's admissions team and, if appropriate, an organisation such as Unlock about how your specific circumstances would be considered under the NMC's fitness-to-practise process."
+        ],
+        "evidenceRefs": [
+          "nhs_lsf",
+          "nmc_standards",
+          "ucas_midwifery"
+        ]
+      },
+      {
+        "routeId": "msc_pre_reg_midwifery",
+        "routeTitle": "MSc pre-registration Midwifery (shortened)",
+        "classification": "possible_with_trade_offs",
+        "supportingReasons": [
+          "Postgraduate pre-registration programme for graduates in a relevant health or science subject, typically two years full time."
+        ],
+        "concerns": [],
+        "verificationsRequired": [
+          "Speak with the provider's admissions team about how your specific circumstances would be considered under the NMC's fitness-to-practise process."
+        ],
+        "evidenceRefs": [
+          "nhs_lsf",
+          "nmc_standards"
+        ]
+      },
+      {
+        "routeId": "nurse_to_midwife",
+        "routeTitle": "Registered adult nurse converting to midwifery",
+        "classification": "not_currently_available_to_you",
+        "supportingReasons": [
+          "Shortened midwifery programme for registered adult nurses on the NMC register."
+        ],
+        "concerns": [
+          "The shortened nurse-to-midwife route is only open to nurses already on the NMC adult-nursing part of the register."
+        ],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nmc_standards"
+        ]
+      }
+    ],
+    "considerations": [],
+    "immediateActions": [],
+    "evidenceCoverage": {
+      "level": "comprehensive",
+      "completedAnswerCount": 9,
+      "totalAnswerCount": 9,
+      "note": "Evidence coverage: comprehensive. This describes how much of the pack's evidence was drawn on to reach this result — it is not a prediction of the outcome."
+    },
+    "limitations": [
+      "This Reality Check has been researched for England only. Rules, funding and regulators differ elsewhere in the UK."
+    ],
+    "participantLanguage": {
+      "topRoutePhrase": "Currently looks workable, but requires further verification.",
+      "confidencePhrase": "Evidence coverage: comprehensive. This describes how much of the pack's evidence was drawn on to reach this result — it is not a prediction of the outcome."
+    }
+  },
+  "health_concerns": {
+    "schemaVersion": "reality-check-result/v1",
+    "packVersion": "1.0.0",
+    "roleId": "f2e9c333-c373-4cca-add2-3b7bd1cd50d7",
+    "slug": "midwife",
+    "evaluatedAt": "2026-07-12T12:00:00.000Z",
+    "geographicScope": [
+      "England"
+    ],
+    "regulatoryStatus": "statutory_registration",
+    "routes": [
+      {
+        "routeId": "bsc_midwifery",
+        "routeTitle": "BSc (Hons) Midwifery",
+        "classification": "requires_further_verification",
+        "supportingReasons": [
+          "Three-year full-time undergraduate degree approved by the NMC, with clinical placements throughout."
+        ],
+        "concerns": [],
+        "verificationsRequired": [
+          "Occupational health clearance is required for every route. Speak to the provider's occupational health service after a conditional offer about your specific circumstances."
+        ],
+        "evidenceRefs": [
+          "nhs_lsf",
+          "nmc_standards",
+          "ucas_midwifery"
+        ]
+      },
+      {
+        "routeId": "msc_pre_reg_midwifery",
+        "routeTitle": "MSc pre-registration Midwifery (shortened)",
+        "classification": "not_currently_available_to_you",
+        "supportingReasons": [
+          "Postgraduate pre-registration programme for graduates in a relevant health or science subject, typically two years full time."
+        ],
+        "concerns": [
+          "The MSc pre-registration route requires a completed degree in a relevant health or science subject at 2:1 or above."
+        ],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nhs_lsf",
+          "nmc_standards"
+        ]
+      },
+      {
+        "routeId": "nurse_to_midwife",
+        "routeTitle": "Registered adult nurse converting to midwifery",
+        "classification": "not_currently_available_to_you",
+        "supportingReasons": [
+          "Shortened midwifery programme for registered adult nurses on the NMC register."
+        ],
+        "concerns": [
+          "The shortened nurse-to-midwife route is only open to nurses already on the NMC adult-nursing part of the register."
+        ],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nmc_standards"
+        ]
+      }
+    ],
+    "considerations": [],
+    "immediateActions": [],
+    "evidenceCoverage": {
+      "level": "comprehensive",
+      "completedAnswerCount": 9,
+      "totalAnswerCount": 9,
+      "note": "Evidence coverage: comprehensive. This describes how much of the pack's evidence was drawn on to reach this result — it is not a prediction of the outcome."
+    },
+    "limitations": [
+      "This Reality Check has been researched for England only. Rules, funding and regulators differ elsewhere in the UK."
+    ],
+    "participantLanguage": {
+      "topRoutePhrase": "Currently looks workable, but requires further verification.",
+      "confidencePhrase": "Evidence coverage: comprehensive. This describes how much of the pack's evidence was drawn on to reach this result — it is not a prediction of the outcome."
+    }
+  },
+  "needs_income_can_do_placements": {
+    "schemaVersion": "reality-check-result/v1",
+    "packVersion": "1.0.0",
+    "roleId": "f2e9c333-c373-4cca-add2-3b7bd1cd50d7",
+    "slug": "midwife",
+    "evaluatedAt": "2026-07-12T12:00:00.000Z",
+    "geographicScope": [
+      "England"
+    ],
+    "regulatoryStatus": "statutory_registration",
+    "routes": [
+      {
+        "routeId": "bsc_midwifery",
+        "routeTitle": "BSc (Hons) Midwifery",
+        "classification": "possible_with_trade_offs",
+        "supportingReasons": [
+          "Three-year full-time undergraduate degree approved by the NMC, with clinical placements throughout."
+        ],
+        "concerns": [
+          "Full-time placements (including nights and weekends) make paid work alongside the course difficult. The NHS Learning Support Fund provides a non-repayable grant of at least £5,000 per academic year for eligible students in England."
+        ],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nhs_lsf",
+          "nmc_standards",
+          "ucas_midwifery"
+        ]
+      },
+      {
+        "routeId": "msc_pre_reg_midwifery",
+        "routeTitle": "MSc pre-registration Midwifery (shortened)",
+        "classification": "possible_with_trade_offs",
+        "supportingReasons": [
+          "Postgraduate pre-registration programme for graduates in a relevant health or science subject, typically two years full time."
+        ],
+        "concerns": [
+          "Full-time placements make paid work alongside the course difficult. The NHS Learning Support Fund grant is also available on eligible pre-registration MSc programmes in England."
+        ],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nhs_lsf",
+          "nmc_standards"
+        ]
+      },
+      {
+        "routeId": "nurse_to_midwife",
+        "routeTitle": "Registered adult nurse converting to midwifery",
+        "classification": "not_currently_available_to_you",
+        "supportingReasons": [
+          "Shortened midwifery programme for registered adult nurses on the NMC register."
+        ],
+        "concerns": [
+          "The shortened nurse-to-midwife route is only open to nurses already on the NMC adult-nursing part of the register."
+        ],
+        "verificationsRequired": [],
+        "evidenceRefs": [
+          "nmc_standards"
+        ]
+      }
+    ],
+    "considerations": [],
+    "immediateActions": [
+      {
+        "actionTemplateId": "action_check_lsf_eligibility",
+        "title": "Check NHS Learning Support Fund eligibility",
+        "description": "Read the NHS Business Services Authority page on the Learning Support Fund and check whether your circumstances would qualify you for the training grant, parental support and specialist subject payment.",
+        "evidenceRefs": [
+          "nhs_lsf"
+        ]
+      }
+    ],
+    "evidenceCoverage": {
+      "level": "comprehensive",
+      "completedAnswerCount": 9,
+      "totalAnswerCount": 9,
+      "note": "Evidence coverage: comprehensive. This describes how much of the pack's evidence was drawn on to reach this result — it is not a prediction of the outcome."
+    },
+    "limitations": [
+      "This Reality Check has been researched for England only. Rules, funding and regulators differ elsewhere in the UK."
+    ],
+    "participantLanguage": {
+      "topRoutePhrase": "Possible, with these trade-offs.",
+      "confidencePhrase": "Evidence coverage: comprehensive. This describes how much of the pack's evidence was drawn on to reach this result — it is not a prediction of the outcome."
+    }
+  }
+}

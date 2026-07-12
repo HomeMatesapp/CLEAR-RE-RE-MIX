@@ -60,6 +60,11 @@ export interface RouteRef {
   requirementIds: readonly string[];
   /** Evidence records supporting this route. */
   evidenceRefs: readonly string[];
+  /** Actions always suggested alongside this route (Increment 1, optional). */
+  actionTemplateIds?: readonly string[];
+  /** Standard comparison descriptors consumed by the comparison view
+   *  (Increment 5). Values are labels, never predictions. */
+  comparisonFields?: Readonly<Record<string, string>>;
 }
 
 export interface RequirementRef {
@@ -70,6 +75,19 @@ export interface RequirementRef {
   /** How this requirement can be verified by the participant. */
   verifiedBy: string;
   evidenceRefs: readonly string[];
+  /**
+   * Optional machine-assessable condition (Increment 1). Evaluated tri-state
+   * by evaluateV2: true ⇒ met, false ⇒ not met, indeterminate ⇒ unknown.
+   * An explicit `mark_requirement` effect always takes precedence.
+   * Requirements with neither a machineRule nor any mark_requirement rule are
+   * reported under `requirementsNotAssessed` unless declared
+   * `participant_verification`.
+   */
+  machineRule?: ConditionNode;
+  /** How this requirement is expected to be assessed. Publication gates
+   *  require every requirement to be machine-assessable OR declared
+   *  participant_verification. */
+  requirementType?: "machine_assessable" | "participant_verification";
 }
 
 // ── Content: rules (pure predicate DSL) ────────────────────────────────────
@@ -78,29 +96,56 @@ export interface RequirementRef {
 // the pack. This keeps packs safe to import from git and safe to store as
 // immutable JSON in the database.
 
-export type Comparator = "eq" | "neq" | "in" | "not_in" | "present" | "absent";
+export type Comparator =
+  | "eq" | "neq" | "in" | "not_in" | "present" | "absent"
+  // Increment 1 additions ↓ (packs that use these MUST be evaluated with
+  // evaluateV2; the V1 evaluator treats an indeterminate predicate as false).
+  | "gte" | "lte"          // numeric comparison; non-numeric/missing answer ⇒ indeterminate
+  | "qual_level_gte"        // ordinal comparison against the question's allowedValues order
+  | "unknown";              // matches when the question is unanswered
 
 export interface Predicate {
   /** ID of a question in `questionRefs[]`. */
   questionId: string;
   op: Comparator;
-  /** Required for eq/neq/in/not_in. */
+  /** Required for eq/neq/in/not_in/gte/lte/qual_level_gte. */
   value?: AnswerValue;
 }
+
+/**
+ * Recursive boolean condition. A node may combine predicates and nested
+ * nodes with all (AND), any (OR) and none (NOR). At least one key must be
+ * present. Evaluated TRI-STATE by evaluateV2: matched / not matched /
+ * indeterminate (an unanswered question makes gte/lte/qual_level_gte/eq…
+ * indeterminate rather than false), so packs can distinguish "no" from
+ * "don't know".
+ */
+export interface ConditionNode {
+  all?: readonly (Predicate | ConditionNode)[];
+  any?: readonly (Predicate | ConditionNode)[];
+  none?: readonly (Predicate | ConditionNode)[];
+}
+
+export type RequirementMarkStatus = "met" | "not_met" | "unknown";
 
 export type RuleEffect =
   | { kind: "block_route"; routeId: string; reason: string; evidenceRefs: readonly string[] }
   | { kind: "flag_concern"; routeId: string; concern: string; evidenceRefs: readonly string[] }
   | { kind: "require_verification"; routeId: string; check: string; evidenceRefs: readonly string[] }
   | { kind: "add_action"; actionTemplateId: string; routeId?: string }
-  | { kind: "add_consideration"; text: string; evidenceRefs: readonly string[] };
+  | { kind: "add_consideration"; text: string; evidenceRefs: readonly string[] }
+  // Increment 1 additions ↓
+  /** Explicitly set a requirement's status. Overrides any machineRule outcome. */
+  | { kind: "mark_requirement"; requirementId: string; status: RequirementMarkStatus; note?: string; evidenceRefs: readonly string[] }
+  /** Flag a PRACTICAL constraint (time, money, schedule). Feeds the
+   *  practical-fit axis only — never eligibility. */
+  | { kind: "flag_constraint"; routeId: string; constraint: string; evidenceRefs: readonly string[] };
 
 export interface Rule {
   id: string;
-  when: {
-    /** All predicates must match (AND). Empty array = always. */
-    all: readonly Predicate[];
-  };
+  /** Legacy packs use `{ all: Predicate[] }`; that remains valid — `when` is
+   *  now a full ConditionNode. Empty/absent `all` with no other keys = always. */
+  when: ConditionNode;
   then: readonly RuleEffect[];
 }
 
@@ -112,6 +157,10 @@ export interface QuestionRef {
   helpText?: string;
   /** Answer values the rule DSL is allowed to reference. Enforced at validate. */
   allowedValues?: readonly string[];
+  /** Declared when a question is collected for context/display only and is
+   *  deliberately not referenced by any rule (exempts the dead-question
+   *  publication gate). */
+  contextOnly?: boolean;
 }
 
 // ── Content: evidence ──────────────────────────────────────────────────────
