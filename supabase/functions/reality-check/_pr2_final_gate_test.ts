@@ -135,10 +135,12 @@ const fixtureRequest = (binding: ResolvedBinding) =>
       validatePair: async () => true,
       // PR 3a: the handler now issues an assessment receipt for servable
       // packs. These fixtures use synthetic pack_ids that don't exist in
-      // the DB, so we short-circuit issuance to a no-op — the receipt-
-      // issuing pipeline itself is exercised by the PR 3a test suite.
+      // the DB, so we short-circuit issuance + skip the DB config lookup.
+      // The receipt-issuing pipeline itself is exercised by the PR 3a
+      // test suite.
       issueReceipt: async () => {},
       resolveUserId: async () => null,
+      ttlMinutes: 30,
     },
   );
 
