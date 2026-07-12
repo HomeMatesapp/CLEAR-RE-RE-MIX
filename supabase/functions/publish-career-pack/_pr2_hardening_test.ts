@@ -21,7 +21,8 @@ const sbAnon = ANON ? createClient(URL_, ANON, { auth: { persistSession: false }
 
 // -- Helpers ------------------------------------------------------
 const uniq = () => crypto.randomUUID().slice(0, 8);
-const hex64 = (c: string) => c.repeat(64);
+const randHash = () => Array.from(crypto.getRandomValues(new Uint8Array(32)))
+  .map((b) => b.toString(16).padStart(2, "0")).join("");
 
 interface Ids {
   roleA: string; roleB: string;
