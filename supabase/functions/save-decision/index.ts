@@ -30,8 +30,13 @@ interface SaveRequest {
 
 export interface SaveDeps {
   now?: () => Date;
-  serviceClient?: ReturnType<typeof createClient>;
-  authClientForToken?: (token: string) => ReturnType<typeof createClient>;
+  // Typed as `any` because we compose clients built against distinct
+  // generated Database types (tests vs prod) and don't need type safety
+  // on the RPC surface at this boundary.
+  // deno-lint-ignore no-explicit-any
+  serviceClient?: any;
+  // deno-lint-ignore no-explicit-any
+  authClientForToken?: (token: string) => any;
 }
 
 export const handleSaveDecision = async (
