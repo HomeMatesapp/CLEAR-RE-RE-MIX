@@ -214,8 +214,36 @@ export const handleRealityCheck = async (req: Request, deps: HandlerDeps = {}): 
       }
 
       const result = evaluateGenericPack(binding.content, answers ?? {});
+
+      // Issue an assessment receipt. The opaque token is returned to the
+      // browser; only its SHA-256 hash is stored server-side.
+      const receipt = generateReceipt();
+      const receiptHash = await sha256Hex(receipt);
+      const resultCanonicalHash = await canonicalHash(result);
+      const ttl = deps.ttlMinutes ?? await fetchReceiptTtlMinutes();
+      const nowFn = deps.now ?? (() => new Date());
+      const expiresAt = new Date(nowFn().getTime() + ttl * 60_000).toISOString();
+      const issuedUserId = deps.resolveUserId
+        ? await deps.resolveUserId(req)
+        : await resolveIssuedUserId(req);
+      const issuer = deps.issueReceipt ?? defaultReceiptIssuer;
+      await issuer({
+        roleId: binding.role_id,
+        roleSlug: binding.role_slug,
+        packId: binding.pack_id,
+        packVersion: binding.pack_version,
+        packContentHash: binding.content_hash,
+        resultV1: result,
+        resultCanonicalHash,
+        issuedUserId,
+        expiresAt,
+        receiptHash,
+      });
+
       return new Response(JSON.stringify({
         result,
+        assessmentReceipt: receipt,
+        assessmentReceiptExpiresAt: expiresAt,
         packMetadata: {
           packVersion: binding.pack_version,
           contentHash: binding.content_hash,
@@ -223,7 +251,7 @@ export const handleRealityCheck = async (req: Request, deps: HandlerDeps = {}): 
           status: binding.status,
           reviewDueAt: binding.review_due_at,
           geographicScope: binding.geographic_scope,
-          evaluatorSchemaVersion: "reality-check-result/v1",
+          evaluatorSchemaVersion: EVALUATOR_SCHEMA_VERSION,
         },
       }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
