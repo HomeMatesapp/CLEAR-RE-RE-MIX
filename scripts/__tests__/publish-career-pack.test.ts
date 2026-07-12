@@ -91,5 +91,32 @@ describe("publish-career-pack CLI — validation before network", () => {
       packPath: tmp, env: "staging", isTest: true, publish: false, dryRun: true, actor: "",
     } as CliArgs, { fetchImpl: (async () => new Response("{}")) as typeof fetch })).rejects.toThrow(/schema validation failed/);
     process.env = originalEnv;
-  });
+
+  it("rejects when CAREER_PACK_PUBLISH_SECRET is missing (does not fall back to service role)", withEnv(
+    { VITE_SUPABASE_URL: "https://example.supabase.co", CAREER_PACK_PUBLISH_SECRET: undefined, SUPABASE_SERVICE_ROLE_KEY: "should-not-be-used" },
+    async () => {
+      await expect(runCli({
+        packPath: PACK, env: "staging", isTest: true, publish: false, dryRun: true, actor: "ops",
+      } as CliArgs, { fetchImpl: (async () => new Response("{}")) as typeof fetch })).rejects.toThrow(/CAREER_PACK_PUBLISH_SECRET must be set/);
+    },
+  ));
+
+  it("never sends the SUPABASE_SERVICE_ROLE_KEY as the bearer credential", withEnv(
+    { VITE_SUPABASE_URL: "https://example.supabase.co", CAREER_PACK_PUBLISH_SECRET: "pub-secret", SUPABASE_SERVICE_ROLE_KEY: "SECRET-SERVICE-ROLE-JWT" },
+    async () => {
+      let seen: RequestInit | null = null;
+      const fakeFetch: typeof fetch = async (_url, init) => {
+        seen = init as RequestInit;
+        return new Response(JSON.stringify({ ok: true }), { status: 200 });
+      };
+      await runCli({
+        packPath: PACK, env: "staging", isTest: true, publish: false, dryRun: true, actor: "ops",
+      } as CliArgs, { fetchImpl: fakeFetch });
+      const headers = (seen!.headers as Record<string, string>);
+      expect(headers.Authorization).toBe("Bearer pub-secret");
+      expect(headers.Authorization).not.toContain("SECRET-SERVICE-ROLE-JWT");
+      expect(String(seen!.body)).not.toContain("SECRET-SERVICE-ROLE-JWT");
+    },
+  ));
 });
+
