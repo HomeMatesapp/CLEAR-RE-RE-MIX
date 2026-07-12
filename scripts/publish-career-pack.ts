@@ -15,8 +15,10 @@
 //   2. Validates schema + cross-refs locally (fast fail before any network).
 //   3. Runs every testProfile through the evaluator.
 //   4. Computes the canonical content hash.
-//   5. Posts to the `publish-career-pack` edge function using the service-role
-//      key from the local environment (SUPABASE_SERVICE_ROLE_KEY).
+//   5. Posts to the `publish-career-pack` edge function using the dedicated
+//      `CAREER_PACK_PUBLISH_SECRET` from the local environment.
+//      The service-role key is NEVER sent from the CLI; the edge function
+//      holds its own service-role credential internally.
 //
 // The server independently re-validates everything before touching the DB.
 // The CLI's local checks are for developer ergonomics, not trust.
