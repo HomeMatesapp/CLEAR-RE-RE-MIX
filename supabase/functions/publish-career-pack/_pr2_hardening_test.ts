@@ -4,7 +4,7 @@
 //   - has table permissions (so a rejection is proof of a TRIGGER, not RLS/GRANT);
 //   - bypasses RLS the same way a compromised-service-role would.
 
-import "https://deno.land/std@0.224.0/dotenv/load.ts";
+// Env vars are provided by the edge-function test harness; no dotenv load.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { assert, assertEquals, assertNotEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
 
