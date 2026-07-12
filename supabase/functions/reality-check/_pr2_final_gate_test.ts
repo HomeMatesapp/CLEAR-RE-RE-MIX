@@ -14,7 +14,7 @@
 //    content; the handler must refuse to evaluate and return 500
 //    pack_hash_mismatch with no pack content.
 
-import "https://deno.land/std@0.224.0/dotenv/load.ts";
+// Env vars are provided by the edge-function test harness; no dotenv load.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { assert, assertEquals, assertNotEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { handleRealityCheck, type ResolvedBinding } from "./index.ts";
