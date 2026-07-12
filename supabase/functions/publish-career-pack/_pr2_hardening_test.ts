@@ -53,7 +53,7 @@ const setup = async (): Promise<Ids> => {
   const ownerId = await upsertIdentity(`proof-owner-${suffix}`);
   const reviewerId = await upsertIdentity(`proof-reviewer-${suffix}`);
 
-  const mkPack = async (roleId: string, ver: string, hashChar: string, contentKey: string) => {
+  const mkPack = async (roleId: string, slug: string, ver: string, hashChar: string, contentKey: string) => {
     const { data, error } = await sb.from("career_packs").insert({
       role_id: roleId, slug: `proof-${suffix}`, pack_version: ver,
       schema_version: "career-decision-pack/v1", archetype_id: "proof",
