@@ -91,6 +91,9 @@ describe("publish-career-pack CLI — validation before network", () => {
       packPath: tmp, env: "staging", isTest: true, publish: false, dryRun: true, actor: "",
     } as CliArgs, { fetchImpl: (async () => new Response("{}")) as typeof fetch })).rejects.toThrow(/schema validation failed/);
     process.env = originalEnv;
+  });
+
+
 
   it("rejects when CAREER_PACK_PUBLISH_SECRET is missing (does not fall back to service role)", withEnv(
     { VITE_SUPABASE_URL: "https://example.supabase.co", CAREER_PACK_PUBLISH_SECRET: undefined, SUPABASE_SERVICE_ROLE_KEY: "should-not-be-used" },
