@@ -104,6 +104,7 @@ Deno.test({
   } finally {
     await svc.auth.admin.deleteUser(created!.user!.id);
   }
+  },
 });
 
 // ============================================================================
