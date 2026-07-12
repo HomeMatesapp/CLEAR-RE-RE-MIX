@@ -201,7 +201,9 @@ Deno.test("gate-3: one actively-serving version per role (published + review_due
   }).select("id").single();
 
   const mkPack = async (version: string) => {
-    const content = { ...midwifePack, packVersion: version };
+    // Unique per-test content so the global content_hash uniqueness constraint
+    // never collides with the real Midwife 1.0.0 row.
+    const content = { ...midwifePack, packVersion: version, _testSuffix: suffix };
     const hash = await canonicalHash(content);
     const { data, error } = await svc.from("career_packs").insert({
       role_id: role!.id,
