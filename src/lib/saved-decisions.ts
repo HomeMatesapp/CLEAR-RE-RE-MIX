@@ -88,10 +88,13 @@ export interface PendingDecision {
   };
   answers: DecisionAnswerSnapshot;
   result: DecisionResultSnapshot;
-  // Increment 1b: optional versioned answer snapshot. Existing pending
-  // decisions written before Increment 1b (no snapshot) remain valid — the
-  // saved row simply has no answer_snapshot column populated.
   answerSnapshot?: RealityCheckAnswerSnapshotV2;
+  /** PR 3a: opaque assessment receipt for generic-pack results. When present,
+   *  flush routes through the trusted `save-decision` edge function instead
+   *  of a direct client insert. */
+  assessmentReceipt?: string;
+  assessmentReceiptExpiresAt?: string;
+  label?: string;
   created_at: string;
 }
 
@@ -100,12 +103,16 @@ export const stashPendingDecision = (
   answers: RealityCheckAnswers,
   result: RealityCheckResult,
   answerSnapshot?: RealityCheckAnswerSnapshotV2,
+  extras?: { assessmentReceipt?: string; assessmentReceiptExpiresAt?: string; label?: string },
 ) => {
   const payload: PendingDecision = {
     role: { id: role.id, role_slug: role.role_slug, role_name: role.role_name },
     answers: sanitiseDecisionAnswers(answers),
     result: sanitiseDecisionResult(result),
     answerSnapshot,
+    assessmentReceipt: extras?.assessmentReceipt,
+    assessmentReceiptExpiresAt: extras?.assessmentReceiptExpiresAt,
+    label: extras?.label,
     created_at: new Date().toISOString(),
   };
   try {
