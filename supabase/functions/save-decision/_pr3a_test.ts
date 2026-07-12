@@ -130,46 +130,48 @@ const invokeSave = (body: unknown, token: string) =>
     authClientForToken: (t) => authedClientFor(t),
   });
 
-// Issue a receipt directly via the reality-check handler (drives the same
-// insert path). We inject the binding resolver so we don't hit prod DB
-// resolution — but the receipt IS written to the real DB.
+// Mirror the reality-check handler's issuance path directly (evaluator +
+// canonical hash + service-role INSERT into assessment_receipts). This lets
+// the save-decision suite exercise the trusted-save flow without importing
+// the reality-check module (which would collide on Deno.serve).
+const base64Url = (bytes: Uint8Array): string => {
+  let s = ""; for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+  return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+};
+
 const issueReceiptViaHandler = async (
   fx: Fx, opts: { userToken?: string } = {},
 ): Promise<{ receipt: string; expiresAt: string; result: unknown }> => {
   const packRow = await svc.from("career_packs").select("content").eq("id", fx.packId).single();
-  const binding = {
-    pack_id: fx.packId, role_id: fx.roleId, slug: `pr3a-pack`,
-    pack_version: fx.packVersion, content_hash: fx.packContentHash,
-    content: packRow.data!.content, status: "published",
-    role_slug: fx.roleSlug, review_due_at: null, is_servable: true,
-    geographic_scope: null,
-  };
-  const req = new Request("http://x/reality-check", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json", origin: "http://localhost",
-      ...(opts.userToken ? { Authorization: `Bearer ${opts.userToken}` } : {}),
-    },
-    body: JSON.stringify({
-      role: { id: fx.roleId, role_slug: fx.roleSlug, role_name: "PR3a" },
-      answers: {},
-    }),
+  const content = packRow.data!.content;
+  const parsed = careerDecisionPackV1.parse(content);
+  const result = evaluate(parsed as CareerDecisionPackV1, {});
+  const receiptBytes = new Uint8Array(32); crypto.getRandomValues(receiptBytes);
+  const receipt = base64Url(receiptBytes);
+  const receiptHash = await sha256Hex(receipt);
+  const resultCanonicalHash = await canonicalHash(result);
+  const expiresAt = new Date(Date.now() + 30 * 60_000).toISOString();
+
+  let issuedUserId: string | null = null;
+  if (opts.userToken) {
+    const { data } = await authedClientFor(opts.userToken).auth.getUser();
+    issuedUserId = data?.user?.id ?? null;
+  }
+
+  const { error } = await svc.from("assessment_receipts").insert({
+    receipt_hash: receiptHash,
+    role_id: fx.roleId, role_slug: fx.roleSlug,
+    pack_id: fx.packId, pack_version: fx.packVersion,
+    pack_content_hash: fx.packContentHash,
+    evaluator_schema_version: "reality-check-result/v1",
+    evaluation_source: "generic_pack_v1",
+    result_v1: result,
+    result_canonical_hash: resultCanonicalHash,
+    issued_user_id: issuedUserId,
+    expires_at: expiresAt,
   });
-  const res = await handleRealityCheck(req, {
-    resolveBinding: async () => binding,
-    validatePair: async () => true,
-    ttlMinutes: 30,
-    resolveUserId: opts.userToken
-      ? async () => {
-          const { data } = await authedClientFor(opts.userToken!).auth.getUser();
-          return data?.user?.id ?? null;
-        }
-      : async () => null,
-  });
-  assertEquals(res.status, 200, `reality-check status ${res.status}`);
-  const body = await res.json();
-  assert(typeof body.assessmentReceipt === "string" && body.assessmentReceipt.length >= 40, "receipt shape");
-  return { receipt: body.assessmentReceipt, expiresAt: body.assessmentReceiptExpiresAt, result: body.result };
+  if (error) throw new Error(`receipt insert failed: ${error.message}`);
+  return { receipt, expiresAt, result };
 };
 
 // ============================================================================
