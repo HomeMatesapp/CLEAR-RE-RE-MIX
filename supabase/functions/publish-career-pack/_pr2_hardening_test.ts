@@ -70,16 +70,16 @@ const setup = async (): Promise<Ids> => {
 };
 
 const teardown = async (ids: Ids) => {
-  // Restrict-order aware cleanup.
+  // Best-effort cleanup. Immutability + append-only triggers prevent us from
+  // removing career_packs / publications / events even with the service role,
+  // so we leave the synthetic rows behind (they are inert test data). We
+  // remove the mutable bits — saved_decisions and role_pack_bindings — and
+  // then the synthetic roles (which will FAIL if RESTRICT-referenced by packs,
+  // and that failure is expected and swallowed).
   await sb.from("saved_decisions").delete().in("pack_id", [ids.packA1, ids.packA2, ids.packB]);
   await sb.from("role_pack_bindings").delete().in("role_id", [ids.roleA, ids.roleB]);
-  // Publications + events + packs are RESTRICT-referenced; we must bypass the
-  // append-only triggers via a service-definer helper. There is no such helper,
-  // so we execute raw SQL through a temporary purge function created for the test.
-  await sb.rpc("__pr2_test_purge", { _pack_ids: [ids.packA1, ids.packA2, ids.packB] })
-    .catch(() => {/* function may not exist on first run; fall through */});
-  await sb.from("roles").delete().in("id", [ids.roleA, ids.roleB]);
 };
+
 
 // A single dry-run beforehand: ensure the purge helper exists so teardown works.
 // We create it via a migration-equivalent RPC call — but we cannot run DDL through
