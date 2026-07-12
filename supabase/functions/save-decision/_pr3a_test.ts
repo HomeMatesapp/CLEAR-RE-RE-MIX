@@ -21,7 +21,14 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { assert, assertEquals, assertNotEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { handleSaveDecision } from "./index.ts";
-import { handleRealityCheck } from "../reality-check/index.ts";
+// Note: we do NOT import from reality-check/index.ts because that module
+// calls `serve(...)` at top level and would collide with our own listener.
+// Instead we insert receipts directly through the same code path the
+// production issuer uses (service-role insert into assessment_receipts).
+import { canonicalHash, sha256Hex } from "../_shared/career-evaluator/v1/hash.ts";
+import { evaluate } from "../_shared/career-evaluator/v1/evaluate.ts";
+import { careerDecisionPackV1 } from "../_shared/career-evaluator/v1/schema.ts";
+import type { CareerDecisionPackV1 } from "../_shared/career-evaluator/v1/types.ts";
 import { canonicalHash, sha256Hex } from "../_shared/career-evaluator/v1/hash.ts";
 import midwifePack from "../../../content/career-packs/midwife/1.0.0.json" with { type: "json" };
 
