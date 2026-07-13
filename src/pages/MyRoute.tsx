@@ -16,6 +16,12 @@ import { readResultSnapshot } from "@/lib/reality-check/result-snapshot";
 import { ResultV2View } from "@/components/reality-check/ResultV2View";
 import { RouteChoiceSection } from "@/components/reality-check/RouteChoiceSection";
 import { fetchRouteChoices, recordRouteChoice, type RouteChoice } from "@/lib/route-choice";
+import { DecisionSharingPanel } from "@/components/reality-check/DecisionSharingPanel";
+import {
+  joinOrganisation, listMyOrgLinks, listSharesForDecision,
+  revokeOrganisationLink, revokeShare, shareDecision,
+  type DecisionShare, type OrgLink,
+} from "@/lib/institutions";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -257,6 +263,60 @@ const MyRoute = () => {
     return () => { cancelled = true; };
   }, [active?.id, savedV2Result]);
 
+  // Increment 8: consent-first sharing (participant side).
+  const [orgLinks, setOrgLinks] = useState<OrgLink[]>([]);
+  const [decisionShares, setDecisionShares] = useState<DecisionShare[]>([]);
+  const [sharingBusy, setSharingBusy] = useState(false);
+  const [joinError, setJoinError] = useState<string | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    if (!user) { setOrgLinks([]); return; }
+    listMyOrgLinks()
+      .then((rows) => { if (!cancelled) setOrgLinks(rows); })
+      .catch(() => { if (!cancelled) setOrgLinks([]); });
+    return () => { cancelled = true; };
+  }, [user?.id]);
+  useEffect(() => {
+    let cancelled = false;
+    if (!active) { setDecisionShares([]); return; }
+    listSharesForDecision(active.id)
+      .then((rows) => { if (!cancelled) setDecisionShares(rows); })
+      .catch(() => { if (!cancelled) setDecisionShares([]); });
+    return () => { cancelled = true; };
+  }, [active?.id]);
+
+  const withSharingBusy = async (fn: () => Promise<void>) => {
+    setSharingBusy(true);
+    setJoinError(null);
+    try { await fn(); } catch {
+      toast({ title: "That didn't work", description: "Please try again.", variant: "destructive" });
+    } finally { setSharingBusy(false); }
+  };
+  const handleJoin = (codeValue: string) => withSharingBusy(async () => {
+    const res = await joinOrganisation(codeValue);
+    if (res.status !== "joined") { setJoinError("We didn't recognise that code — check it with your adviser."); return; }
+    setOrgLinks(await listMyOrgLinks());
+    trackEvent("organisation_joined", {});
+  });
+  const handleShare = (organisationId: string) => withSharingBusy(async () => {
+    if (!user || !active) return;
+    await shareDecision(user.id, active.id, organisationId);
+    setDecisionShares(await listSharesForDecision(active.id));
+    trackEvent("decision_shared", { role_slug: active.role_slug });
+  });
+  const handleRevokeShare = (shareId: string) => withSharingBusy(async () => {
+    if (!active) return;
+    await revokeShare(shareId);
+    setDecisionShares(await listSharesForDecision(active.id));
+    trackEvent("decision_share_revoked", {});
+  });
+  const handleRevokeLink = (linkId: string) => withSharingBusy(async () => {
+    await revokeOrganisationLink(linkId);
+    setOrgLinks(await listMyOrgLinks());
+    if (active) setDecisionShares(await listSharesForDecision(active.id));
+    trackEvent("organisation_link_revoked", {});
+  });
+
   const chooseRoute = async (routeId: string) => {
     if (!user || !active || !savedV2Result || choosing) return;
     setChoosing(true);
@@ -368,6 +428,19 @@ const MyRoute = () => {
                 <ResultV2View result={savedV2Result} />
               </section>
             ) : null}
+
+            <section className="mb-10 rounded-2xl border-2 border-foreground/90 bg-card p-6">
+              <DecisionSharingPanel
+                links={orgLinks}
+                shares={decisionShares}
+                busy={sharingBusy}
+                joinError={joinError}
+                onJoin={handleJoin}
+                onShare={handleShare}
+                onRevokeShare={handleRevokeShare}
+                onRevokeLink={handleRevokeLink}
+              />
+            </section>
 
             <OtherRolesSection
               alternatives={alternatives}
