@@ -7,7 +7,9 @@
 // All copy comes from the result (already language-safe) or from the fixed
 // status labels below — no probability wording anywhere.
 
-import { AlertTriangle, CheckCircle2, CircleHelp, ListChecks, XCircle } from "lucide-react";
+import { useState } from "react";
+import { AlertTriangle, CheckCircle2, CircleHelp, Columns3, List, ListChecks, XCircle } from "lucide-react";
+import { CompareRoutesTable } from "@/components/reality-check/CompareRoutesTable";
 import type {
   EligibilityStatus,
   PracticalFitStatus,
@@ -81,16 +83,42 @@ const RouteCard = ({ route, isStrongest }: { route: RouteEvaluationV2; isStronge
   </div>
 );
 
-export const ResultV2View = ({ result }: { result: RealityCheckResultV2 }) => (
+export const ResultV2View = ({ result }: { result: RealityCheckResultV2 }) => {
+  const [view, setView] = useState<"routes" | "compare">("routes");
+  const canCompare = result.routes.length >= 2;
+  return (
   <div className="max-w-3xl mx-auto w-full">
     <h2 className="text-2xl font-semibold mb-2">Your Reality Check — {result.careerTitle}</h2>
     <p className="text-muted-foreground mb-6">{result.summary}</p>
 
-    <div className="space-y-4">
-      {result.routes.map((route) => (
-        <RouteCard key={route.routeId} route={route} isStrongest={route.routeId === result.strongestRouteId} />
-      ))}
-    </div>
+    {canCompare ? (
+      <div className="flex gap-1 mb-4 rounded-lg border border-border p-1 w-fit" role="tablist" aria-label="Result view">
+        <button
+          type="button" role="tab" aria-selected={view === "routes"}
+          onClick={() => setView("routes")}
+          className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium ${view === "routes" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
+        >
+          <List className="h-4 w-4" aria-hidden /> Routes
+        </button>
+        <button
+          type="button" role="tab" aria-selected={view === "compare"}
+          onClick={() => setView("compare")}
+          className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium ${view === "compare" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
+        >
+          <Columns3 className="h-4 w-4" aria-hidden /> Compare routes
+        </button>
+      </div>
+    ) : null}
+
+    {view === "compare" && canCompare ? (
+      <CompareRoutesTable result={result} />
+    ) : (
+      <div className="space-y-4">
+        {result.routes.map((route) => (
+          <RouteCard key={route.routeId} route={route} isStrongest={route.routeId === result.strongestRouteId} />
+        ))}
+      </div>
+    )}
 
     {result.unresolvedChecks.length ? (
       <div className="mt-6 rounded-xl border border-border p-5">
@@ -131,4 +159,5 @@ export const ResultV2View = ({ result }: { result: RealityCheckResultV2 }) => (
       </div>
     ) : null}
   </div>
-);
+  );
+};

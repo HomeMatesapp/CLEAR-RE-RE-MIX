@@ -12,6 +12,8 @@ import { flushPendingDecision } from "@/lib/saved-decisions";
 import { trackEvent } from "@/lib/posthog";
 import { READINESS_LABEL, type Readiness } from "@/lib/reality-check/types";
 import { describeSavedDecision } from "@/lib/reality-check/saved-decision-view";
+import { readResultSnapshot } from "@/lib/reality-check/result-snapshot";
+import { ResultV2View } from "@/components/reality-check/ResultV2View";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -124,6 +126,10 @@ const MyRoute = () => {
   const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
+  // Increment 5: inline full result for saved generic-pack decisions. The
+  // versioned snapshot reader validates before we render; anything else
+  // (legacy rows, invalid snapshots) simply has no inline view.
+  const [showSavedResult, setShowSavedResult] = useState(false);
   const [decisions, setDecisions] = useState<SavedRow[]>([]);
   const [alternatives, setAlternatives] = useState<AlternativeRole[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -231,6 +237,11 @@ const MyRoute = () => {
     () => decisions.find((d) => d.id === activeId) ?? decisions[0] ?? null,
     [decisions, activeId],
   );
+  const savedV2Result = useMemo(() => {
+    if (!active) return null;
+    const read = readResultSnapshot(active.result_snapshot);
+    return read.version === "reality-check-result/v2" && read.v2 ? read.v2 : null;
+  }, [active]);
 
   const cycleStatus = async (actionId: string) => {
     if (!user || !active) return;
@@ -297,7 +308,12 @@ const MyRoute = () => {
         ) : (
           <>
             <section className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-10">
-              <RecommendedRouteCard row={active} />
+              <RecommendedRouteCard
+                row={active}
+                onViewSavedResult={
+                  savedV2Result ? () => setShowSavedResult((v) => !v) : undefined
+                }
+              />
               <ReadinessCard
                 row={active}
                 onCycle={cycleStatus}
@@ -307,6 +323,12 @@ const MyRoute = () => {
                 }
               />
             </section>
+
+            {showSavedResult && savedV2Result ? (
+              <section className="mb-10 rounded-2xl border-2 border-foreground/90 bg-card p-6">
+                <ResultV2View result={savedV2Result} />
+              </section>
+            ) : null}
 
             <OtherRolesSection
               alternatives={alternatives}
@@ -340,7 +362,7 @@ const MyRoute = () => {
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
-const RecommendedRouteCard = ({ row }: { row: SavedRow }) => (
+const RecommendedRouteCard = ({ row, onViewSavedResult }: { row: SavedRow; onViewSavedResult?: () => void }) => (
   <article className="md:col-span-2 rounded-2xl border-2 border-foreground/90 bg-card p-6 flex flex-col">
     <p className="text-[11px] font-mono uppercase tracking-widest text-muted-foreground mb-2">
       Your recommended route
@@ -358,12 +380,22 @@ const RecommendedRouteCard = ({ row }: { row: SavedRow }) => (
       Assessed {formatDate(row.created_at)}
     </p>
     <div className="mt-auto pt-5 flex flex-wrap gap-x-4 gap-y-2 text-sm">
-      <Link
-        to={`/role/${row.role_slug}/reality-check`}
-        className="inline-flex items-center gap-1 text-primary font-medium hover:underline"
-      >
-        View full result <ArrowRight className="h-3.5 w-3.5" />
-      </Link>
+      {onViewSavedResult ? (
+        <button
+          type="button"
+          onClick={onViewSavedResult}
+          className="inline-flex items-center gap-1 text-primary font-medium hover:underline"
+        >
+          View full result <ArrowRight className="h-3.5 w-3.5" />
+        </button>
+      ) : (
+        <Link
+          to={`/role/${row.role_slug}/reality-check`}
+          className="inline-flex items-center gap-1 text-primary font-medium hover:underline"
+        >
+          View full result <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+      )}
       <Link
         to={`/role/${row.role_slug}`}
         className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground"

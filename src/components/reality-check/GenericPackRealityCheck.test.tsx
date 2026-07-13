@@ -145,3 +145,53 @@ describe("ResultV2View", () => {
     for (const phrase of FORBIDDEN_LANGUAGE) expect(text).not.toContain(phrase);
   });
 });
+
+// ── Compare Routes (Increment 5) ────────────────────────────────────────────
+
+describe("Compare routes", () => {
+  const result = evaluateV2(midwife110, midwife110.testProfiles[0].answers, {
+    now: "2026-07-12T12:00:00.000Z",
+    assessmentId: "compare-test-0001",
+  });
+
+  it("toggles from the route list to a side-by-side table and back", async () => {
+    const user = userEvent.setup();
+    render(<ResultV2View result={result} />);
+    // List first; no table yet.
+    expect(screen.queryByRole("table")).toBeNull();
+    await user.click(screen.getByRole("tab", { name: /compare routes/i }));
+    const table = screen.getByRole("table");
+    expect(table).toBeTruthy();
+    // One column per route plus the field column.
+    expect(screen.getAllByRole("columnheader").length).toBe(result.routes.length + 1);
+    // Both axes present as separate rows.
+    expect(screen.getByRole("rowheader", { name: "Formal eligibility" })).toBeTruthy();
+    expect(screen.getByRole("rowheader", { name: "Practical fit" })).toBeTruthy();
+    expect(screen.getByRole("rowheader", { name: "Typical duration" })).toBeTruthy();
+    expect(screen.getByRole("rowheader", { name: "Typical cost" })).toBeTruthy();
+    await user.click(screen.getByRole("tab", { name: /^routes$/i }));
+    expect(screen.queryByRole("table")).toBeNull();
+  });
+
+  it("marks exactly one strongest route in the table and never merges the axes", async () => {
+    const user = userEvent.setup();
+    render(<ResultV2View result={result} />);
+    await user.click(screen.getByRole("tab", { name: /compare routes/i }));
+    expect(screen.getAllByText("Currently looks most workable").length).toBe(1);
+    expect(screen.getByText(/never combined into a single score/i)).toBeTruthy();
+  });
+
+  it("contains no forbidden language in the comparison table", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<ResultV2View result={result} />);
+    await user.click(screen.getByRole("tab", { name: /compare routes/i }));
+    const text = container.textContent!.toLowerCase();
+    for (const phrase of FORBIDDEN_LANGUAGE) expect(text).not.toContain(phrase);
+  });
+
+  it("shows no compare toggle for single-route results", () => {
+    const single = { ...result, routes: [result.routes[0]], alternativeRouteIds: [] };
+    render(<ResultV2View result={single} />);
+    expect(screen.queryByRole("tab", { name: /compare routes/i })).toBeNull();
+  });
+});
