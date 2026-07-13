@@ -454,4 +454,12 @@ Deno.test({ name: "3a-11: claim copies result_v2 verbatim and stamps result_sche
   // V1 remains present and untouched alongside.
   assertEquals(row!.evaluator_schema_version, "reality-check-result/v1");
   assert(row!.result_v1, "result_v1 must still be present");
+  // Increment 4: display fields derived server-side from the V2 snapshot.
+  assertEquals((row!.result_snapshot as { schemaVersion?: string })?.schemaVersion, "reality-check-result/v2");
+  const v2Obj = resultV2 as { strongestRouteId: string | null; routes: { routeId: string; routeTitle: string }[]; immediateActions: { title: string }[] };
+  const expectedBest = v2Obj.strongestRouteId
+    ? v2Obj.routes.find((x) => x.routeId === v2Obj.strongestRouteId)?.routeTitle ?? null
+    : null;
+  assertEquals(row!.best_route_title, expectedBest);
+  assertEquals(row!.first_move, v2Obj.immediateActions[0]?.title ?? null);
 }});

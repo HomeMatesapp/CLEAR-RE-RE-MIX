@@ -14,20 +14,7 @@ import type {
   RealityCheckResultV2,
   RouteEvaluationV2,
 } from "@shared/career-evaluator/v1/result-v2";
-
-const ELIGIBILITY_LABEL: Record<EligibilityStatus, string> = {
-  available_now: "Entry conditions appear in place",
-  available_with_conditions: "Open, with trade-offs to weigh",
-  requires_verification: "Checks needed before this is confirmed",
-  not_currently_available: "Not currently open to you",
-  insufficient_information: "Not enough answers to assess",
-};
-
-const PRACTICAL_LABEL: Record<PracticalFitStatus, string> = {
-  appears_manageable: "No practical constraints flagged",
-  constraints_to_weigh: "Practical constraints to weigh",
-  insufficient_information: "Not enough answers to comment",
-};
+import { ELIGIBILITY_LABEL, PRACTICAL_LABEL } from "@/lib/reality-check/v2-labels";
 
 const eligibilityTone = (s: EligibilityStatus): string =>
   s === "available_now" ? "text-emerald-700 bg-emerald-50 border-emerald-200"

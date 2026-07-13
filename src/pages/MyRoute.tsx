@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { flushPendingDecision } from "@/lib/saved-decisions";
 import { trackEvent } from "@/lib/posthog";
 import { READINESS_LABEL, type Readiness } from "@/lib/reality-check/types";
+import { describeSavedDecision } from "@/lib/reality-check/saved-decision-view";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -74,6 +75,16 @@ const verdictToReadiness = (v: string | null): Readiness => {
 };
 
 const seedActionsFromResult = (row: SavedRow): RouteAction[] => {
+  // Generic-pack rows (Increment 4): seed from the V2 immediate actions.
+  const view = describeSavedDecision(row.result_snapshot);
+  if (view.kind === "generic_v2") {
+    return view.actionTitles.map((title, i) => ({
+      id: `rc-${i}`,
+      title,
+      status: "not_started" as ActionStatus,
+      source: "reality_check" as const,
+    }));
+  }
   const snap = row.result_snapshot ?? {};
   const moves = Array.isArray(snap.firstMoves) ? (snap.firstMoves as unknown[]) : [];
   const seeded = moves
@@ -198,7 +209,9 @@ const MyRoute = () => {
         if (active) {
           trackEvent("my_route_viewed", {
             role_slug: active.role_slug,
-            readiness_state: readinessFrom(active).state,
+            readiness_state: describeSavedDecision(active.result_snapshot).kind === "generic_v2"
+              ? "generic_pack_v2"
+              : readinessFrom(active).state,
             assessment_age_days: Math.floor(
               (Date.now() - new Date(active.created_at).getTime()) / 86400000,
             ),
@@ -372,6 +385,7 @@ const ReadinessCard = ({
   saving: boolean;
   onOpenRoute: () => void;
 }) => {
+  const view = describeSavedDecision(row.result_snapshot);
   const { state, label, reason } = readinessFrom(row);
   const actions = row.route_actions ?? [];
   const done = actions.filter((a) => a.status === "completed").length;
@@ -379,15 +393,24 @@ const ReadinessCard = ({
   return (
     <article className="md:col-span-3 rounded-2xl border-2 border-foreground/90 bg-card p-6 flex flex-col">
       <p className="text-[11px] font-mono uppercase tracking-widest text-muted-foreground mb-2">
-        My readiness
+        {view.kind === "generic_v2" ? "Where this stands" : "My readiness"}
       </p>
-      <div className="flex items-baseline gap-3 flex-wrap">
-        <h2 className="font-display text-2xl font-medium text-foreground">{label}</h2>
-        <span className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
-          {state.replace(/_/g, " ")}
-        </span>
-      </div>
-      {reason && <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{reason}</p>}
+      {view.kind === "generic_v2" ? (
+        <>
+          <h2 className="font-display text-2xl font-medium text-foreground">{view.statusHeadline}</h2>
+          <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{view.statusDetail}</p>
+        </>
+      ) : (
+        <>
+          <div className="flex items-baseline gap-3 flex-wrap">
+            <h2 className="font-display text-2xl font-medium text-foreground">{label}</h2>
+            <span className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
+              {state.replace(/_/g, " ")}
+            </span>
+          </div>
+          {reason && <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{reason}</p>}
+        </>
+      )}
 
       {actions.length === 0 ? (
         <p className="mt-6 text-sm text-muted-foreground">
