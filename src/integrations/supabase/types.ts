@@ -122,6 +122,306 @@ export type Database = {
         }
         Relationships: []
       }
+      assessment_receipts: {
+        Row: {
+          claimed_at: string | null
+          claimed_user_id: string | null
+          evaluation_source: string
+          evaluator_schema_version: string
+          expires_at: string
+          id: string
+          issued_at: string
+          issued_user_id: string | null
+          pack_content_hash: string
+          pack_id: string
+          pack_version: string
+          receipt_hash: string
+          result_canonical_hash: string
+          result_v1: Json
+          result_v2: Json | null
+          result_v2_canonical_hash: string | null
+          revoked_at: string | null
+          role_id: string
+          role_slug: string
+          saved_decision_id: string | null
+        }
+        Insert: {
+          claimed_at?: string | null
+          claimed_user_id?: string | null
+          evaluation_source?: string
+          evaluator_schema_version: string
+          expires_at: string
+          id?: string
+          issued_at?: string
+          issued_user_id?: string | null
+          pack_content_hash: string
+          pack_id: string
+          pack_version: string
+          receipt_hash: string
+          result_canonical_hash: string
+          result_v1: Json
+          result_v2?: Json | null
+          result_v2_canonical_hash?: string | null
+          revoked_at?: string | null
+          role_id: string
+          role_slug: string
+          saved_decision_id?: string | null
+        }
+        Update: {
+          claimed_at?: string | null
+          claimed_user_id?: string | null
+          evaluation_source?: string
+          evaluator_schema_version?: string
+          expires_at?: string
+          id?: string
+          issued_at?: string
+          issued_user_id?: string | null
+          pack_content_hash?: string
+          pack_id?: string
+          pack_version?: string
+          receipt_hash?: string
+          result_canonical_hash?: string
+          result_v1?: Json
+          result_v2?: Json | null
+          result_v2_canonical_hash?: string | null
+          revoked_at?: string | null
+          role_id?: string
+          role_slug?: string
+          saved_decision_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assessment_receipts_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "career_packs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assessment_receipts_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assessment_receipts_saved_decision_id_fkey"
+            columns: ["saved_decision_id"]
+            isOneToOne: false
+            referencedRelation: "saved_decisions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      career_pack_config: {
+        Row: {
+          environment: Database["public"]["Enums"]["career_pack_environment"]
+          id: boolean
+          receipt_ttl_minutes: number
+          review_due_grace_days: number
+          updated_at: string
+        }
+        Insert: {
+          environment?: Database["public"]["Enums"]["career_pack_environment"]
+          id?: boolean
+          receipt_ttl_minutes?: number
+          review_due_grace_days?: number
+          updated_at?: string
+        }
+        Update: {
+          environment?: Database["public"]["Enums"]["career_pack_environment"]
+          id?: boolean
+          receipt_ttl_minutes?: number
+          review_due_grace_days?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      career_pack_identities: {
+        Row: {
+          created_at: string
+          display_name: string
+          id: string
+          is_test_identity: boolean
+        }
+        Insert: {
+          created_at?: string
+          display_name: string
+          id?: string
+          is_test_identity?: boolean
+        }
+        Update: {
+          created_at?: string
+          display_name?: string
+          id?: string
+          is_test_identity?: boolean
+        }
+        Relationships: []
+      }
+      career_pack_publication_events: {
+        Row: {
+          actor: string
+          at: string
+          event_type: Database["public"]["Enums"]["career_pack_event_type"]
+          from_status: Database["public"]["Enums"]["career_pack_status"] | null
+          id: string
+          metadata: Json
+          pack_id: string
+          to_status: Database["public"]["Enums"]["career_pack_status"] | null
+        }
+        Insert: {
+          actor: string
+          at?: string
+          event_type: Database["public"]["Enums"]["career_pack_event_type"]
+          from_status?: Database["public"]["Enums"]["career_pack_status"] | null
+          id?: string
+          metadata?: Json
+          pack_id: string
+          to_status?: Database["public"]["Enums"]["career_pack_status"] | null
+        }
+        Update: {
+          actor?: string
+          at?: string
+          event_type?: Database["public"]["Enums"]["career_pack_event_type"]
+          from_status?: Database["public"]["Enums"]["career_pack_status"] | null
+          id?: string
+          metadata?: Json
+          pack_id?: string
+          to_status?: Database["public"]["Enums"]["career_pack_status"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "career_pack_publication_events_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "career_packs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      career_pack_publications: {
+        Row: {
+          archived_at: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          pack_id: string
+          published_at: string | null
+          review_due_at: string | null
+          status: Database["public"]["Enums"]["career_pack_status"]
+          superseded_at: string | null
+          suspended_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          archived_at?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          pack_id: string
+          published_at?: string | null
+          review_due_at?: string | null
+          status?: Database["public"]["Enums"]["career_pack_status"]
+          superseded_at?: string | null
+          suspended_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          archived_at?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          pack_id?: string
+          published_at?: string | null
+          review_due_at?: string | null
+          status?: Database["public"]["Enums"]["career_pack_status"]
+          superseded_at?: string | null
+          suspended_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "career_pack_publications_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: true
+            referencedRelation: "career_packs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      career_packs: {
+        Row: {
+          archetype_id: string
+          content: Json
+          content_hash: string
+          environment: Database["public"]["Enums"]["career_pack_environment"]
+          id: string
+          imported_at: string
+          imported_by: string
+          is_test: boolean
+          owner_identity_id: string
+          pack_version: string
+          reviewer_identity_id: string
+          role_id: string
+          schema_version: string
+          slug: string
+        }
+        Insert: {
+          archetype_id: string
+          content: Json
+          content_hash: string
+          environment: Database["public"]["Enums"]["career_pack_environment"]
+          id?: string
+          imported_at?: string
+          imported_by: string
+          is_test?: boolean
+          owner_identity_id: string
+          pack_version: string
+          reviewer_identity_id: string
+          role_id: string
+          schema_version: string
+          slug: string
+        }
+        Update: {
+          archetype_id?: string
+          content?: Json
+          content_hash?: string
+          environment?: Database["public"]["Enums"]["career_pack_environment"]
+          id?: string
+          imported_at?: string
+          imported_by?: string
+          is_test?: boolean
+          owner_identity_id?: string
+          pack_version?: string
+          reviewer_identity_id?: string
+          role_id?: string
+          schema_version?: string
+          slug?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "career_packs_owner_identity_id_fkey"
+            columns: ["owner_identity_id"]
+            isOneToOne: false
+            referencedRelation: "career_pack_identities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "career_packs_reviewer_identity_id_fkey"
+            columns: ["reviewer_identity_id"]
+            isOneToOne: false
+            referencedRelation: "career_pack_identities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "career_packs_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       decision_profiles: {
         Row: {
           area: string | null
@@ -166,6 +466,48 @@ export type Database = {
           weekly_hours?: string | null
         }
         Relationships: []
+      }
+      decision_shares: {
+        Row: {
+          created_at: string
+          id: string
+          organisation_id: string
+          participant_user_id: string
+          revoked_at: string | null
+          saved_decision_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          organisation_id: string
+          participant_user_id: string
+          revoked_at?: string | null
+          saved_decision_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          organisation_id?: string
+          participant_user_id?: string
+          revoked_at?: string | null
+          saved_decision_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "decision_shares_organisation_id_fkey"
+            columns: ["organisation_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "decision_shares_saved_decision_id_fkey"
+            columns: ["saved_decision_id"]
+            isOneToOne: false
+            referencedRelation: "saved_decisions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       institution_enquiries: {
         Row: {
@@ -370,6 +712,88 @@ export type Database = {
             columns: ["opportunity_id"]
             isOneToOne: false
             referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organisation_members: {
+        Row: {
+          created_at: string
+          member_role: string
+          organisation_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          member_role: string
+          organisation_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          member_role?: string
+          organisation_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organisation_members_organisation_id_fkey"
+            columns: ["organisation_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organisations: {
+        Row: {
+          created_at: string
+          id: string
+          join_code: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          join_code: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          join_code?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      participant_org_links: {
+        Row: {
+          created_at: string
+          id: string
+          organisation_id: string
+          participant_user_id: string
+          revoked_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          organisation_id: string
+          participant_user_id: string
+          revoked_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          organisation_id?: string
+          participant_user_id?: string
+          revoked_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "participant_org_links_organisation_id_fkey"
+            columns: ["organisation_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
             referencedColumns: ["id"]
           },
         ]
@@ -617,6 +1041,42 @@ export type Database = {
         }
         Relationships: []
       }
+      role_pack_bindings: {
+        Row: {
+          bound_at: string
+          bound_by: string
+          pack_id: string
+          role_id: string
+        }
+        Insert: {
+          bound_at?: string
+          bound_by: string
+          pack_id: string
+          role_id: string
+        }
+        Update: {
+          bound_at?: string
+          bound_by?: string
+          pack_id?: string
+          role_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "role_pack_bindings_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "career_packs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "role_pack_bindings_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: true
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       role_review_requests: {
         Row: {
           created_at: string
@@ -691,6 +1151,7 @@ export type Database = {
           degree_required: string | null
           demand: string | null
           demand_source: string | null
+          hub_summary: string | null
           id: string
           job_security: string | null
           key_employers: string[] | null
@@ -717,6 +1178,7 @@ export type Database = {
           review_status: string | null
           role_name: string
           role_slug: string
+          route_logic_reviewed_at: string | null
           salary_as_at: string | null
           salary_entry: number | null
           salary_experienced: number | null
@@ -748,6 +1210,7 @@ export type Database = {
           degree_required?: string | null
           demand?: string | null
           demand_source?: string | null
+          hub_summary?: string | null
           id?: string
           job_security?: string | null
           key_employers?: string[] | null
@@ -774,6 +1237,7 @@ export type Database = {
           review_status?: string | null
           role_name: string
           role_slug: string
+          route_logic_reviewed_at?: string | null
           salary_as_at?: string | null
           salary_entry?: number | null
           salary_experienced?: number | null
@@ -805,6 +1269,7 @@ export type Database = {
           degree_required?: string | null
           demand?: string | null
           demand_source?: string | null
+          hub_summary?: string | null
           id?: string
           job_security?: string | null
           key_employers?: string[] | null
@@ -831,6 +1296,7 @@ export type Database = {
           review_status?: string | null
           role_name?: string
           role_slug?: string
+          route_logic_reviewed_at?: string | null
           salary_as_at?: string | null
           salary_entry?: number | null
           salary_experienced?: number | null
@@ -865,59 +1331,146 @@ export type Database = {
           },
         ]
       }
+      route_choices: {
+        Row: {
+          chosen_at: string
+          eligibility_at_choice: string | null
+          id: string
+          practical_fit_at_choice: string | null
+          route_id: string
+          route_title: string
+          saved_decision_id: string
+          user_id: string
+        }
+        Insert: {
+          chosen_at?: string
+          eligibility_at_choice?: string | null
+          id?: string
+          practical_fit_at_choice?: string | null
+          route_id: string
+          route_title: string
+          saved_decision_id: string
+          user_id: string
+        }
+        Update: {
+          chosen_at?: string
+          eligibility_at_choice?: string | null
+          id?: string
+          practical_fit_at_choice?: string | null
+          route_id?: string
+          route_title?: string
+          saved_decision_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "route_choices_saved_decision_id_fkey"
+            columns: ["saved_decision_id"]
+            isOneToOne: false
+            referencedRelation: "saved_decisions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       saved_decisions: {
         Row: {
+          answer_schema_version: number | null
+          answer_snapshot: Json | null
           backup_route_title: string | null
           best_route_title: string | null
           created_at: string
+          evaluation_source: string
+          evaluator_schema_version: string | null
           first_move: string | null
           id: string
           input_snapshot: Json | null
+          label: string | null
           local_realism_rating: string | null
           overall_verdict: string | null
+          pack_content_hash: string | null
+          pack_id: string | null
+          pack_version: string | null
+          questionnaire_version: string | null
+          result_schema_version: string | null
           result_snapshot: Json | null
+          result_v1: Json | null
+          result_v2: Json | null
           role_id: string | null
           role_name: string
           role_slug: string
+          route_actions: Json | null
           route_to_avoid_title: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          answer_schema_version?: number | null
+          answer_snapshot?: Json | null
           backup_route_title?: string | null
           best_route_title?: string | null
           created_at?: string
+          evaluation_source?: string
+          evaluator_schema_version?: string | null
           first_move?: string | null
           id?: string
           input_snapshot?: Json | null
+          label?: string | null
           local_realism_rating?: string | null
           overall_verdict?: string | null
+          pack_content_hash?: string | null
+          pack_id?: string | null
+          pack_version?: string | null
+          questionnaire_version?: string | null
+          result_schema_version?: string | null
           result_snapshot?: Json | null
+          result_v1?: Json | null
+          result_v2?: Json | null
           role_id?: string | null
           role_name: string
           role_slug: string
+          route_actions?: Json | null
           route_to_avoid_title?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          answer_schema_version?: number | null
+          answer_snapshot?: Json | null
           backup_route_title?: string | null
           best_route_title?: string | null
           created_at?: string
+          evaluation_source?: string
+          evaluator_schema_version?: string | null
           first_move?: string | null
           id?: string
           input_snapshot?: Json | null
+          label?: string | null
           local_realism_rating?: string | null
           overall_verdict?: string | null
+          pack_content_hash?: string | null
+          pack_id?: string | null
+          pack_version?: string | null
+          questionnaire_version?: string | null
+          result_schema_version?: string | null
           result_snapshot?: Json | null
+          result_v1?: Json | null
+          result_v2?: Json | null
           role_id?: string | null
           role_name?: string
           role_slug?: string
+          route_actions?: Json | null
           route_to_avoid_title?: string | null
           updated_at?: string
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "saved_decisions_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "career_packs"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "saved_decisions_role_id_fkey"
             columns: ["role_id"]
@@ -1122,15 +1675,73 @@ export type Database = {
         }
         Returns: undefined
       }
+      career_pack_is_servable: { Args: { _pack_id: string }; Returns: boolean }
+      claim_receipt_and_save_decision: {
+        Args: { _label?: string; _receipt_hash: string; _user_id: string }
+        Returns: {
+          saved_decision_id: string
+          status: string
+        }[]
+      }
+      cleanup_expired_assessment_receipts: {
+        Args: { _retain_claimed_days?: number }
+        Returns: number
+      }
       get_contamination_fn_def: { Args: never; Returns: string }
+      join_organisation: {
+        Args: { _join_code: string }
+        Returns: {
+          organisation_id: string
+          organisation_name: string
+          status: string
+        }[]
+      }
+      publish_and_bind_career_pack: {
+        Args: { _actor: string; _pack_id: string }
+        Returns: Json
+      }
       reality_check_rate_increment: {
         Args: { p_key_hash: string; p_scope: string; p_window_start: string }
         Returns: number
+      }
+      resolve_role_pack_binding: {
+        Args: { _role_id: string; _slug: string }
+        Returns: {
+          content: Json
+          content_hash: string
+          geographic_scope: Json
+          is_servable: boolean
+          pack_id: string
+          pack_version: string
+          review_due_at: string
+          role_id: string
+          role_slug: string
+          slug: string
+          status: Database["public"]["Enums"]["career_pack_status"]
+        }[]
       }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
+      career_pack_environment: "development" | "staging" | "production"
+      career_pack_event_type:
+        | "imported"
+        | "published"
+        | "marked_review_due"
+        | "suspended"
+        | "unsuspended"
+        | "superseded"
+        | "archived"
+        | "bound"
+        | "unbound"
+      career_pack_status:
+        | "draft"
+        | "published"
+        | "review_due"
+        | "suspended"
+        | "superseded"
+        | "archived"
       role_service_level: "info_only" | "reality_check" | "full_support"
     }
     CompositeTypes: {
@@ -1259,6 +1870,26 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      career_pack_environment: ["development", "staging", "production"],
+      career_pack_event_type: [
+        "imported",
+        "published",
+        "marked_review_due",
+        "suspended",
+        "unsuspended",
+        "superseded",
+        "archived",
+        "bound",
+        "unbound",
+      ],
+      career_pack_status: [
+        "draft",
+        "published",
+        "review_due",
+        "suspended",
+        "superseded",
+        "archived",
+      ],
       role_service_level: ["info_only", "reality_check", "full_support"],
     },
   },
