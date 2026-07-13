@@ -16,6 +16,8 @@ import type {
   RealityCheckResult,
 } from "../types";
 import { buildModularPayload } from "./modular-payload";
+import { buildEngineResultV2 } from "./to-result-v2";
+import type { LegacyEngineOutput } from "@shared/career-evaluator/v1";
 import {
   NMC_APPROVED_FOOTER,
   NON_APPROVED_DIPLOMA_WARNING,
@@ -267,6 +269,7 @@ export const buildRegisteredNurseResult = (
     firstMoves: firstMovesFor(out),
     considerations: out.considerations.length ? out.considerations : undefined,
     modular: buildModularForNurse(out),
+    resultV2: buildEngineResultV2(out as unknown as LegacyEngineOutput, registeredNurseFlavor, { engineId: "legacy:registered-nurse", slug: "registered-nurse", careerTitle: "Registered Nurse" }, (_answers ?? {}) as never),
   };
 };
 

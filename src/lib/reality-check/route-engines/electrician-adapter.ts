@@ -12,6 +12,8 @@ import {
   type ElectricianRouteId,
 } from "./electrician";
 import { buildModularPayload } from "./modular-payload";
+import { buildEngineResultV2 } from "./to-result-v2";
+import type { LegacyEngineOutput } from "@shared/career-evaluator/v1";
 import { electricianFlavor } from "./electrician-flavor";
 
 
@@ -167,6 +169,7 @@ export const buildElectricianResult = (
     firstMoves: firstMovesFor(out),
     considerations: out.considerations.length ? out.considerations : undefined,
     modular: buildModularPayload<ElectricianRouteId>(out, electricianFlavor),
+    resultV2: buildEngineResultV2(out as unknown as LegacyEngineOutput, electricianFlavor, { engineId: "legacy:electrician", slug: "electrician", careerTitle: "Electrician" }, _answers),
   };
 };
 

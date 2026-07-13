@@ -16,6 +16,8 @@ import type {
   RealityCheckResult,
 } from "../types";
 import { buildModularPayload } from "./modular-payload";
+import { buildEngineResultV2 } from "./to-result-v2";
+import type { LegacyEngineOutput } from "@shared/career-evaluator/v1";
 import {
   ROUTE_TITLES,
   runPoliceOfficerEngine,
@@ -273,6 +275,7 @@ export const buildPoliceOfficerResult = (
     firstMoves: firstMovesFor(out),
     considerations: out.considerations.length ? out.considerations : undefined,
     modular: buildModularForPolice(out),
+    resultV2: buildEngineResultV2(out as unknown as LegacyEngineOutput, policeOfficerFlavor, { engineId: "legacy:police-officer", slug: "police-officer", careerTitle: "Police Officer" }, (_answers ?? {}) as never),
   };
 };
 

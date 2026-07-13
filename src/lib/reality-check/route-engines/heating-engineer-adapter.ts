@@ -12,6 +12,8 @@ import {
   type HeatingEngineerRouteId,
 } from "./heating-engineer";
 import { buildModularPayload } from "./modular-payload";
+import { buildEngineResultV2 } from "./to-result-v2";
+import type { LegacyEngineOutput } from "@shared/career-evaluator/v1";
 import { heatingEngineerFlavor } from "./heating-engineer-flavor";
 
 
@@ -156,6 +158,7 @@ export const buildHeatingEngineerResult = (
     firstMoves: firstMovesFor(out),
     considerations: out.considerations.length ? out.considerations : undefined,
     modular: buildModularPayload<HeatingEngineerRouteId>(out, heatingEngineerFlavor),
+    resultV2: buildEngineResultV2(out as unknown as LegacyEngineOutput, heatingEngineerFlavor, { engineId: "legacy:heating-engineer", slug: "heating-engineer", careerTitle: "Heating Engineer" }, _answers),
   };
 };
 

@@ -284,6 +284,9 @@ export interface RealityCheckResult {
   // Present only for reviewed modular roles. Runtime gate for the
   // route-comparison view — see ModularResultView.
   modular?: ModularRealityCheckPayload;
+  /** Increment 10: the standard result contract, attached alongside the
+   *  modular payload by every reviewed engine adapter. */
+  resultV2?: import("@shared/career-evaluator/v1/result-v2").RealityCheckResultV2;
 }
 
 

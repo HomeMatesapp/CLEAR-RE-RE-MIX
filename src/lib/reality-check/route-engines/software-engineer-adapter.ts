@@ -11,6 +11,8 @@ import {
   type SoftwareEngineerRouteId,
 } from "./software-engineer";
 import { buildModularPayload } from "./modular-payload";
+import { buildEngineResultV2 } from "./to-result-v2";
+import type { LegacyEngineOutput } from "@shared/career-evaluator/v1";
 import { softwareEngineerFlavor } from "./software-engineer-flavor";
 
 const readinessForStatus = (
@@ -180,6 +182,7 @@ export const buildSoftwareEngineerResult = (
       out,
       softwareEngineerFlavor,
     ),
+    resultV2: buildEngineResultV2(out as unknown as LegacyEngineOutput, softwareEngineerFlavor, { engineId: "legacy:software-engineer", slug: "software-engineer", careerTitle: "Software Engineer" }, _answers),
   };
 };
 

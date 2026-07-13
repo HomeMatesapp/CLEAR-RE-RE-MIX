@@ -10,6 +10,8 @@ import type {
   RealityCheckResult,
 } from "../types";
 import { buildModularPayload } from "./modular-payload";
+import { buildEngineResultV2 } from "./to-result-v2";
+import type { LegacyEngineOutput } from "@shared/career-evaluator/v1";
 import {
   ROUTE_TITLES,
   runSolicitorEngine,
@@ -265,6 +267,7 @@ export const buildSolicitorResult = (
     firstMoves: firstMovesFor(out),
     considerations: out.considerations.length ? out.considerations : undefined,
     modular: buildModularForSolicitor(out),
+    resultV2: buildEngineResultV2(out as unknown as LegacyEngineOutput, { timeCaveats: {}, costCaveats: {} }, { engineId: "legacy:solicitor", slug: "solicitor", careerTitle: "Solicitor" }, (_answers ?? {}) as never),
   };
 };
 

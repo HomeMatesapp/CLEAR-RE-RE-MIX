@@ -12,6 +12,8 @@ import {
   type PlumberRouteId,
 } from "./plumber";
 import { buildModularPayload } from "./modular-payload";
+import { buildEngineResultV2 } from "./to-result-v2";
+import type { LegacyEngineOutput } from "@shared/career-evaluator/v1";
 import { plumberFlavor } from "./plumber-flavor";
 
 
@@ -156,6 +158,7 @@ export const buildPlumberResult = (
     firstMoves: firstMovesFor(out),
     considerations: out.considerations.length ? out.considerations : undefined,
     modular: buildModularPayload<PlumberRouteId>(out, plumberFlavor),
+    resultV2: buildEngineResultV2(out as unknown as LegacyEngineOutput, plumberFlavor, { engineId: "legacy:plumber", slug: "plumber", careerTitle: "Plumber" }, _answers),
   };
 };
 

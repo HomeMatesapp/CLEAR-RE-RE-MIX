@@ -10,6 +10,8 @@ import type {
   RealityCheckResult,
 } from "../types";
 import { buildModularPayload } from "./modular-payload";
+import { buildEngineResultV2 } from "./to-result-v2";
+import type { LegacyEngineOutput } from "@shared/career-evaluator/v1";
 import {
   ROUTE_TITLES,
   runActorEngine,
@@ -280,6 +282,7 @@ export const buildActorResult = (
     firstMoves: firstMovesFor(out),
     considerations: out.considerations.length ? out.considerations : undefined,
     modular: buildModularForActor(out),
+    resultV2: buildEngineResultV2(out as unknown as LegacyEngineOutput, { timeCaveats: {}, costCaveats: {} }, { engineId: "legacy:actor", slug: "actor", careerTitle: "Actor" }, (_answers ?? {}) as never),
   };
 };
 

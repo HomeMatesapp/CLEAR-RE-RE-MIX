@@ -31,6 +31,9 @@ import type {
   RoleContext,
 } from "@/lib/reality-check/types";
 import { SavePrompt } from "@/components/role/reality-check-shared";
+import { useState } from "react";
+import { Columns3, List } from "lucide-react";
+import { ResultV2View } from "@/components/reality-check/ResultV2View";
 import { SourcesPanel } from "@/components/reality-check/SourcesPanel";
 import { getSourcesForResult } from "@/lib/reality-check/sources";
 
@@ -216,6 +219,11 @@ export function ModularResultView({
   answers,
 }: ModularResultViewProps) {
   const m = result.modular;
+  // Increment 10 (convergence step 1): when the adapter attached the standard
+  // V2 contract, offer it as an alternative view. Classic remains the
+  // default; the decision is identical in both — one engine run, two lenses.
+  const [resultView, setResultView] = useState<"classic" | "standard">("classic");
+  const v2 = result.resultV2;
   const summary = SUMMARY_META[m.status];
   const recommended = m.routes.find((r) => r.kind === "recommended");
   const primaryTitle =
@@ -223,8 +231,37 @@ export function ModularResultView({
       ? recommended.title
       : summary.heading;
 
+  const viewToggle = v2 ? (
+    <div className="flex gap-1 rounded-lg border border-border p-1 w-fit" role="tablist" aria-label="Result view">
+      <button
+        type="button" role="tab" aria-selected={resultView === "classic"}
+        onClick={() => setResultView("classic")}
+        className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium ${resultView === "classic" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
+      >
+        <List className="h-4 w-4" aria-hidden /> Classic view
+      </button>
+      <button
+        type="button" role="tab" aria-selected={resultView === "standard"}
+        onClick={() => setResultView("standard")}
+        className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium ${resultView === "standard" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
+      >
+        <Columns3 className="h-4 w-4" aria-hidden /> Standard view
+      </button>
+    </div>
+  ) : null;
+
+  if (v2 && resultView === "standard") {
+    return (
+      <div className="space-y-5">
+        {viewToggle}
+        <ResultV2View result={v2} />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-5">
+      {viewToggle}
       {/* A. Summary */}
       <PaperCard accent={summary.tone === "path" ? "path" : summary.tone === "amber" ? "amber" : "ink"}>
         <Eyebrow tone={summary.tone}>{summary.eyebrow}</Eyebrow>
