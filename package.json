@@ -11,7 +11,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "audit:families": "bun scripts/audit-families.ts"
+    "audit:families": "bun scripts/audit-families.ts",
+    "validate:pack": "bun scripts/validate-pack.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

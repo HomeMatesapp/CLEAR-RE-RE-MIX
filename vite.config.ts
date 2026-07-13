@@ -13,6 +13,20 @@ export default defineConfig(({ mode }) => ({
     },
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
+  build: {
+    rollupOptions: {
+      output: {
+        // Increment 11: split the monolithic chunk. Vendor libraries change
+        // rarely and cache well; route-level code splitting can come later —
+        // this is the cheap 80%.
+        manualChunks: {
+          "vendor-react": ["react", "react-dom", "react-router-dom"],
+          "vendor-data": ["@supabase/supabase-js", "@tanstack/react-query", "zod"],
+          "vendor-icons": ["lucide-react"],
+        },
+      },
+    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
