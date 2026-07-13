@@ -55,7 +55,7 @@ const QuestionInput = ({
                 aria-checked={selected}
                 onClick={() => onChange(opt.value)}
                 className={`text-left rounded-lg border px-4 py-3 transition-colors ${
-                  selected ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"
+                  selected ? "border-2 border-foreground/90 bg-muted/40" : "border border-foreground/25 hover:border-foreground/60"
                 }`}
               >
                 <span className="font-medium">{opt.label}</span>
@@ -83,7 +83,7 @@ const QuestionInput = ({
                 aria-checked={selected}
                 onClick={() => toggle(opt.value)}
                 className={`text-left rounded-lg border px-4 py-3 transition-colors ${
-                  selected ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"
+                  selected ? "border-2 border-foreground/90 bg-muted/40" : "border border-foreground/25 hover:border-foreground/60"
                 }`}
               >
                 <span className="font-medium">{opt.label}</span>
@@ -107,7 +107,7 @@ const QuestionInput = ({
               aria-checked={value === v}
               onClick={() => onChange(v)}
               className={`flex-1 rounded-lg border px-4 py-3 font-medium transition-colors ${
-                value === v ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"
+                value === v ? "border-2 border-foreground/90 bg-muted/40" : "border border-foreground/25 hover:border-foreground/60"
               }`}
             >
               {l}
@@ -177,18 +177,18 @@ export const GenericPackWizard = ({ questionnaire, submitting, onSubmit, onCance
   return (
     <div className="max-w-2xl mx-auto w-full">
       <div className="mb-6">
-        <div className="text-sm text-muted-foreground mb-2">
+        <div className="font-mono text-[10.5px] tracking-[0.12em] uppercase font-semibold text-muted-foreground mb-2">
           Question {clampedIndex + 1} of {steps.length}
         </div>
         <div className="h-1.5 rounded-full bg-muted overflow-hidden" aria-hidden>
           <div
-            className="h-full bg-primary transition-all"
+            className="h-full bg-foreground transition-all"
             style={{ width: `${((clampedIndex + 1) / steps.length) * 100}%` }}
           />
         </div>
       </div>
 
-      <h2 className="text-xl font-semibold mb-1">{question.label}</h2>
+      <h2 className="font-display font-bold tracking-[-0.01em] leading-tight text-[clamp(19px,2.6vw,23px)] mb-1">{question.label}</h2>
       {question.helpText ? (
         <p className="text-muted-foreground mb-3">{question.helpText}</p>
       ) : null}

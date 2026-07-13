@@ -126,17 +126,18 @@ describe("ResultV2View", () => {
 
   it("renders both status axes separately for every route", () => {
     render(<ResultV2View result={result} />);
-    const eligibilityChips = screen.getAllByText(/^Eligibility:/);
-    const practicalChips = screen.getAllByText(/^Practical fit:/);
-    expect(eligibilityChips.length).toBe(result.routes.length);
-    expect(practicalChips.length).toBe(result.routes.length);
+    // Increment 12 ledger style: each route shows two labelled columns.
+    const eligibilityLabels = screen.getAllByText("Eligibility");
+    const practicalLabels = screen.getAllByText("Practical fit");
+    expect(eligibilityLabels.length).toBe(result.routes.length);
+    expect(practicalLabels.length).toBe(result.routes.length);
   });
 
   it("marks the strongest route and itemises unassessed requirements honestly", () => {
     render(<ResultV2View result={result} />);
-    expect(screen.getAllByText("Currently looks most workable").length).toBe(1);
+    expect(screen.getAllByText("Most workable now").length).toBe(1);
     // Midwife requirements are participant-verified: shown as "verify yourself".
-    expect(screen.getAllByText("Requirements to verify yourself").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Verify yourself").length).toBeGreaterThan(0);
   });
 
   it("contains no forbidden language", () => {
@@ -177,7 +178,7 @@ describe("Compare routes", () => {
     const user = userEvent.setup();
     render(<ResultV2View result={result} />);
     await user.click(screen.getByRole("tab", { name: /compare routes/i }));
-    expect(screen.getAllByText("Currently looks most workable").length).toBe(1);
+    expect(screen.getAllByText("Most workable now").length).toBe(1);
     expect(screen.getByText(/never combined into a single score/i)).toBeTruthy();
   });
 

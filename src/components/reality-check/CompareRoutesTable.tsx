@@ -62,9 +62,9 @@ export const CompareRoutesTable = ({ result }: { result: RealityCheckResultV2 })
             </th>
             {routes.map((r) => (
               <th key={r.routeId} className="text-left align-bottom p-3 border-b-2 border-foreground/90" scope="col">
-                <div className="font-semibold">{r.routeTitle}</div>
+                <div className="font-display font-bold text-[15px] leading-tight">{r.routeTitle}</div>
                 {r.routeId === result.strongestRouteId ? (
-                  <div className="text-xs font-normal text-primary mt-1">Currently looks most workable</div>
+                  <div className="font-mono text-[10px] tracking-[0.1em] uppercase font-semibold mt-1">Most workable now</div>
                 ) : null}
               </th>
             ))}

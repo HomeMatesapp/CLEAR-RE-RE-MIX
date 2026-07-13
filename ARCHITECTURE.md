@@ -1,6 +1,6 @@
 # Clear Routes — Architecture and Increment Record
 
-*Last updated: 2026-07-13 (end of Increment 11). This document lives in the
+*Last updated: 2026-07-13 (end of Increment 12). This document lives in the
 repo so the project's memory doesn't depend on any one conversation, person
 or machine. Update it when an increment lands.*
 
@@ -89,8 +89,9 @@ lenses — and their result screen offers a Classic/Standard toggle.
 | 9 | Executable 11-test hostile RLS matrix; "Pursuing" on MyDecisions | matrix DB-bound; 2 tests run |
 | 10 | Convergence step 1: all 8 engines attach V2; Classic/Standard toggle | 5 tests incl. decision-identity |
 | 11 | Pack validation CLI; vendor chunk split (1.77 MB → 1.28 MB main); this document | 5 tests incl. mutation checks |
+| 12 | Ink-and-paper restyle of the V2 surfaces (result ledger, wizard, compare table) — consistency with the app's editorial language | selectors updated; full suite green |
 
-Suite at end of Increment 11: **735 vitest tests**, tsc clean, build green.
+Suite at end of Increment 12: **735 vitest tests**, tsc clean, build green.
 
 ## Open gates (do not skip)
 

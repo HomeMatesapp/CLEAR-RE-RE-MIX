@@ -63,14 +63,14 @@ describe("legacy engine convergence — step 1", () => {
     );
     // Classic content present by default.
     expect(screen.getByRole("tab", { name: /classic view/i }).getAttribute("aria-selected")).toBe("true");
-    expect(screen.queryByText(/^Eligibility:/)).toBeNull();
+    expect(screen.queryByText("Practical fit")).toBeNull();
 
     await user.click(screen.getByRole("tab", { name: /standard view/i }));
-    expect(screen.getAllByText(/^Eligibility:/).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/^Practical fit:/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Eligibility").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Practical fit").length).toBeGreaterThan(0);
 
     await user.click(screen.getByRole("tab", { name: /classic view/i }));
-    expect(screen.queryByText(/^Eligibility:/)).toBeNull();
+    expect(screen.queryByText("Practical fit")).toBeNull();
   });
 
   it("no toggle appears when resultV2 is absent (older saved payloads)", () => {
