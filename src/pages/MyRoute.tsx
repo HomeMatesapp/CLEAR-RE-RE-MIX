@@ -14,6 +14,8 @@ import { READINESS_LABEL, type Readiness } from "@/lib/reality-check/types";
 import { describeSavedDecision } from "@/lib/reality-check/saved-decision-view";
 import { readResultSnapshot } from "@/lib/reality-check/result-snapshot";
 import { ResultV2View } from "@/components/reality-check/ResultV2View";
+import { RouteChoiceSection } from "@/components/reality-check/RouteChoiceSection";
+import { fetchRouteChoices, recordRouteChoice, type RouteChoice } from "@/lib/route-choice";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -243,6 +245,32 @@ const MyRoute = () => {
     return read.version === "reality-check-result/v2" && read.v2 ? read.v2 : null;
   }, [active]);
 
+  // Increment 6: route choice with history (append-only).
+  const [routeChoices, setRouteChoices] = useState<RouteChoice[]>([]);
+  const [choosing, setChoosing] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    if (!active || !savedV2Result) { setRouteChoices([]); return; }
+    fetchRouteChoices(active.id)
+      .then((rows) => { if (!cancelled) setRouteChoices(rows); })
+      .catch(() => { if (!cancelled) setRouteChoices([]); });
+    return () => { cancelled = true; };
+  }, [active?.id, savedV2Result]);
+
+  const chooseRoute = async (routeId: string) => {
+    if (!user || !active || !savedV2Result || choosing) return;
+    setChoosing(true);
+    try {
+      const row = await recordRouteChoice(user.id, active.id, savedV2Result, routeId);
+      setRouteChoices((prev) => [row, ...prev]);
+      trackEvent("route_chosen", { role_slug: active.role_slug, route_id: routeId });
+    } catch {
+      toast({ title: "Couldn't record that choice", description: "Please try again.", variant: "destructive" });
+    } finally {
+      setChoosing(false);
+    }
+  };
+
   const cycleStatus = async (actionId: string) => {
     if (!user || !active) return;
     const current = active.route_actions ?? [];
@@ -323,6 +351,17 @@ const MyRoute = () => {
                 }
               />
             </section>
+
+            {savedV2Result ? (
+              <section className="mb-10 rounded-2xl border-2 border-foreground/90 bg-card p-6">
+                <RouteChoiceSection
+                  result={savedV2Result}
+                  history={routeChoices}
+                  choosing={choosing}
+                  onChoose={chooseRoute}
+                />
+              </section>
+            ) : null}
 
             {showSavedResult && savedV2Result ? (
               <section className="mb-10 rounded-2xl border-2 border-foreground/90 bg-card p-6">
