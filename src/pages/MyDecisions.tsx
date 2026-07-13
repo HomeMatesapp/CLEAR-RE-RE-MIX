@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { fetchLatestChoicesFor, type RouteChoice } from "@/lib/route-choice";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -99,6 +100,16 @@ const MyDecisions = () => {
   const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const [decisions, setDecisions] = useState<SavedDecisionRow[]>([]);
+  // Increment 9: latest chosen route per decision ("Pursuing").
+  const [latestChoices, setLatestChoices] = useState<Record<string, RouteChoice>>({});
+  useEffect(() => {
+    let cancelled = false;
+    if (decisions.length === 0) { setLatestChoices({}); return; }
+    fetchLatestChoicesFor(decisions.map((d) => d.id))
+      .then((m) => { if (!cancelled) setLatestChoices(m); })
+      .catch(() => { if (!cancelled) setLatestChoices({}); });
+    return () => { cancelled = true; };
+  }, [decisions]);
   const [profile, setProfile] = useState<DecisionProfileRow>(emptyProfile);
   const [loading, setLoading] = useState(true);
   const [savingProfile, setSavingProfile] = useState(false);
@@ -303,6 +314,9 @@ const MyDecisions = () => {
                       )}
 
                       <dl className="space-y-2 text-sm">
+                        {latestChoices[d.id] && (
+                          <Row icon={<Compass className="h-3.5 w-3.5 text-primary" />} label="Pursuing" value={latestChoices[d.id].route_title} />
+                        )}
                         {d.best_route_title && (
                           <Row icon={<Compass className="h-3.5 w-3.5 text-emerald-600" />} label="Best route" value={d.best_route_title} />
                         )}

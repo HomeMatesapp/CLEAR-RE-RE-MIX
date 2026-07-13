@@ -52,3 +52,28 @@ export const recordRouteChoice = async (
   if (error) throw error;
   return data as unknown as RouteChoice;
 };
+
+/** Pure: newest choice per saved decision from a mixed list of rows. */
+export const latestChoiceByDecision = (
+  rows: readonly RouteChoice[],
+): Record<string, RouteChoice> => {
+  const out: Record<string, RouteChoice> = {};
+  for (const row of rows) {
+    const existing = out[row.saved_decision_id];
+    if (!existing || row.chosen_at > existing.chosen_at) out[row.saved_decision_id] = row;
+  }
+  return out;
+};
+
+/** Latest choice per decision for a set of decisions, in one query. */
+export const fetchLatestChoicesFor = async (
+  savedDecisionIds: readonly string[],
+): Promise<Record<string, RouteChoice>> => {
+  if (savedDecisionIds.length === 0) return {};
+  const { data, error } = await supabase
+    .from("route_choices" as never)
+    .select("id, saved_decision_id, route_id, route_title, eligibility_at_choice, practical_fit_at_choice, chosen_at")
+    .in("saved_decision_id", savedDecisionIds as string[]);
+  if (error) throw error;
+  return latestChoiceByDecision((data ?? []) as unknown as RouteChoice[]);
+};
