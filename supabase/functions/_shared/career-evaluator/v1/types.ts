@@ -151,6 +151,21 @@ export interface Rule {
 
 // ── Content: questions ─────────────────────────────────────────────────────
 
+/** Participant-facing option for a select question (Increment 3). `value`
+ *  is what rules compare against; `label` is what participants read. */
+export interface QuestionOption {
+  value: string;
+  label: string;
+  helpText?: string;
+}
+
+export type QuestionAnswerType =
+  | "single_select"
+  | "multi_select"
+  | "boolean"
+  | "number"
+  | "free_text";
+
 export interface QuestionRef {
   id: string;
   label: string;
@@ -161,6 +176,25 @@ export interface QuestionRef {
    *  deliberately not referenced by any rule (exempts the dead-question
    *  publication gate). */
   contextOnly?: boolean;
+  // ── Render metadata (Increment 3, all optional/additive). A pack without
+  //    this metadata still validates and evaluates; it just cannot pass the
+  //    renderability publication gate and so cannot be served to a wizard. ──
+  /** How the wizard renders the input. */
+  answerType?: QuestionAnswerType;
+  /** Options for single_select / multi_select. Values must exactly match
+   *  allowedValues (enforced at validate) so rules and UI cannot drift. */
+  options?: readonly QuestionOption[];
+  /** Participant-facing explanation of why this question is asked. */
+  whyWeAsk?: string;
+  /** Show this question only when the condition holds over answers so far
+   *  (tri-state; indeterminate ⇒ hidden). Answers to hidden questions are
+   *  discarded before evaluation. */
+  visibleWhen?: ConditionNode;
+  /** Whether the wizard requires an answer before continuing. Default false:
+   *  the evaluator's unknown-answer semantics handle blanks honestly. */
+  required?: boolean;
+  /** Placeholder for number / free_text inputs. */
+  placeholder?: string;
 }
 
 // ── Content: evidence ──────────────────────────────────────────────────────

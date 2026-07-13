@@ -52,6 +52,7 @@ import {
 } from "@/components/role/reality-check-shared";
 import { ModularRealityCheckWizard } from "@/components/role/ModularRealityCheckWizard";
 import { resolveConfig, hasReviewedModularRealityCheck } from "@/lib/reality-check/questionnaire/registry";
+import { GenericPackRealityCheck, usePackQuestionnaire } from "@/components/reality-check/GenericPackRealityCheck";
 import { updateModularDraftStepId } from "@/lib/reality-check/questionnaire/draft-v3";
 import { ModularResultView } from "@/components/reality-check/ModularResultView";
 import { UnreviewedRealityCheckFallback } from "@/components/reality-check/UnreviewedRealityCheckFallback";
@@ -174,6 +175,14 @@ const RealityCheckPage = () => {
   const { user } = useAuth();
 
   const [role, setRole] = useState<Role | null>(null);
+  // Increment 3: pack-backed Reality Checks. Only consulted for roles WITHOUT
+  // a reviewed modular check; resolves to the questionnaire when the server
+  // has a servable, renderable pack bound to this role.
+  const packQuestionnaire = usePackQuestionnaire(
+    role && !hasReviewedModularRealityCheck(role.role_slug)
+      ? { id: role.id, role_slug: role.role_slug, role_name: role.role_name }
+      : null,
+  );
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
@@ -444,6 +453,39 @@ const RealityCheckPage = () => {
   // wizard — it does not authorise skipping evidence, coverage or
   // availability caveats; those remain the engine's responsibility.
   if (!hasReviewedModularRealityCheck(role.role_slug) && !isRealityCheckReady(role.service_level)) {
+    // Increment 3: a role without a reviewed modular check may still have a
+    // published, servable career pack. Server-side resolution decides — the
+    // client never selects a pack.
+    if (packQuestionnaire === undefined) {
+      return (
+        <div className="min-h-screen flex flex-col bg-background">
+          <Navbar />
+          <div className="flex-1 flex items-center justify-center text-muted-foreground">Checking availability…</div>
+          <Footer />
+        </div>
+      );
+    }
+    if (packQuestionnaire) {
+      return (
+        <div className="min-h-screen flex flex-col bg-background">
+          <Helmet>
+            <title>Reality-check — {role.role_name} | Clear Routes</title>
+            <meta
+              name="description"
+              content={`Check which training routes into ${role.role_name} are currently open to you, based on published entry requirements.`}
+            />
+          </Helmet>
+          <Navbar />
+          <main className="flex-1">
+            <GenericPackRealityCheck
+              role={{ id: role.id, role_slug: role.role_slug, role_name: role.role_name }}
+              questionnaire={packQuestionnaire}
+            />
+          </main>
+          <Footer />
+        </div>
+      );
+    }
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Helmet>

@@ -93,12 +93,24 @@ export const requirementRef = z.object({
   requirementType: z.enum(["machine_assessable", "participant_verification"]).optional(),
 });
 
+const questionOption = z.object({
+  value: z.string().min(1),
+  label: z.string().min(1),
+  helpText: z.string().optional(),
+});
+
 export const questionRef = z.object({
   id: z.string().min(1),
   label: z.string().min(1),
   helpText: z.string().optional(),
   allowedValues: z.array(z.string()).optional(),
   contextOnly: z.boolean().optional(),
+  answerType: z.enum(["single_select", "multi_select", "boolean", "number", "free_text"]).optional(),
+  options: z.array(questionOption).optional(),
+  whyWeAsk: z.string().optional(),
+  visibleWhen: conditionNode.optional(),
+  required: z.boolean().optional(),
+  placeholder: z.string().optional(),
 });
 
 export const actionTemplate = z.object({
@@ -223,6 +235,29 @@ export const validatePackCrossRefs = (pack: unknown): string[] => {
   for (const r of p.routes) {
     for (const aid of r.actionTemplateIds ?? []) if (!actionIds.has(aid)) errs.push(`route ${r.id} references unknown action ${aid}`);
   }
+  // Increment 3: render metadata consistency.
+  for (const q of p.questionRefs) {
+    if (q.options?.length) {
+      const optionValues = q.options.map((o) => o.value);
+      if (new Set(optionValues).size !== optionValues.length) {
+        errs.push(`question ${q.id} has duplicate option values`);
+      }
+      if (q.allowedValues?.length) {
+        const allowed = [...q.allowedValues].sort().join("|");
+        const opts = [...optionValues].sort().join("|");
+        if (allowed !== opts) errs.push(`question ${q.id} options do not exactly match allowedValues (rules and UI would drift)`);
+      }
+    }
+    if ((q.answerType === "single_select" || q.answerType === "multi_select") && !q.options?.length && !q.allowedValues?.length) {
+      errs.push(`question ${q.id} is a select but declares neither options nor allowedValues`);
+    }
+    if (q.visibleWhen) {
+      for (const pr of collectPredicates(q.visibleWhen)) {
+        if (!questionIds.has(pr.questionId)) errs.push(`question ${q.id} visibleWhen references unknown question ${pr.questionId}`);
+        if (pr.questionId === q.id) errs.push(`question ${q.id} visibleWhen references itself`);
+      }
+    }
+  }
   // participant title guard: must include the canonical title as a substring
   // OR be identical. Prevents "Midwife" being renamed to "Home-birth midwife".
   const canon = p.careerIdentity.canonicalTitle.toLowerCase();
@@ -283,6 +318,15 @@ export const validatePublicationGates = (pack: unknown): string[] => {
   for (const a of p.actionTemplates) for (const ev of a.evidenceRefs) if (withdrawn.has(ev)) errs.push(`action ${a.id} references withdrawn evidence ${ev}`);
   for (const r of p.rules) for (const eff of r.then) {
     if ("evidenceRefs" in eff) for (const ev of eff.evidenceRefs) if (withdrawn.has(ev)) errs.push(`rule ${r.id} references withdrawn evidence ${ev}`);
+  }
+  // Renderability gate (Increment 3): a pack served to participants must be
+  // renderable — every question needs an answerType, and selects need
+  // participant-facing option labels.
+  for (const q of p.questionRefs) {
+    if (!q.answerType) errs.push(`question ${q.id} has no answerType and cannot be rendered by the wizard`);
+    else if ((q.answerType === "single_select" || q.answerType === "multi_select") && !q.options?.length) {
+      errs.push(`question ${q.id} is a select without participant-facing options`);
+    }
   }
   // Dead-question gate: every question must be referenced by a rule predicate
   // or a machineRule, or be explicitly declared contextOnly. Otherwise it

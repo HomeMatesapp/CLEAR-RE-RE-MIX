@@ -19,6 +19,7 @@ import { buildActorResult } from "./_actor.ts";
 import { buildSolicitorResult } from "./_solicitor.ts";
 import { getCorsHeaders } from "../_shared/cors.ts";
 import { evaluateGenericPack, evaluateGenericPackV2 } from "./_generic_pack.ts";
+import type { CareerDecisionPackV1, QuestionRef } from "../_shared/career-evaluator/v1/types.ts";
 import { canonicalHash, sha256Hex } from "../_shared/career-evaluator/v1/hash.ts";
 
 const EVALUATOR_SCHEMA_VERSION = "reality-check-result/v1";
@@ -218,6 +219,48 @@ export const handleRealityCheck = async (req: Request, deps: HandlerDeps = {}): 
           error: "pack_hash_mismatch",
           pack_version: binding.pack_version,
         }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+
+      // Increment 3: questionnaire mode — serve the renderable questions so
+      // the generic wizard can run. Server-side pack resolution only; the
+      // client never selects or fetches a pack. No evaluation, no receipt.
+      if ((payload as { mode?: unknown }).mode === "questionnaire") {
+        const pack = binding.content as CareerDecisionPackV1;
+        const notRenderable = pack.questionRefs.filter((q: QuestionRef) =>
+          !q.answerType ||
+          ((q.answerType === "single_select" || q.answerType === "multi_select") && !q.options?.length)
+        );
+        if (notRenderable.length > 0) {
+          // Bound pack predates render metadata (e.g. midwife 1.0.0). The
+          // client falls back exactly as if no pack were bound.
+          return new Response(JSON.stringify({
+            error: "pack_not_renderable",
+            packMetadata: { slug: binding.slug, packVersion: binding.pack_version },
+          }), { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        }
+        return new Response(JSON.stringify({
+          questionnaire: {
+            slug: binding.slug,
+            roleSlug: binding.role_slug,
+            careerTitle: pack.careerIdentity.participantTitle,
+            packVersion: binding.pack_version,
+            contentHash: binding.content_hash,
+            geographicScope: pack.careerIdentity.geographicScope,
+            regulatoryNote: pack.careerIdentity.regulatory.note ?? null,
+            questions: pack.questionRefs.map((q: QuestionRef) => ({
+              id: q.id,
+              label: q.label,
+              helpText: q.helpText ?? null,
+              whyWeAsk: q.whyWeAsk ?? null,
+              answerType: q.answerType,
+              options: q.options ?? null,
+              visibleWhen: q.visibleWhen ?? null,
+              required: q.required ?? false,
+              placeholder: q.placeholder ?? null,
+              contextOnly: q.contextOnly ?? false,
+            })),
+          },
+        }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
 
       const result = evaluateGenericPack(binding.content, answers ?? {});

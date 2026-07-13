@@ -152,3 +152,65 @@ Deno.test("hash mismatch: unchanged refusal, no results, no receipt", async () =
   assertEquals(body.resultV2, undefined);
   assertEquals(issued.length, 0);
 });
+
+// ── Increment 3: questionnaire mode ─────────────────────────────────────────
+
+const driveQuestionnaire = async (binding: ResolvedBinding) => {
+  const issued: IssuedReceipt[] = [];
+  const req = new Request("http://x/reality-check", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", origin: "http://localhost" },
+    body: JSON.stringify({ role: { id: ROLE_ID, role_slug: "midwife", role_name: "Midwife" }, mode: "questionnaire" }),
+  });
+  const res = await handleRealityCheck(req, {
+    resolveBinding: async () => binding,
+    validatePair: async () => true,
+    issueReceipt: async (r) => { issued.push(r as unknown as IssuedReceipt); },
+    resolveUserId: async () => null,
+    ttlMinutes: 30,
+    now: () => NOW,
+  });
+  return { res, issued };
+};
+
+Deno.test("questionnaire mode: 1.0.0 (no render metadata) refuses with pack_not_renderable, no receipt", async () => {
+  const binding = await makeBinding();
+  const { res, issued } = await driveQuestionnaire(binding);
+  assertEquals(res.status, 409);
+  const body = await res.json();
+  assertEquals(body.error, "pack_not_renderable");
+  assertEquals(body.questionnaire, undefined);
+  assertEquals(issued.length, 0);
+});
+
+Deno.test("questionnaire mode: 1.1.0 serves renderable questions, no evaluation, no receipt", async () => {
+  const midwife110 = JSON.parse(await Deno.readTextFile(
+    new URL("../../../content/career-packs/midwife/1.1.0.json", import.meta.url),
+  ));
+  const binding = await makeBinding({
+    content: midwife110,
+    pack_version: "1.1.0",
+    content_hash: await canonicalHash(midwife110),
+  });
+  const { res, issued } = await driveQuestionnaire(binding);
+  assertEquals(res.status, 200);
+  const body = await res.json();
+  assertEquals(issued.length, 0, "questionnaire mode must not issue receipts");
+  assertEquals(body.result, undefined);
+  assertEquals(body.resultV2, undefined);
+  const q = body.questionnaire;
+  assertEquals(q.slug, "midwife");
+  assertEquals(q.packVersion, "1.1.0");
+  assertEquals(q.questions.length, 9);
+  for (const question of q.questions) {
+    assert(question.answerType, `question ${question.id} must be renderable`);
+    if (question.answerType === "single_select") {
+      assert(Array.isArray(question.options) && question.options.length > 0, `question ${question.id} needs options`);
+      for (const o of question.options) assert(o.label && o.value);
+    }
+  }
+  // Rules, evidence and test fixtures never travel to the client.
+  assertEquals(q.rules, undefined);
+  assertEquals(q.evidenceRecords, undefined);
+  assertEquals(q.testProfiles, undefined);
+});

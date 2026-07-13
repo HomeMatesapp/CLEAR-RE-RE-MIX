@@ -111,8 +111,12 @@ describe("publication gates", () => {
     for (const req of p.requirements as unknown as Array<{ requirementType?: string }>) {
       req.requirementType = "participant_verification";
     }
-    for (const q of p.questionRefs as unknown as Array<{ id: string; contextOnly?: boolean }>) {
+    for (const q of p.questionRefs as unknown as Array<{ id: string; contextOnly?: boolean; answerType?: string; options?: { value: string; label: string }[]; allowedValues?: string[] }>) {
       if (q.id === "starting_point") q.contextOnly = true;
+      // Increment 3 renderability gate: every question needs an answerType,
+      // and selects need participant-facing options.
+      q.answerType = "single_select";
+      q.options = (q.allowedValues ?? []).map((v) => ({ value: v, label: `Option: ${v}` }));
     }
     return p;
   };
