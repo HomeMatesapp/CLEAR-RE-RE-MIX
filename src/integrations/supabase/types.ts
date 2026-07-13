@@ -138,6 +138,8 @@ export type Database = {
           receipt_hash: string
           result_canonical_hash: string
           result_v1: Json
+          result_v2: Json | null
+          result_v2_canonical_hash: string | null
           revoked_at: string | null
           role_id: string
           role_slug: string
@@ -158,6 +160,8 @@ export type Database = {
           receipt_hash: string
           result_canonical_hash: string
           result_v1: Json
+          result_v2?: Json | null
+          result_v2_canonical_hash?: string | null
           revoked_at?: string | null
           role_id: string
           role_slug: string
@@ -178,6 +182,8 @@ export type Database = {
           receipt_hash?: string
           result_canonical_hash?: string
           result_v1?: Json
+          result_v2?: Json | null
+          result_v2_canonical_hash?: string | null
           revoked_at?: string | null
           role_id?: string
           role_slug?: string
@@ -461,6 +467,48 @@ export type Database = {
         }
         Relationships: []
       }
+      decision_shares: {
+        Row: {
+          created_at: string
+          id: string
+          organisation_id: string
+          participant_user_id: string
+          revoked_at: string | null
+          saved_decision_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          organisation_id: string
+          participant_user_id: string
+          revoked_at?: string | null
+          saved_decision_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          organisation_id?: string
+          participant_user_id?: string
+          revoked_at?: string | null
+          saved_decision_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "decision_shares_organisation_id_fkey"
+            columns: ["organisation_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "decision_shares_saved_decision_id_fkey"
+            columns: ["saved_decision_id"]
+            isOneToOne: false
+            referencedRelation: "saved_decisions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       institution_enquiries: {
         Row: {
           contact_consent: boolean
@@ -664,6 +712,88 @@ export type Database = {
             columns: ["opportunity_id"]
             isOneToOne: false
             referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organisation_members: {
+        Row: {
+          created_at: string
+          member_role: string
+          organisation_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          member_role: string
+          organisation_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          member_role?: string
+          organisation_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organisation_members_organisation_id_fkey"
+            columns: ["organisation_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organisations: {
+        Row: {
+          created_at: string
+          id: string
+          join_code: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          join_code: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          join_code?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      participant_org_links: {
+        Row: {
+          created_at: string
+          id: string
+          organisation_id: string
+          participant_user_id: string
+          revoked_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          organisation_id: string
+          participant_user_id: string
+          revoked_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          organisation_id?: string
+          participant_user_id?: string
+          revoked_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "participant_org_links_organisation_id_fkey"
+            columns: ["organisation_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
             referencedColumns: ["id"]
           },
         ]
@@ -1201,6 +1331,47 @@ export type Database = {
           },
         ]
       }
+      route_choices: {
+        Row: {
+          chosen_at: string
+          eligibility_at_choice: string | null
+          id: string
+          practical_fit_at_choice: string | null
+          route_id: string
+          route_title: string
+          saved_decision_id: string
+          user_id: string
+        }
+        Insert: {
+          chosen_at?: string
+          eligibility_at_choice?: string | null
+          id?: string
+          practical_fit_at_choice?: string | null
+          route_id: string
+          route_title: string
+          saved_decision_id: string
+          user_id: string
+        }
+        Update: {
+          chosen_at?: string
+          eligibility_at_choice?: string | null
+          id?: string
+          practical_fit_at_choice?: string | null
+          route_id?: string
+          route_title?: string
+          saved_decision_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "route_choices_saved_decision_id_fkey"
+            columns: ["saved_decision_id"]
+            isOneToOne: false
+            referencedRelation: "saved_decisions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       saved_decisions: {
         Row: {
           answer_schema_version: number | null
@@ -1220,8 +1391,10 @@ export type Database = {
           pack_id: string | null
           pack_version: string | null
           questionnaire_version: string | null
+          result_schema_version: string | null
           result_snapshot: Json | null
           result_v1: Json | null
+          result_v2: Json | null
           role_id: string | null
           role_name: string
           role_slug: string
@@ -1248,8 +1421,10 @@ export type Database = {
           pack_id?: string | null
           pack_version?: string | null
           questionnaire_version?: string | null
+          result_schema_version?: string | null
           result_snapshot?: Json | null
           result_v1?: Json | null
+          result_v2?: Json | null
           role_id?: string | null
           role_name: string
           role_slug: string
@@ -1276,8 +1451,10 @@ export type Database = {
           pack_id?: string | null
           pack_version?: string | null
           questionnaire_version?: string | null
+          result_schema_version?: string | null
           result_snapshot?: Json | null
           result_v1?: Json | null
+          result_v2?: Json | null
           role_id?: string | null
           role_name?: string
           role_slug?: string
@@ -1511,6 +1688,14 @@ export type Database = {
         Returns: number
       }
       get_contamination_fn_def: { Args: never; Returns: string }
+      join_organisation: {
+        Args: { _join_code: string }
+        Returns: {
+          organisation_id: string
+          organisation_name: string
+          status: string
+        }[]
+      }
       publish_and_bind_career_pack: {
         Args: { _actor: string; _pack_id: string }
         Returns: Json
@@ -1518,19 +1703,6 @@ export type Database = {
       reality_check_rate_increment: {
         Args: { p_key_hash: string; p_scope: string; p_window_start: string }
         Returns: number
-      }
-      resolve_active_career_pack: {
-        Args: { _role_id: string; _slug: string }
-        Returns: {
-          content: Json
-          content_hash: string
-          pack_id: string
-          pack_version: string
-          role_id: string
-          role_slug: string
-          slug: string
-          status: Database["public"]["Enums"]["career_pack_status"]
-        }[]
       }
       resolve_role_pack_binding: {
         Args: { _role_id: string; _slug: string }
