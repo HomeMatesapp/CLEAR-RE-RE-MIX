@@ -185,6 +185,7 @@ export type Database = {
           is_skills_bootcamp: boolean | null
           job_placement_support: string | null
           last_reviewed: string | null
+          lead_capture_enabled: boolean
           location: string | null
           name: string
           next_start_date: string | null
@@ -219,6 +220,7 @@ export type Database = {
           is_skills_bootcamp?: boolean | null
           job_placement_support?: string | null
           last_reviewed?: string | null
+          lead_capture_enabled?: boolean
           location?: string | null
           name: string
           next_start_date?: string | null
@@ -253,6 +255,7 @@ export type Database = {
           is_skills_bootcamp?: boolean | null
           job_placement_support?: string | null
           last_reviewed?: string | null
+          lead_capture_enabled?: boolean
           location?: string | null
           name?: string
           next_start_date?: string | null
@@ -278,6 +281,7 @@ export type Database = {
           best_path: string | null
           career_regret_risk: string | null
           competition_level: string | null
+          competition_note: string | null
           confidence_level: string | null
           created_at: string
           degree_required: string | null
@@ -287,6 +291,8 @@ export type Database = {
           job_security: string | null
           key_employers: string[] | null
           last_reviewed: string | null
+          merged_into: string | null
+          most_common_route: string | null
           next_review: string | null
           next_step: string | null
           next_step_url: string | null
@@ -295,6 +301,8 @@ export type Database = {
           pathway_graduate: string | null
           pathway_no_background: string | null
           pathway_school_leaver: string | null
+          pathway_source_text: string | null
+          previous_slugs: string[]
           progression_speed: string | null
           raw_why_text: string | null
           reality_check: string | null
@@ -326,6 +334,7 @@ export type Database = {
           best_path?: string | null
           career_regret_risk?: string | null
           competition_level?: string | null
+          competition_note?: string | null
           confidence_level?: string | null
           created_at?: string
           degree_required?: string | null
@@ -335,6 +344,8 @@ export type Database = {
           job_security?: string | null
           key_employers?: string[] | null
           last_reviewed?: string | null
+          merged_into?: string | null
+          most_common_route?: string | null
           next_review?: string | null
           next_step?: string | null
           next_step_url?: string | null
@@ -343,6 +354,8 @@ export type Database = {
           pathway_graduate?: string | null
           pathway_no_background?: string | null
           pathway_school_leaver?: string | null
+          pathway_source_text?: string | null
+          previous_slugs?: string[]
           progression_speed?: string | null
           raw_why_text?: string | null
           reality_check?: string | null
@@ -374,6 +387,7 @@ export type Database = {
           best_path?: string | null
           career_regret_risk?: string | null
           competition_level?: string | null
+          competition_note?: string | null
           confidence_level?: string | null
           created_at?: string
           degree_required?: string | null
@@ -383,6 +397,8 @@ export type Database = {
           job_security?: string | null
           key_employers?: string[] | null
           last_reviewed?: string | null
+          merged_into?: string | null
+          most_common_route?: string | null
           next_review?: string | null
           next_step?: string | null
           next_step_url?: string | null
@@ -391,6 +407,8 @@ export type Database = {
           pathway_graduate?: string | null
           pathway_no_background?: string | null
           pathway_school_leaver?: string | null
+          pathway_source_text?: string | null
+          previous_slugs?: string[]
           progression_speed?: string | null
           raw_why_text?: string | null
           reality_check?: string | null
@@ -414,7 +432,15 @@ export type Database = {
           updated_at?: string
           who_not_for?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "roles_merged_into_fkey"
+            columns: ["merged_into"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       support_organisations: {
         Row: {
@@ -472,6 +498,7 @@ export type Database = {
           employment_status: string | null
           first_name: string | null
           has_criminal_record: boolean | null
+          has_degree: boolean | null
           has_disability: boolean | null
           highest_qualification: string | null
           id: string
@@ -480,6 +507,8 @@ export type Database = {
           is_refugee: boolean | null
           is_veteran: boolean | null
           is_woman_nb: boolean | null
+          personalisation_completed_at: string | null
+          personalisation_last_step: number | null
           updated_at: string
           user_id: string
         }
@@ -493,6 +522,7 @@ export type Database = {
           employment_status?: string | null
           first_name?: string | null
           has_criminal_record?: boolean | null
+          has_degree?: boolean | null
           has_disability?: boolean | null
           highest_qualification?: string | null
           id?: string
@@ -501,6 +531,8 @@ export type Database = {
           is_refugee?: boolean | null
           is_veteran?: boolean | null
           is_woman_nb?: boolean | null
+          personalisation_completed_at?: string | null
+          personalisation_last_step?: number | null
           updated_at?: string
           user_id: string
         }
@@ -514,6 +546,7 @@ export type Database = {
           employment_status?: string | null
           first_name?: string | null
           has_criminal_record?: boolean | null
+          has_degree?: boolean | null
           has_disability?: boolean | null
           highest_qualification?: string | null
           id?: string
@@ -522,6 +555,8 @@ export type Database = {
           is_refugee?: boolean | null
           is_veteran?: boolean | null
           is_woman_nb?: boolean | null
+          personalisation_completed_at?: string | null
+          personalisation_last_step?: number | null
           updated_at?: string
           user_id?: string
         }
@@ -532,6 +567,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      _merge_roles: {
+        Args: {
+          final_name: string
+          final_slug: string
+          losers: string[]
+          survivor: string
+        }
+        Returns: undefined
+      }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
     }
