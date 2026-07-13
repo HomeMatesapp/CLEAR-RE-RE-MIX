@@ -122,6 +122,276 @@ export type Database = {
         }
         Relationships: []
       }
+      decision_profiles: {
+        Row: {
+          area: string | null
+          budget_band: string | null
+          commute_flexibility: string | null
+          created_at: string
+          highest_qualification: string | null
+          id: string
+          need_to_earn: string | null
+          starting_point: string | null
+          support_circumstances: Json
+          updated_at: string
+          user_id: string
+          weekly_hours: string | null
+        }
+        Insert: {
+          area?: string | null
+          budget_band?: string | null
+          commute_flexibility?: string | null
+          created_at?: string
+          highest_qualification?: string | null
+          id?: string
+          need_to_earn?: string | null
+          starting_point?: string | null
+          support_circumstances?: Json
+          updated_at?: string
+          user_id: string
+          weekly_hours?: string | null
+        }
+        Update: {
+          area?: string | null
+          budget_band?: string | null
+          commute_flexibility?: string | null
+          created_at?: string
+          highest_qualification?: string | null
+          id?: string
+          need_to_earn?: string | null
+          starting_point?: string | null
+          support_circumstances?: Json
+          updated_at?: string
+          user_id?: string
+          weekly_hours?: string | null
+        }
+        Relationships: []
+      }
+      institution_enquiries: {
+        Row: {
+          contact_consent: boolean
+          created_at: string
+          enquiry_type: string
+          id: string
+          institution: string
+          job_title: string
+          learner_count: string | null
+          message: string
+          name: string
+          status: string
+          work_email: string
+        }
+        Insert: {
+          contact_consent?: boolean
+          created_at?: string
+          enquiry_type?: string
+          id?: string
+          institution: string
+          job_title: string
+          learner_count?: string | null
+          message: string
+          name: string
+          status?: string
+          work_email: string
+        }
+        Update: {
+          contact_consent?: boolean
+          created_at?: string
+          enquiry_type?: string
+          id?: string
+          institution?: string
+          job_title?: string
+          learner_count?: string | null
+          message?: string
+          name?: string
+          status?: string
+          work_email?: string
+        }
+        Relationships: []
+      }
+      opportunities: {
+        Row: {
+          application_url: string | null
+          cost: string | null
+          created_at: string
+          deadline: string | null
+          description: string | null
+          employer_name: string | null
+          english_maths_requirements: string | null
+          entry_requirements: string | null
+          funding_type: string | null
+          id: string
+          is_online: boolean
+          is_remote: boolean
+          is_seed: boolean
+          is_sponsored: boolean
+          location_name: string | null
+          outward_code: string | null
+          postcode: string | null
+          provider_name: string | null
+          qualification_level: string | null
+          radius_miles: number | null
+          role_tags: string[]
+          route_tags: string[]
+          salary: string | null
+          source_url: string | null
+          sponsor_label: string | null
+          start_date: string | null
+          status: string
+          title: string
+          type: string
+          updated_at: string
+          verified_at: string | null
+          warning_notes: string | null
+        }
+        Insert: {
+          application_url?: string | null
+          cost?: string | null
+          created_at?: string
+          deadline?: string | null
+          description?: string | null
+          employer_name?: string | null
+          english_maths_requirements?: string | null
+          entry_requirements?: string | null
+          funding_type?: string | null
+          id?: string
+          is_online?: boolean
+          is_remote?: boolean
+          is_seed?: boolean
+          is_sponsored?: boolean
+          location_name?: string | null
+          outward_code?: string | null
+          postcode?: string | null
+          provider_name?: string | null
+          qualification_level?: string | null
+          radius_miles?: number | null
+          role_tags?: string[]
+          route_tags?: string[]
+          salary?: string | null
+          source_url?: string | null
+          sponsor_label?: string | null
+          start_date?: string | null
+          status?: string
+          title: string
+          type: string
+          updated_at?: string
+          verified_at?: string | null
+          warning_notes?: string | null
+        }
+        Update: {
+          application_url?: string | null
+          cost?: string | null
+          created_at?: string
+          deadline?: string | null
+          description?: string | null
+          employer_name?: string | null
+          english_maths_requirements?: string | null
+          entry_requirements?: string | null
+          funding_type?: string | null
+          id?: string
+          is_online?: boolean
+          is_remote?: boolean
+          is_seed?: boolean
+          is_sponsored?: boolean
+          location_name?: string | null
+          outward_code?: string | null
+          postcode?: string | null
+          provider_name?: string | null
+          qualification_level?: string | null
+          radius_miles?: number | null
+          role_tags?: string[]
+          route_tags?: string[]
+          salary?: string | null
+          source_url?: string | null
+          sponsor_label?: string | null
+          start_date?: string | null
+          status?: string
+          title?: string
+          type?: string
+          updated_at?: string
+          verified_at?: string | null
+          warning_notes?: string | null
+        }
+        Relationships: []
+      }
+      opportunity_enquiries: {
+        Row: {
+          consent_given: boolean
+          consent_timestamp: string | null
+          created_at: string
+          decision_id: string | null
+          email: string
+          id: string
+          message: string | null
+          name: string
+          opportunity_id: string
+          phone: string | null
+          shared_context: Json
+          user_id: string
+        }
+        Insert: {
+          consent_given?: boolean
+          consent_timestamp?: string | null
+          created_at?: string
+          decision_id?: string | null
+          email: string
+          id?: string
+          message?: string | null
+          name: string
+          opportunity_id: string
+          phone?: string | null
+          shared_context?: Json
+          user_id: string
+        }
+        Update: {
+          consent_given?: boolean
+          consent_timestamp?: string | null
+          created_at?: string
+          decision_id?: string | null
+          email?: string
+          id?: string
+          message?: string | null
+          name?: string
+          opportunity_id?: string
+          phone?: string | null
+          shared_context?: Json
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "opportunity_enquiries_decision_id_fkey"
+            columns: ["decision_id"]
+            isOneToOne: false
+            referencedRelation: "saved_decisions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "opportunity_enquiries_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pathway_families: {
+        Row: {
+          description: string | null
+          id: number
+          name: string
+        }
+        Insert: {
+          description?: string | null
+          id: number
+          name: string
+        }
+        Update: {
+          description?: string | null
+          id?: number
+          name?: string
+        }
+        Relationships: []
+      }
       provider_pathways: {
         Row: {
           created_at: string
@@ -175,7 +445,6 @@ export type Database = {
           created_at: string
           duration: string | null
           employer_acceptance: string | null
-          employment_rate: string | null
           format: string | null
           funded: string | null
           funding_type: string | null
@@ -191,6 +460,7 @@ export type Database = {
           next_start_date: string | null
           prerequisites: string | null
           provider_org: string | null
+          publishes_note: string | null
           publishes_outcomes: boolean | null
           review_status: string | null
           roles_covered: string[] | null
@@ -210,7 +480,6 @@ export type Database = {
           created_at?: string
           duration?: string | null
           employer_acceptance?: string | null
-          employment_rate?: string | null
           format?: string | null
           funded?: string | null
           funding_type?: string | null
@@ -226,6 +495,7 @@ export type Database = {
           next_start_date?: string | null
           prerequisites?: string | null
           provider_org?: string | null
+          publishes_note?: string | null
           publishes_outcomes?: boolean | null
           review_status?: string | null
           roles_covered?: string[] | null
@@ -245,7 +515,6 @@ export type Database = {
           created_at?: string
           duration?: string | null
           employer_acceptance?: string | null
-          employment_rate?: string | null
           format?: string | null
           funded?: string | null
           funding_type?: string | null
@@ -261,6 +530,7 @@ export type Database = {
           next_start_date?: string | null
           prerequisites?: string | null
           provider_org?: string | null
+          publishes_note?: string | null
           publishes_outcomes?: boolean | null
           review_status?: string | null
           roles_covered?: string[] | null
@@ -269,6 +539,140 @@ export type Database = {
           website?: string | null
           what_to_ask?: string | null
           who_its_for?: string | null
+        }
+        Relationships: []
+      }
+      reality_check_explanation_cache: {
+        Row: {
+          created_at: string
+          expires_at: string
+          hit_count: number
+          key: string
+          last_hit_at: string
+          payload: Json
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string
+          hit_count?: number
+          key: string
+          last_hit_at?: string
+          payload: Json
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          hit_count?: number
+          key?: string
+          last_hit_at?: string
+          payload?: Json
+        }
+        Relationships: []
+      }
+      reality_check_feedback: {
+        Row: {
+          created_at: string
+          detail: string | null
+          id: string
+          reason: string
+          role_slug: string
+          verdict: string | null
+        }
+        Insert: {
+          created_at?: string
+          detail?: string | null
+          id?: string
+          reason: string
+          role_slug: string
+          verdict?: string | null
+        }
+        Update: {
+          created_at?: string
+          detail?: string | null
+          id?: string
+          reason?: string
+          role_slug?: string
+          verdict?: string | null
+        }
+        Relationships: []
+      }
+      reality_check_rate: {
+        Row: {
+          count: number
+          key_hash: string
+          scope: string
+          window_start: string
+        }
+        Insert: {
+          count?: number
+          key_hash: string
+          scope: string
+          window_start: string
+        }
+        Update: {
+          count?: number
+          key_hash?: string
+          scope?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
+      role_review_requests: {
+        Row: {
+          created_at: string
+          id: string
+          note: string | null
+          requester_user_id: string | null
+          role_id: string | null
+          role_slug: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          requester_user_id?: string | null
+          role_id?: string | null
+          role_slug: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          requester_user_id?: string | null
+          role_id?: string | null
+          role_slug?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "role_review_requests_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      role_views: {
+        Row: {
+          id: string
+          role_name: string
+          role_slug: string
+          user_id: string
+          viewed_at: string
+        }
+        Insert: {
+          id?: string
+          role_name: string
+          role_slug: string
+          user_id: string
+          viewed_at?: string
+        }
+        Update: {
+          id?: string
+          role_name?: string
+          role_slug?: string
+          user_id?: string
+          viewed_at?: string
         }
         Relationships: []
       }
@@ -298,6 +702,7 @@ export type Database = {
           next_step_url: string | null
           opportunity_cost: string | null
           pathway_adjacent: string | null
+          pathway_family: number | null
           pathway_graduate: string | null
           pathway_no_background: string | null
           pathway_school_leaver: string | null
@@ -312,11 +717,14 @@ export type Database = {
           review_status: string | null
           role_name: string
           role_slug: string
+          salary_as_at: string | null
           salary_entry: number | null
           salary_experienced: number | null
           salary_senior: number | null
           salary_source: string | null
+          salary_source_url: string | null
           second_path: string | null
+          service_level: Database["public"]["Enums"]["role_service_level"]
           short_description: string | null
           third_path: string | null
           top_universities: string | null
@@ -351,6 +759,7 @@ export type Database = {
           next_step_url?: string | null
           opportunity_cost?: string | null
           pathway_adjacent?: string | null
+          pathway_family?: number | null
           pathway_graduate?: string | null
           pathway_no_background?: string | null
           pathway_school_leaver?: string | null
@@ -365,11 +774,14 @@ export type Database = {
           review_status?: string | null
           role_name: string
           role_slug: string
+          salary_as_at?: string | null
           salary_entry?: number | null
           salary_experienced?: number | null
           salary_senior?: number | null
           salary_source?: string | null
+          salary_source_url?: string | null
           second_path?: string | null
+          service_level?: Database["public"]["Enums"]["role_service_level"]
           short_description?: string | null
           third_path?: string | null
           top_universities?: string | null
@@ -404,6 +816,7 @@ export type Database = {
           next_step_url?: string | null
           opportunity_cost?: string | null
           pathway_adjacent?: string | null
+          pathway_family?: number | null
           pathway_graduate?: string | null
           pathway_no_background?: string | null
           pathway_school_leaver?: string | null
@@ -418,11 +831,14 @@ export type Database = {
           review_status?: string | null
           role_name?: string
           role_slug?: string
+          salary_as_at?: string | null
           salary_entry?: number | null
           salary_experienced?: number | null
           salary_senior?: number | null
           salary_source?: string | null
+          salary_source_url?: string | null
           second_path?: string | null
+          service_level?: Database["public"]["Enums"]["role_service_level"]
           short_description?: string | null
           third_path?: string | null
           top_universities?: string | null
@@ -440,7 +856,136 @@ export type Database = {
             referencedRelation: "roles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "roles_pathway_family_fkey"
+            columns: ["pathway_family"]
+            isOneToOne: false
+            referencedRelation: "pathway_families"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      saved_decisions: {
+        Row: {
+          backup_route_title: string | null
+          best_route_title: string | null
+          created_at: string
+          first_move: string | null
+          id: string
+          input_snapshot: Json | null
+          local_realism_rating: string | null
+          overall_verdict: string | null
+          result_snapshot: Json | null
+          role_id: string | null
+          role_name: string
+          role_slug: string
+          route_to_avoid_title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          backup_route_title?: string | null
+          best_route_title?: string | null
+          created_at?: string
+          first_move?: string | null
+          id?: string
+          input_snapshot?: Json | null
+          local_realism_rating?: string | null
+          overall_verdict?: string | null
+          result_snapshot?: Json | null
+          role_id?: string | null
+          role_name: string
+          role_slug: string
+          route_to_avoid_title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          backup_route_title?: string | null
+          best_route_title?: string | null
+          created_at?: string
+          first_move?: string | null
+          id?: string
+          input_snapshot?: Json | null
+          local_realism_rating?: string | null
+          overall_verdict?: string | null
+          result_snapshot?: Json | null
+          role_id?: string | null
+          role_name?: string
+          role_slug?: string
+          route_to_avoid_title?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_decisions_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      support_opportunities: {
+        Row: {
+          amount_or_value: string | null
+          created_at: string
+          criteria: string[]
+          description: string | null
+          eligibility_summary: string | null
+          id: string
+          last_checked_at: string | null
+          location_scope: string | null
+          name: string
+          organisation_name: string | null
+          review_status: string
+          role_slugs: string[]
+          sectors: string[]
+          source_url: string | null
+          type: string
+          updated_at: string
+          who_it_helps: string | null
+        }
+        Insert: {
+          amount_or_value?: string | null
+          created_at?: string
+          criteria?: string[]
+          description?: string | null
+          eligibility_summary?: string | null
+          id?: string
+          last_checked_at?: string | null
+          location_scope?: string | null
+          name: string
+          organisation_name?: string | null
+          review_status?: string
+          role_slugs?: string[]
+          sectors?: string[]
+          source_url?: string | null
+          type: string
+          updated_at?: string
+          who_it_helps?: string | null
+        }
+        Update: {
+          amount_or_value?: string | null
+          created_at?: string
+          criteria?: string[]
+          description?: string | null
+          eligibility_summary?: string | null
+          id?: string
+          last_checked_at?: string | null
+          location_scope?: string | null
+          name?: string
+          organisation_name?: string | null
+          review_status?: string
+          role_slugs?: string[]
+          sectors?: string[]
+          source_url?: string | null
+          type?: string
+          updated_at?: string
+          who_it_helps?: string | null
+        }
+        Relationships: []
       }
       support_organisations: {
         Row: {
@@ -567,6 +1112,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      _is_contaminated_field: { Args: { v: string }; Returns: boolean }
       _merge_roles: {
         Args: {
           final_name: string
@@ -576,11 +1122,16 @@ export type Database = {
         }
         Returns: undefined
       }
+      get_contamination_fn_def: { Args: never; Returns: string }
+      reality_check_rate_increment: {
+        Args: { p_key_hash: string; p_scope: string; p_window_start: string }
+        Returns: number
+      }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
-      [_ in never]: never
+      role_service_level: "info_only" | "reality_check" | "full_support"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -707,6 +1258,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      role_service_level: ["info_only", "reality_check", "full_support"],
+    },
   },
 } as const
