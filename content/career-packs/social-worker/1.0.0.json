@@ -1,0 +1,1434 @@
+{
+  "schemaVersion": "career-decision-pack/v1",
+  "packVersion": "1.0.0",
+  "roleId": "7d3f2a91-5b64-4c8e-9f10-2e8b7a6c5d43",
+  "slug": "social-worker",
+  "archetypeId": "regulated_multi_route",
+  "careerIdentity": {
+    "canonicalTitle": "Social Worker",
+    "participantTitle": "Social Worker",
+    "aliases": [
+      "social work",
+      "children's social worker",
+      "adult social worker"
+    ],
+    "sector": "Health and social care",
+    "occupationalFamily": "Social care",
+    "regulatory": {
+      "status": "statutory_registration",
+      "appliesTo": "all_routes",
+      "note": "'Social worker' is a protected title in England. Practising requires an approved qualification and registration with Social Work England.",
+      "body": "Social Work England",
+      "protectedTitle": "Social worker",
+      "requiredRegisterOrLicence": "Social Work England register"
+    },
+    "geographicScope": [
+      "England"
+    ]
+  },
+  "routes": [
+    {
+      "id": "route_ug_degree",
+      "title": "Undergraduate social work degree (BA/BSc)",
+      "summary": "A three-year approved degree, the standard entry route for people without a degree.",
+      "typicalDurationLabel": "Three years full time",
+      "typicalCostLabel": "Tuition fees around \u00a39,250 a year; a capped Social Work Bursary may help from year two",
+      "requirementIds": [
+        "req_gcse_english",
+        "req_level3",
+        "req_enhanced_dbs",
+        "req_swe_registration"
+      ],
+      "evidenceRefs": [
+        "ev_basw_routes",
+        "ev_prospects_courses"
+      ],
+      "actionTemplateIds": [
+        "act_swe_courses"
+      ],
+      "comparisonFields": {
+        "pattern": "Full-time study",
+        "focus": "Generic \u2014 any area of social work",
+        "funding": "Student finance; capped bursary from year two"
+      }
+    },
+    {
+      "id": "route_pg_masters",
+      "title": "Postgraduate social work degree (MA/MSc)",
+      "summary": "A two-year approved master's for graduates of other subjects.",
+      "typicalDurationLabel": "Around two years full time",
+      "typicalCostLabel": "Tuition fees apply; a capped bursary plus a tuition contribution may help",
+      "requirementIds": [
+        "req_gcse_english",
+        "req_degree_any",
+        "req_enhanced_dbs",
+        "req_swe_registration"
+      ],
+      "evidenceRefs": [
+        "ev_prospects_courses",
+        "ev_basw_routes"
+      ],
+      "actionTemplateIds": [
+        "act_swe_courses"
+      ],
+      "comparisonFields": {
+        "pattern": "Full-time study",
+        "focus": "Generic \u2014 any area of social work",
+        "funding": "Capped bursary plus tuition contribution for a limited number of students"
+      }
+    },
+    {
+      "id": "route_apprenticeship",
+      "title": "Social work degree apprenticeship",
+      "summary": "Earn a salary in a social care role while studying for an approved degree, funded through your employer.",
+      "typicalDurationLabel": "Around three years alongside your job",
+      "typicalCostLabel": "No tuition fees \u2014 funded through your employer; you earn a salary throughout",
+      "requirementIds": [
+        "req_gcse_english",
+        "req_employer_backing",
+        "req_enhanced_dbs",
+        "req_swe_registration"
+      ],
+      "evidenceRefs": [
+        "ev_communitycare_routes",
+        "ev_basw_routes"
+      ],
+      "actionTemplateIds": [
+        "act_employer_chat"
+      ],
+      "comparisonFields": {
+        "pattern": "Salaried, work-based",
+        "focus": "Generic \u2014 any area of social work",
+        "funding": "Employer/levy funded; you earn throughout"
+      }
+    },
+    {
+      "id": "route_step_up",
+      "title": "Step Up to Social Work",
+      "summary": "An intensive 14-month, fully funded postgraduate programme focused on child and family social work, run roughly every two years.",
+      "typicalDurationLabel": "14 months full time",
+      "typicalCostLabel": "Fully funded with a \u00a321,995 bursary (2026 programme); no tuition fees",
+      "requirementIds": [
+        "req_gcse_english",
+        "req_degree_2_2",
+        "req_experience_6m",
+        "req_enhanced_dbs",
+        "req_swe_registration"
+      ],
+      "evidenceRefs": [
+        "ev_gov_step_up",
+        "ev_dfe_step_up"
+      ],
+      "actionTemplateIds": [
+        "act_stepup_register"
+      ],
+      "comparisonFields": {
+        "pattern": "Funded fast-track, full time",
+        "focus": "Child and family social work",
+        "funding": "DfE funded; \u00a321,995 bursary, no fees"
+      }
+    },
+    {
+      "id": "route_approach",
+      "title": "Approach Social Work (Frontline)",
+      "summary": "A fully funded programme: qualify in year one, then work as a salaried social worker while completing a master's. Child and family focus.",
+      "typicalDurationLabel": "Qualify in around 14 months; three years to the master's",
+      "typicalCostLabel": "Fully funded; \u00a318,000 bursary in year one (\u00a320,000 in London), salaried from year two",
+      "requirementIds": [
+        "req_gcse_english",
+        "req_degree_2_2",
+        "req_enhanced_dbs",
+        "req_swe_registration"
+      ],
+      "evidenceRefs": [
+        "ev_dfe_approach",
+        "ev_frontline_approach"
+      ],
+      "actionTemplateIds": [
+        "act_frontline_register"
+      ],
+      "comparisonFields": {
+        "pattern": "Funded fast-track, work-based",
+        "focus": "Child and family social work",
+        "funding": "Fully funded; bursary year one, salary from year two"
+      }
+    }
+  ],
+  "requirements": [
+    {
+      "id": "req_swe_registration",
+      "label": "Registration with Social Work England",
+      "description": "'Social worker' is a protected title in England. To practise you must complete an approved qualification and register with Social Work England.",
+      "verifiedBy": "Social Work England register",
+      "evidenceRefs": [
+        "ev_swe_registration"
+      ],
+      "requirementType": "participant_verification"
+    },
+    {
+      "id": "req_enhanced_dbs",
+      "label": "Enhanced DBS check",
+      "description": "An enhanced criminal record check is required for training and practice. Flags rarely rule people out automatically, but get advice early.",
+      "verifiedBy": "Enhanced DBS check arranged by your course or employer",
+      "evidenceRefs": [
+        "ev_basw_routes"
+      ],
+      "requirementType": "participant_verification"
+    },
+    {
+      "id": "req_gcse_english",
+      "label": "GCSE English at grade 4/C or above (or approved equivalent)",
+      "description": "Approved courses and the funded programmes require GCSE English (many also require maths).",
+      "verifiedBy": "Certificate check by the course provider",
+      "evidenceRefs": [
+        "ev_dfe_step_up",
+        "ev_dfe_approach",
+        "ev_basw_routes"
+      ],
+      "requirementType": "machine_assessable",
+      "machineRule": {
+        "all": [
+          {
+            "questionId": "gcse_english_maths_status",
+            "op": "in",
+            "value": [
+              "both",
+              "english_only"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "req_level3",
+      "label": "Level 3 qualification for undergraduate entry",
+      "description": "Undergraduate social work degrees normally require a Level 3 qualification. A completed degree also satisfies this.",
+      "verifiedBy": "UCAS application / certificate check",
+      "evidenceRefs": [
+        "ev_basw_routes",
+        "ev_prospects_courses"
+      ],
+      "requirementType": "machine_assessable",
+      "machineRule": {
+        "any": [
+          {
+            "questionId": "level3_status",
+            "op": "eq",
+            "value": "yes"
+          },
+          {
+            "questionId": "degree_status",
+            "op": "in",
+            "value": [
+              "degree_2_2_plus",
+              "degree_below_2_2",
+              "social_work_degree"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "req_degree_any",
+      "label": "An undergraduate degree",
+      "description": "Postgraduate routes require an undergraduate degree.",
+      "verifiedBy": "Certificate check by the course provider",
+      "evidenceRefs": [
+        "ev_prospects_courses"
+      ],
+      "requirementType": "machine_assessable",
+      "machineRule": {
+        "all": [
+          {
+            "questionId": "degree_status",
+            "op": "in",
+            "value": [
+              "degree_2_2_plus",
+              "degree_below_2_2"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "req_degree_2_2",
+      "label": "A 2:2 or above in a subject other than social work",
+      "description": "The funded fast-track programmes require at least a 2:2 honours degree (any subject except social work). Some accept a predicted 2:2 in your final year.",
+      "verifiedBy": "Certificate check by the programme",
+      "evidenceRefs": [
+        "ev_gov_step_up",
+        "ev_dfe_approach"
+      ],
+      "requirementType": "machine_assessable",
+      "machineRule": {
+        "all": [
+          {
+            "questionId": "degree_status",
+            "op": "eq",
+            "value": "degree_2_2_plus"
+          }
+        ]
+      }
+    },
+    {
+      "id": "req_experience_6m",
+      "label": "6 months' direct experience with vulnerable groups",
+      "description": "Step Up to Social Work requires 6 months' full-time (or equivalent) paid or voluntary experience with vulnerable children, young people, families, carers or vulnerable adults.",
+      "verifiedBy": "Declared and evidenced in your Step Up application",
+      "evidenceRefs": [
+        "ev_gov_step_up",
+        "ev_dfe_step_up"
+      ],
+      "requirementType": "machine_assessable",
+      "machineRule": {
+        "all": [
+          {
+            "questionId": "vulnerable_experience_6m",
+            "op": "eq",
+            "value": "yes"
+          }
+        ]
+      }
+    },
+    {
+      "id": "req_employer_backing",
+      "label": "An employer to sponsor the apprenticeship",
+      "description": "Degree apprenticeships are jobs with training: you need an employer (often your current one in social care) willing to put you through the apprenticeship.",
+      "verifiedBy": "Agreement with your employer",
+      "evidenceRefs": [
+        "ev_communitycare_routes",
+        "ev_basw_routes"
+      ],
+      "requirementType": "machine_assessable",
+      "machineRule": {
+        "all": [
+          {
+            "questionId": "employer_support",
+            "op": "eq",
+            "value": "yes_employer_sponsor"
+          }
+        ]
+      }
+    }
+  ],
+  "questionRefs": [
+    {
+      "id": "starting_point",
+      "label": "Where are you starting from?",
+      "contextOnly": true,
+      "answerType": "single_select",
+      "required": false,
+      "whyWeAsk": "This helps us show your result in the context of where you are now. It does not change which routes are open.",
+      "allowedValues": [
+        "school_leaver",
+        "graduate",
+        "working_in_social_care",
+        "career_changer",
+        "other"
+      ],
+      "options": [
+        {
+          "value": "school_leaver",
+          "label": "At school or recently finished school"
+        },
+        {
+          "value": "graduate",
+          "label": "I have (or am finishing) a degree"
+        },
+        {
+          "value": "working_in_social_care",
+          "label": "Already working in social care"
+        },
+        {
+          "value": "career_changer",
+          "label": "Working in another field and considering a change"
+        },
+        {
+          "value": "other",
+          "label": "None of these quite fit"
+        }
+      ]
+    },
+    {
+      "id": "degree_status",
+      "label": "Do you have a degree?",
+      "answerType": "single_select",
+      "whyWeAsk": "Several routes into social work are only for graduates, and one is only for people who do not already hold a social work degree.",
+      "allowedValues": [
+        "none",
+        "in_progress",
+        "degree_2_2_plus",
+        "degree_below_2_2",
+        "social_work_degree"
+      ],
+      "options": [
+        {
+          "value": "none",
+          "label": "No"
+        },
+        {
+          "value": "in_progress",
+          "label": "I'm in my final year now"
+        },
+        {
+          "value": "degree_2_2_plus",
+          "label": "Yes \u2014 2:2 or above (not social work)"
+        },
+        {
+          "value": "degree_below_2_2",
+          "label": "Yes \u2014 below a 2:2"
+        },
+        {
+          "value": "social_work_degree",
+          "label": "Yes \u2014 a social work degree"
+        }
+      ]
+    },
+    {
+      "id": "gcse_english_maths_status",
+      "label": "Do you have GCSE English (and maths) at grade 4/C or above?",
+      "answerType": "single_select",
+      "whyWeAsk": "Approved social work courses and the funded programmes set GCSE English requirements; many also ask for maths.",
+      "allowedValues": [
+        "both",
+        "english_only",
+        "neither",
+        "not_sure",
+        "international"
+      ],
+      "options": [
+        {
+          "value": "both",
+          "label": "Yes \u2014 English and maths"
+        },
+        {
+          "value": "english_only",
+          "label": "English yes, maths no"
+        },
+        {
+          "value": "neither",
+          "label": "No"
+        },
+        {
+          "value": "not_sure",
+          "label": "I'm not sure / can't find my certificates"
+        },
+        {
+          "value": "international",
+          "label": "I have international qualifications"
+        }
+      ]
+    },
+    {
+      "id": "level3_status",
+      "label": "Do you have a Level 3 qualification (A levels, BTEC or similar)?",
+      "answerType": "single_select",
+      "visibleWhen": {
+        "all": [
+          {
+            "questionId": "degree_status",
+            "op": "in",
+            "value": [
+              "none",
+              "in_progress"
+            ]
+          }
+        ]
+      },
+      "whyWeAsk": "Undergraduate social work degrees normally ask for a Level 3 qualification.",
+      "allowedValues": [
+        "yes",
+        "in_progress",
+        "no",
+        "international"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "in_progress",
+          "label": "I'm studying for one now"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        },
+        {
+          "value": "international",
+          "label": "I have international qualifications"
+        }
+      ]
+    },
+    {
+      "id": "vulnerable_experience_6m",
+      "label": "Do you have around 6 months' experience (paid or voluntary) with vulnerable children, young people, families or adults?",
+      "answerType": "single_select",
+      "visibleWhen": {
+        "all": [
+          {
+            "questionId": "degree_status",
+            "op": "in",
+            "value": [
+              "degree_2_2_plus",
+              "degree_below_2_2",
+              "in_progress"
+            ]
+          }
+        ]
+      },
+      "whyWeAsk": "Step Up to Social Work requires 6 months' full-time (or equivalent) direct experience with vulnerable groups.",
+      "allowedValues": [
+        "yes",
+        "some",
+        "none"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes \u2014 about 6 months full-time equivalent or more"
+        },
+        {
+          "value": "some",
+          "label": "Some, but I'm not sure it adds up to 6 months"
+        },
+        {
+          "value": "none",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "id": "child_family_focus",
+      "label": "Do you want to work mainly with children and families, or with adults?",
+      "answerType": "single_select",
+      "visibleWhen": {
+        "all": [
+          {
+            "questionId": "degree_status",
+            "op": "in",
+            "value": [
+              "degree_2_2_plus",
+              "in_progress"
+            ]
+          }
+        ]
+      },
+      "whyWeAsk": "The funded fast-track programmes train you specifically for child and family statutory social work. Degrees and apprenticeships are generic.",
+      "allowedValues": [
+        "children_families",
+        "adults",
+        "not_sure"
+      ],
+      "options": [
+        {
+          "value": "children_families",
+          "label": "Children and families"
+        },
+        {
+          "value": "adults",
+          "label": "Adults"
+        },
+        {
+          "value": "not_sure",
+          "label": "Not sure yet"
+        }
+      ]
+    },
+    {
+      "id": "employer_support",
+      "label": "Could your current employer support a social work apprenticeship?",
+      "answerType": "single_select",
+      "whyWeAsk": "Degree apprenticeships are employer-based: you need an employer willing to take you on as an apprentice, with training funded through the levy.",
+      "allowedValues": [
+        "yes_employer_sponsor",
+        "maybe",
+        "no"
+      ],
+      "options": [
+        {
+          "value": "yes_employer_sponsor",
+          "label": "Yes \u2014 my employer would support it"
+        },
+        {
+          "value": "maybe",
+          "label": "Maybe \u2014 I'd need to ask"
+        },
+        {
+          "value": "no",
+          "label": "No, or I'm not employed in a relevant setting"
+        }
+      ]
+    },
+    {
+      "id": "income_need",
+      "label": "Do you need to earn while you train?",
+      "answerType": "single_select",
+      "whyWeAsk": "This affects the practicalities of full-time study. It never changes formal eligibility.",
+      "allowedValues": [
+        "need_income",
+        "can_study_full_time",
+        "part_time_ok"
+      ],
+      "options": [
+        {
+          "value": "need_income",
+          "label": "I need to earn while I train"
+        },
+        {
+          "value": "can_study_full_time",
+          "label": "I can study full time without earning"
+        },
+        {
+          "value": "part_time_ok",
+          "label": "I could manage on part-time income"
+        }
+      ]
+    },
+    {
+      "id": "placement_commitment",
+      "label": "Could you commit to substantial assessed placement days (typically around 200 across training), often full-time patterns?",
+      "answerType": "single_select",
+      "whyWeAsk": "Every qualifying route includes substantial assessed practice placements \u2014 there is no placement-free route to registration.",
+      "allowedValues": [
+        "yes",
+        "with_planning",
+        "no"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "with_planning",
+          "label": "Yes, with some planning around other commitments"
+        },
+        {
+          "value": "no",
+          "label": "No, that would not work for me"
+        }
+      ]
+    },
+    {
+      "id": "dbs_barriers",
+      "label": "Is there anything that might come up on an enhanced DBS (criminal record) check?",
+      "answerType": "single_select",
+      "whyWeAsk": "Everyone training in social work has an enhanced DBS check. Knowing about possible flags early means you can get advice before applying \u2014 it rarely rules people out automatically.",
+      "allowedValues": [
+        "none",
+        "possible",
+        "prefer_not_say"
+      ],
+      "options": [
+        {
+          "value": "none",
+          "label": "No, nothing I can think of"
+        },
+        {
+          "value": "possible",
+          "label": "Possibly \u2014 something might come up"
+        },
+        {
+          "value": "prefer_not_say",
+          "label": "Prefer not to say"
+        }
+      ]
+    }
+  ],
+  "rules": [
+    {
+      "id": "r_block_no_placements",
+      "when": {
+        "all": [
+          {
+            "questionId": "placement_commitment",
+            "op": "eq",
+            "value": "no"
+          }
+        ]
+      },
+      "then": [
+        {
+          "kind": "block_route",
+          "routeId": "route_ug_degree",
+          "reason": "Every qualifying route includes substantial assessed placements \u2014 there is no placement-free route to registration.",
+          "evidenceRefs": [
+            "ev_basw_routes"
+          ]
+        },
+        {
+          "kind": "block_route",
+          "routeId": "route_pg_masters",
+          "reason": "Every qualifying route includes substantial assessed placements \u2014 there is no placement-free route to registration.",
+          "evidenceRefs": [
+            "ev_basw_routes"
+          ]
+        },
+        {
+          "kind": "block_route",
+          "routeId": "route_apprenticeship",
+          "reason": "Every qualifying route includes substantial assessed placements \u2014 there is no placement-free route to registration.",
+          "evidenceRefs": [
+            "ev_basw_routes"
+          ]
+        },
+        {
+          "kind": "block_route",
+          "routeId": "route_step_up",
+          "reason": "Every qualifying route includes substantial assessed placements \u2014 there is no placement-free route to registration.",
+          "evidenceRefs": [
+            "ev_basw_routes"
+          ]
+        },
+        {
+          "kind": "block_route",
+          "routeId": "route_approach",
+          "reason": "Every qualifying route includes substantial assessed placements \u2014 there is no placement-free route to registration.",
+          "evidenceRefs": [
+            "ev_basw_routes"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "r_block_fasttrack_sw_degree",
+      "when": {
+        "all": [
+          {
+            "questionId": "degree_status",
+            "op": "eq",
+            "value": "social_work_degree"
+          }
+        ]
+      },
+      "then": [
+        {
+          "kind": "block_route",
+          "routeId": "route_step_up",
+          "reason": "Step Up is only open to people who do not already hold a social work degree.",
+          "evidenceRefs": [
+            "ev_gov_step_up"
+          ]
+        },
+        {
+          "kind": "block_route",
+          "routeId": "route_approach",
+          "reason": "Approach Social Work is for graduates of subjects other than social work.",
+          "evidenceRefs": [
+            "ev_dfe_approach"
+          ]
+        },
+        {
+          "kind": "add_consideration",
+          "text": "With a social work degree you may already be able to register with Social Work England \u2014 check whether your qualification is approved before considering further training.",
+          "evidenceRefs": [
+            "ev_swe_registration"
+          ]
+        },
+        {
+          "kind": "add_action",
+          "actionTemplateId": "act_swe_courses"
+        }
+      ]
+    },
+    {
+      "id": "r_gcse_uncertain",
+      "when": {
+        "all": [
+          {
+            "questionId": "gcse_english_maths_status",
+            "op": "in",
+            "value": [
+              "not_sure",
+              "international"
+            ]
+          }
+        ]
+      },
+      "then": [
+        {
+          "kind": "mark_requirement",
+          "requirementId": "req_gcse_english",
+          "status": "unknown",
+          "note": "Certificates or an approved equivalency need checking.",
+          "evidenceRefs": [
+            "ev_dfe_step_up"
+          ]
+        },
+        {
+          "kind": "add_action",
+          "actionTemplateId": "act_order_certificates"
+        }
+      ]
+    },
+    {
+      "id": "r_level3_uncertain",
+      "when": {
+        "all": [
+          {
+            "questionId": "level3_status",
+            "op": "eq",
+            "value": "international"
+          }
+        ]
+      },
+      "then": [
+        {
+          "kind": "mark_requirement",
+          "requirementId": "req_level3",
+          "status": "unknown",
+          "note": "International qualifications need an equivalency check.",
+          "evidenceRefs": [
+            "ev_dfe_step_up"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "r_degree_predicted",
+      "when": {
+        "all": [
+          {
+            "questionId": "degree_status",
+            "op": "eq",
+            "value": "in_progress"
+          }
+        ]
+      },
+      "then": [
+        {
+          "kind": "mark_requirement",
+          "requirementId": "req_degree_2_2",
+          "status": "unknown",
+          "note": "A predicted 2:2 in your final year may be accepted \u2014 confirm with the programme.",
+          "evidenceRefs": [
+            "ev_dfe_approach"
+          ]
+        },
+        {
+          "kind": "require_verification",
+          "routeId": "route_step_up",
+          "check": "Confirm whether your regional partnership accepts a predicted 2:2 for final-year students.",
+          "evidenceRefs": [
+            "ev_gov_step_up"
+          ]
+        },
+        {
+          "kind": "require_verification",
+          "routeId": "route_approach",
+          "check": "Approach accepts a predicted 2:2 \u2014 confirm your predicted grade with your university.",
+          "evidenceRefs": [
+            "ev_dfe_approach"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "r_experience_partial",
+      "when": {
+        "all": [
+          {
+            "questionId": "vulnerable_experience_6m",
+            "op": "eq",
+            "value": "some"
+          }
+        ]
+      },
+      "then": [
+        {
+          "kind": "mark_requirement",
+          "requirementId": "req_experience_6m",
+          "status": "unknown",
+          "note": "Check whether your experience adds up to 6 months' full-time equivalent.",
+          "evidenceRefs": [
+            "ev_dfe_step_up"
+          ]
+        },
+        {
+          "kind": "require_verification",
+          "routeId": "route_step_up",
+          "check": "Add up your paid and voluntary experience with vulnerable groups against the 6-month full-time-equivalent requirement.",
+          "evidenceRefs": [
+            "ev_dfe_step_up"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "r_employer_maybe",
+      "when": {
+        "all": [
+          {
+            "questionId": "employer_support",
+            "op": "eq",
+            "value": "maybe"
+          }
+        ]
+      },
+      "then": [
+        {
+          "kind": "mark_requirement",
+          "requirementId": "req_employer_backing",
+          "status": "unknown",
+          "note": "Employer support needs confirming.",
+          "evidenceRefs": [
+            "ev_communitycare_routes"
+          ]
+        },
+        {
+          "kind": "require_verification",
+          "routeId": "route_apprenticeship",
+          "check": "Ask your employer whether they would support a social work degree apprenticeship through the levy.",
+          "evidenceRefs": [
+            "ev_communitycare_routes"
+          ]
+        },
+        {
+          "kind": "add_action",
+          "actionTemplateId": "act_employer_chat"
+        }
+      ]
+    },
+    {
+      "id": "r_adults_focus",
+      "when": {
+        "all": [
+          {
+            "questionId": "child_family_focus",
+            "op": "eq",
+            "value": "adults"
+          }
+        ]
+      },
+      "then": [
+        {
+          "kind": "flag_concern",
+          "routeId": "route_step_up",
+          "concern": "Step Up trains you specifically for child and family statutory social work.",
+          "evidenceRefs": [
+            "ev_gov_step_up"
+          ]
+        },
+        {
+          "kind": "flag_concern",
+          "routeId": "route_approach",
+          "concern": "Approach Social Work is focused on child and family social work.",
+          "evidenceRefs": [
+            "ev_dfe_approach"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "r_income_constraint",
+      "when": {
+        "all": [
+          {
+            "questionId": "income_need",
+            "op": "eq",
+            "value": "need_income"
+          }
+        ]
+      },
+      "then": [
+        {
+          "kind": "flag_constraint",
+          "routeId": "route_ug_degree",
+          "constraint": "Tuition fees apply and the Social Work Bursary is capped and awarded to a limited number of students \u2014 three years without a salary may be hard to sustain.",
+          "evidenceRefs": [
+            "ev_prospects_courses"
+          ]
+        },
+        {
+          "kind": "flag_constraint",
+          "routeId": "route_pg_masters",
+          "constraint": "Tuition fees apply and the postgraduate bursary is capped and awarded to a limited number of students.",
+          "evidenceRefs": [
+            "ev_prospects_courses"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "r_grad_second_ug",
+      "when": {
+        "all": [
+          {
+            "questionId": "degree_status",
+            "op": "in",
+            "value": [
+              "degree_2_2_plus",
+              "degree_below_2_2"
+            ]
+          }
+        ]
+      },
+      "then": [
+        {
+          "kind": "flag_concern",
+          "routeId": "route_ug_degree",
+          "concern": "As a graduate, a second undergraduate degree is rarely the shortest path \u2014 postgraduate and fast-track routes exist for graduates.",
+          "evidenceRefs": [
+            "ev_basw_routes"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "r_dbs_uncertain",
+      "when": {
+        "all": [
+          {
+            "questionId": "dbs_barriers",
+            "op": "in",
+            "value": [
+              "possible",
+              "prefer_not_say"
+            ]
+          }
+        ]
+      },
+      "then": [
+        {
+          "kind": "require_verification",
+          "routeId": "route_ug_degree",
+          "check": "Get advice on how your circumstances appear on an enhanced DBS check before applying \u2014 a flag rarely rules you out automatically.",
+          "evidenceRefs": [
+            "ev_basw_routes"
+          ]
+        },
+        {
+          "kind": "require_verification",
+          "routeId": "route_pg_masters",
+          "check": "Get advice on how your circumstances appear on an enhanced DBS check before applying \u2014 a flag rarely rules you out automatically.",
+          "evidenceRefs": [
+            "ev_basw_routes"
+          ]
+        },
+        {
+          "kind": "require_verification",
+          "routeId": "route_apprenticeship",
+          "check": "Get advice on how your circumstances appear on an enhanced DBS check before applying \u2014 a flag rarely rules you out automatically.",
+          "evidenceRefs": [
+            "ev_basw_routes"
+          ]
+        },
+        {
+          "kind": "require_verification",
+          "routeId": "route_step_up",
+          "check": "Get advice on how your circumstances appear on an enhanced DBS check before applying \u2014 a flag rarely rules you out automatically.",
+          "evidenceRefs": [
+            "ev_basw_routes"
+          ]
+        },
+        {
+          "kind": "require_verification",
+          "routeId": "route_approach",
+          "check": "Get advice on how your circumstances appear on an enhanced DBS check before applying \u2014 a flag rarely rules you out automatically.",
+          "evidenceRefs": [
+            "ev_basw_routes"
+          ]
+        },
+        {
+          "kind": "add_action",
+          "actionTemplateId": "act_dbs_advice"
+        }
+      ]
+    }
+  ],
+  "evidenceRecords": [
+    {
+      "id": "ev_swe_registration",
+      "title": "Registering as a social worker (protected title)",
+      "publisher": "Social Work England",
+      "url": "https://www.socialworkengland.org.uk/registration/",
+      "publishedOrRetrievedOn": "2026-07-13",
+      "verifiedOn": "2026-07-13",
+      "publiclyAccessible": true
+    },
+    {
+      "id": "ev_gov_step_up",
+      "title": "Step up to social work",
+      "publisher": "GOV.UK (Department for Education)",
+      "url": "https://www.gov.uk/guidance/step-up-to-social-work",
+      "publishedOrRetrievedOn": "2026-07-13",
+      "verifiedOn": "2026-07-13",
+      "publiclyAccessible": true
+    },
+    {
+      "id": "ev_dfe_step_up",
+      "title": "Step Up to Social Work \u2014 eligibility and funding",
+      "publisher": "Department for Education \u2014 Support for social workers",
+      "url": "https://support-for-social-workers.education.gov.uk/become-a-social-worker/step-up-to-social-work",
+      "publishedOrRetrievedOn": "2026-07-13",
+      "verifiedOn": "2026-07-13",
+      "publiclyAccessible": true
+    },
+    {
+      "id": "ev_dfe_approach",
+      "title": "Approach Social Work \u2014 eligibility and funding",
+      "publisher": "Department for Education \u2014 Support for social workers",
+      "url": "https://support-for-social-workers.education.gov.uk/become-a-social-worker/approach-social-work",
+      "publishedOrRetrievedOn": "2026-07-13",
+      "verifiedOn": "2026-07-13",
+      "publiclyAccessible": true
+    },
+    {
+      "id": "ev_frontline_approach",
+      "title": "Approach Social Work programme",
+      "publisher": "Frontline",
+      "url": "https://thefrontline.org.uk/become-a-social-worker/approach-social-work/",
+      "publishedOrRetrievedOn": "2026-07-13",
+      "verifiedOn": "2026-07-13",
+      "publiclyAccessible": true
+    },
+    {
+      "id": "ev_basw_routes",
+      "title": "How to become a social worker \u2014 routes and funding",
+      "publisher": "British Association of Social Workers",
+      "url": "https://basw.co.uk/careers/how-become-social-worker",
+      "publishedOrRetrievedOn": "2026-07-13",
+      "verifiedOn": "2026-07-13",
+      "publiclyAccessible": true
+    },
+    {
+      "id": "ev_prospects_courses",
+      "title": "Social work courses and bursaries (England)",
+      "publisher": "Prospects",
+      "url": "https://www.prospects.ac.uk/jobs-and-work-experience/job-sectors/social-care/social-work-courses/",
+      "publishedOrRetrievedOn": "2026-07-13",
+      "verifiedOn": "2026-07-13",
+      "publiclyAccessible": true
+    },
+    {
+      "id": "ev_communitycare_routes",
+      "title": "Routes into social work in England, including apprenticeships",
+      "publisher": "Community Care",
+      "url": "https://www.communitycare.co.uk/2024/07/03/postgraduate-apprenticeships-provide-new-route-into-social-work/",
+      "publishedOrRetrievedOn": "2026-07-13",
+      "verifiedOn": "2026-07-13",
+      "publiclyAccessible": true
+    }
+  ],
+  "actionTemplates": [
+    {
+      "id": "act_swe_courses",
+      "title": "Check the approved course list",
+      "description": "Only Social Work England approved courses lead to registration. Check the approved list before applying anywhere.",
+      "effortLabel": "Half an hour",
+      "evidenceRefs": [
+        "ev_swe_registration"
+      ]
+    },
+    {
+      "id": "act_stepup_register",
+      "title": "Register interest in Step Up to Social Work",
+      "description": "Step Up runs roughly every two years and applications for the 2026 programme have closed. Register interest on GOV.UK so you hear when the next window opens.",
+      "effortLabel": "Ten minutes",
+      "evidenceRefs": [
+        "ev_gov_step_up"
+      ]
+    },
+    {
+      "id": "act_frontline_register",
+      "title": "Register interest in Approach Social Work",
+      "description": "Applications for the 2027 cohort are expected to open in September 2026. Register interest with Frontline to be notified.",
+      "effortLabel": "Ten minutes",
+      "evidenceRefs": [
+        "ev_frontline_approach"
+      ]
+    },
+    {
+      "id": "act_employer_chat",
+      "title": "Talk to your employer about the apprenticeship",
+      "description": "Ask whether your employer would support a social work degree apprenticeship through the levy \u2014 many local authorities and care employers do.",
+      "effortLabel": "A conversation",
+      "evidenceRefs": [
+        "ev_communitycare_routes"
+      ]
+    },
+    {
+      "id": "act_order_certificates",
+      "title": "Track down your GCSE certificates or an equivalency statement",
+      "description": "Providers ask for original certificates. Replacements or equivalency statements for international qualifications can take weeks \u2014 start early.",
+      "effortLabel": "An hour, then waiting",
+      "evidenceRefs": [
+        "ev_dfe_step_up"
+      ]
+    },
+    {
+      "id": "act_dbs_advice",
+      "title": "Get advice on your DBS position before applying",
+      "description": "If something might come up on an enhanced check, get advice first \u2014 a flag rarely rules you out automatically, and being upfront helps.",
+      "effortLabel": "An hour or two",
+      "evidenceRefs": [
+        "ev_basw_routes"
+      ]
+    }
+  ],
+  "testProfiles": [
+    {
+      "id": "school_leaver_ready",
+      "label": "School leaver with Level 3 and GCSEs",
+      "answers": {
+        "starting_point": "school_leaver",
+        "degree_status": "none",
+        "gcse_english_maths_status": "both",
+        "level3_status": "yes",
+        "employer_support": "no",
+        "income_need": "part_time_ok",
+        "placement_commitment": "yes",
+        "dbs_barriers": "none"
+      },
+      "expect": {
+        "mustNotMention": [
+          "best route",
+          "guaranteed"
+        ]
+      }
+    },
+    {
+      "id": "graduate_step_up_ready",
+      "label": "Graduate with 2:2+ and 6 months' experience",
+      "answers": {
+        "degree_status": "degree_2_2_plus",
+        "gcse_english_maths_status": "both",
+        "vulnerable_experience_6m": "yes",
+        "child_family_focus": "children_families",
+        "employer_support": "no",
+        "income_need": "can_study_full_time",
+        "placement_commitment": "yes",
+        "dbs_barriers": "none",
+        "starting_point": "graduate"
+      },
+      "expect": {
+        "mustNotMention": [
+          "best route",
+          "guaranteed"
+        ]
+      }
+    },
+    {
+      "id": "graduate_no_experience",
+      "label": "Graduate with 2:2+ but no experience with vulnerable groups",
+      "answers": {
+        "degree_status": "degree_2_2_plus",
+        "gcse_english_maths_status": "both",
+        "vulnerable_experience_6m": "none",
+        "child_family_focus": "children_families",
+        "employer_support": "no",
+        "income_need": "can_study_full_time",
+        "placement_commitment": "yes",
+        "dbs_barriers": "none",
+        "starting_point": "graduate"
+      },
+      "expect": {
+        "mustNotMention": [
+          "best route",
+          "guaranteed"
+        ]
+      }
+    },
+    {
+      "id": "care_worker_apprenticeship",
+      "label": "Social care worker with employer backing, no degree",
+      "answers": {
+        "starting_point": "working_in_social_care",
+        "degree_status": "none",
+        "gcse_english_maths_status": "both",
+        "level3_status": "yes",
+        "employer_support": "yes_employer_sponsor",
+        "income_need": "need_income",
+        "placement_commitment": "with_planning",
+        "dbs_barriers": "none"
+      },
+      "expect": {
+        "mustNotMention": [
+          "best route",
+          "guaranteed"
+        ]
+      }
+    },
+    {
+      "id": "social_work_degree_holder",
+      "label": "Already holds a social work degree",
+      "answers": {
+        "degree_status": "social_work_degree",
+        "gcse_english_maths_status": "both",
+        "vulnerable_experience_6m": "yes",
+        "child_family_focus": "children_families",
+        "employer_support": "no",
+        "income_need": "can_study_full_time",
+        "placement_commitment": "yes",
+        "dbs_barriers": "none",
+        "starting_point": "graduate"
+      },
+      "expect": {
+        "blockedRouteIds": [
+          "route_step_up",
+          "route_approach"
+        ],
+        "mustNotMention": [
+          "best route",
+          "guaranteed"
+        ]
+      }
+    },
+    {
+      "id": "no_gcse_english",
+      "label": "No GCSE English or maths",
+      "answers": {
+        "degree_status": "degree_2_2_plus",
+        "gcse_english_maths_status": "neither",
+        "vulnerable_experience_6m": "yes",
+        "child_family_focus": "children_families",
+        "employer_support": "no",
+        "income_need": "can_study_full_time",
+        "placement_commitment": "yes",
+        "dbs_barriers": "none",
+        "starting_point": "graduate"
+      },
+      "expect": {
+        "mustNotMention": [
+          "best route",
+          "guaranteed"
+        ]
+      }
+    },
+    {
+      "id": "international_qualifications",
+      "label": "International qualifications throughout",
+      "answers": {
+        "degree_status": "degree_2_2_plus",
+        "gcse_english_maths_status": "international",
+        "vulnerable_experience_6m": "yes",
+        "child_family_focus": "children_families",
+        "employer_support": "no",
+        "income_need": "can_study_full_time",
+        "placement_commitment": "yes",
+        "dbs_barriers": "none",
+        "starting_point": "graduate"
+      },
+      "expect": {
+        "mustNotMention": [
+          "best route",
+          "guaranteed"
+        ]
+      }
+    },
+    {
+      "id": "cannot_commit_placements",
+      "label": "Cannot commit to placement days",
+      "answers": {
+        "degree_status": "degree_2_2_plus",
+        "gcse_english_maths_status": "both",
+        "vulnerable_experience_6m": "yes",
+        "child_family_focus": "children_families",
+        "employer_support": "no",
+        "income_need": "can_study_full_time",
+        "placement_commitment": "no",
+        "dbs_barriers": "none",
+        "starting_point": "graduate"
+      },
+      "expect": {
+        "blockedRouteIds": [
+          "route_ug_degree",
+          "route_pg_masters",
+          "route_apprenticeship",
+          "route_step_up",
+          "route_approach"
+        ],
+        "mustNotMention": [
+          "best route",
+          "guaranteed"
+        ]
+      }
+    },
+    {
+      "id": "final_year_predicted_2_2",
+      "label": "Final-year student with predicted 2:2",
+      "answers": {
+        "degree_status": "in_progress",
+        "gcse_english_maths_status": "both",
+        "vulnerable_experience_6m": "yes",
+        "child_family_focus": "children_families",
+        "employer_support": "no",
+        "income_need": "can_study_full_time",
+        "placement_commitment": "yes",
+        "dbs_barriers": "none",
+        "starting_point": "graduate",
+        "level3_status": "yes"
+      },
+      "expect": {
+        "mustNotMention": [
+          "best route",
+          "guaranteed"
+        ]
+      }
+    },
+    {
+      "id": "adults_focus_graduate",
+      "label": "Graduate who wants to work with adults",
+      "answers": {
+        "degree_status": "degree_2_2_plus",
+        "gcse_english_maths_status": "both",
+        "vulnerable_experience_6m": "yes",
+        "child_family_focus": "adults",
+        "employer_support": "no",
+        "income_need": "can_study_full_time",
+        "placement_commitment": "yes",
+        "dbs_barriers": "none",
+        "starting_point": "graduate"
+      },
+      "expect": {
+        "mustNotMention": [
+          "best route",
+          "guaranteed"
+        ]
+      }
+    },
+    {
+      "id": "dbs_uncertain_graduate",
+      "label": "Graduate unsure about DBS position",
+      "answers": {
+        "degree_status": "degree_2_2_plus",
+        "gcse_english_maths_status": "both",
+        "vulnerable_experience_6m": "yes",
+        "child_family_focus": "children_families",
+        "employer_support": "no",
+        "income_need": "can_study_full_time",
+        "placement_commitment": "yes",
+        "dbs_barriers": "possible",
+        "starting_point": "graduate"
+      },
+      "expect": {
+        "mustNotMention": [
+          "best route",
+          "guaranteed"
+        ]
+      }
+    },
+    {
+      "id": "minimal_answers",
+      "label": "Only told us where they're starting from",
+      "answers": {
+        "starting_point": "school_leaver"
+      },
+      "expect": {
+        "mustNotMention": [
+          "best route",
+          "guaranteed"
+        ]
+      }
+    }
+  ],
+  "contentReview": {
+    "ownerDisplayName": "Clear Routes content team",
+    "reviewerDisplayName": "Pending editorial review before publication",
+    "lastReviewedAt": "2026-07-13",
+    "nextReviewDueAt": "2027-01-13",
+    "sourcesAsOf": "2026-07-13"
+  }
+}
