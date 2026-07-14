@@ -333,7 +333,7 @@ export const handleRealityCheck = async (req: Request, deps: HandlerDeps = {}): 
     else if (role.role_slug === "police-officer" && policeOfficerSignals) result = buildPoliceOfficerResult({ signals: policeOfficerSignals });
     else if (role.role_slug === "actor" && actorSignals) result = buildActorResult({ signals: actorSignals });
     else if (role.role_slug === "solicitor" && solicitorSignals) result = buildSolicitorResult({ signals: solicitorSignals });
-    else result = buildResult(answers ?? {}, role);
+    else result = buildResult(answers, role);
 
     return new Response(JSON.stringify({ result }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
