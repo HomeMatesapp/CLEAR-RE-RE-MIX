@@ -193,6 +193,15 @@ export const handleRealityCheck = async (req: Request, deps: HandlerDeps = {}): 
 
     const binding = await resolver(roleId, roleSlug);
 
+    // A questionnaire probe for a role with no bound pack gets a clean
+    // "no pack" answer. No evaluation, no receipt — just an honest 404.
+    if (!binding && (payload as { mode?: unknown }).mode === "questionnaire") {
+      return new Response(JSON.stringify({ error: "no_pack_for_role" }), {
+        status: 404,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     if (binding) {
       if (roleSlug && binding.role_slug !== roleSlug) {
         return new Response(JSON.stringify({ error: "role_slug_mismatch" }), {
@@ -324,7 +333,7 @@ export const handleRealityCheck = async (req: Request, deps: HandlerDeps = {}): 
     else if (role.role_slug === "police-officer" && policeOfficerSignals) result = buildPoliceOfficerResult({ signals: policeOfficerSignals });
     else if (role.role_slug === "actor" && actorSignals) result = buildActorResult({ signals: actorSignals });
     else if (role.role_slug === "solicitor" && solicitorSignals) result = buildSolicitorResult({ signals: solicitorSignals });
-    else result = buildResult(answers ?? {}, role);
+    else result = buildResult(answers, role);
 
     return new Response(JSON.stringify({ result }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
