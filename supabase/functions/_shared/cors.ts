@@ -7,8 +7,10 @@ const ALLOWED_ORIGINS = new Set([
   "http://localhost:5173",
 ]);
 
+// Lovable serves previews/publishes from both lovable.app and
+// lovableproject.com subdomains, depending on project vintage.
 const isAllowedPreview = (origin: string) =>
-  /^https:\/\/[a-z0-9-]+\.lovable\.app$/.test(origin);
+  /^https:\/\/[a-z0-9-]+\.(lovable\.app|lovableproject\.com)$/.test(origin);
 
 export const getCorsHeaders = (req: Request) => {
   const origin = req.headers.get("origin") ?? "";
